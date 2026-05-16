@@ -759,7 +759,7 @@ a:hover { text-decoration: underline; }
         <dt>Equivalent partners</dt><dd>1 / HHI &mdash; the concentration-equivalent count of trading relationships, not a literal head-count.</dd>
         <dt>Raw HHI</dt><dd>HHI computed from a single calendar month's export values. Volatile; influenced by individual shipments, seasonality, and commodity-price swings.</dd>
         <dt>12-month moving average</dt><dd>Average of the most recent 12 monthly raw HHI values. Smooths shipment-timing and seasonal noise to expose the underlying trend.</dd>
-        <dt>5-year average</dt><dd>Average of the most recent 60 monthly raw HHI values, used as a historical reference in the Product detail table.</dd>
+        <dt>YTD / Year-to-date</dt><dd>Cumulative average from January through the latest available month of the current year. YTD % change compares that window to the identical period in the prior year.</dd>
         <dt>Ex-US / Excluding US</dt><dd>HHI recomputed after dropping the United States from the partner set and renormalizing the remaining shares.</dd>
         <dt>NAPCS</dt><dd>North American Product Classification System &mdash; the StatCan product category schema. Full category names appear in the filter; short labels appear in compact views (heatmap rows, rankings, movers).</dd>
       </dl>
@@ -972,7 +972,7 @@ function renderLede() {
   // Bullet 2 — equivalent partners
   if (curRaw != null && curRaw > 0) {
     const eff = 1 / curRaw;
-    bullets.push('Equivalent to ~<strong>' + eff.toFixed(1) + '</strong> equal-sized trading partners');
+    bullets.push('Equivalent to ~<strong>' + eff.toFixed(1) + '</strong> large equal-sized trading partners');
   }
 
   // Bullet 3 — YoY change (raw)
@@ -1393,68 +1393,97 @@ function renderTable() {
   const t = document.getElementById('drill');
   if (!t) return;
   t.innerHTML = '';
+
+  // ── YTD window ──────────────────────────────────────────────────
   const refLm = DATA.latestMi['CA|Total|all'];
-  const monthLbl = (refLm != null) ? monthYearLabelFull(DATA.dates[refLm]) : '—';
+  if (refLm == null) return;
+  const refDate = DATA.dates[refLm];
+  const curYear = parseInt(refDate.slice(0, 4));
+  const curMon  = parseInt(refDate.slice(5, 7)); // 1-12
+  const prevYear = curYear - 1;
+  const endMonName  = MONTH_NAMES[curMon - 1];
+  const ytdRange  = (curMon === 1) ? endMonName + ' ' + curYear  : 'Jan–' + endMonName + ' ' + curYear;
+  const prevRange = (curMon === 1) ? endMonName + ' ' + prevYear : 'Jan–' + endMonName + ' ' + prevYear;
+
+  // Pre-build month-index arrays for current YTD and prior-year YTD
+  const ytdMis = [], prevMis = [];
+  for (let mi = 0; mi < DATA.dates.length; mi++) {
+    const d = DATA.dates[mi];
+    if (!d) continue;
+    const y = parseInt(d.slice(0, 4));
+    const m = parseInt(d.slice(5, 7));
+    if      (y === curYear  && m <= curMon) ytdMis.push(mi);
+    else if (y === prevYear && m <= curMon) prevMis.push(mi);
+  }
+
+  function ytdAvg(ser, mis) {
+    if (!ser) return null;
+    let sum = 0, cnt = 0;
+    mis.forEach(mi => { const v = valueAt(ser, mi); if (v != null) { sum += v; cnt++; } });
+    return cnt > 0 ? sum / cnt : null;
+  }
+
+  // ── Title / subtitle ────────────────────────────────────────────
   const titleEl = document.getElementById('drill-title');
-  if (titleEl) titleEl.textContent = 'Product detail · ' + monthLbl;
+  if (titleEl) titleEl.textContent = 'Concentration by Product Group · Year-to-date ' + curYear + ' (' + ytdRange + ')';
   const subEl = document.getElementById('drill-sub');
   const partnerLbl = DATA.partner_names[state.partner];
-  const geoLbl = DATA.geo_names[state.geo];
-  if (subEl) subEl.textContent = partnerLbl + ' · ' + geoLbl;
+  const geoLbl = DATA.geo_names[state.geo] || 'Canada';
+  if (subEl) subEl.textContent = partnerLbl + ' · ' + geoLbl + ' · ' + ytdRange + ' vs ' + prevRange;
+
+  // ── Header ───────────────────────────────────────────────────────
   const thead = document.createElement('thead');
-  const trTop = document.createElement('tr');
-  trTop.innerHTML = '<th rowspan="2">Product</th>' +
-                    '<th class="r" rowspan="2">HHI<br><span style="font-weight:400; text-transform:none; letter-spacing:0;">5-yr average</span></th>' +
-                    '<th class="r" rowspan="2">HHI<br><span style="font-weight:400; text-transform:none; letter-spacing:0;">12-month average</span></th>' +
-                    '<th class="r" colspan="3" style="text-align:center;">HHI · ' + monthLbl + '</th>';
-  const trBot = document.createElement('tr');
-  trBot.innerHTML = '<th class="r">Raw HHI</th>' +
-                    '<th class="r">% vs 5-yr avg</th>' +
-                    '<th class="r">% vs 12-month avg</th>';
-  thead.appendChild(trTop); thead.appendChild(trBot);
+  const trH = document.createElement('tr');
+  trH.innerHTML =
+    '<th>Product</th>' +
+    '<th class="r">YTD avg HHI<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">' + ytdRange + '</span></th>' +
+    '<th class="r">YTD % change<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">vs ' + prevRange + '</span></th>' +
+    '<th>Concentration</th>';
+  thead.appendChild(trH);
   t.appendChild(thead);
+
+  // ── Rows ─────────────────────────────────────────────────────────
   const tbody = document.createElement('tbody');
   DATA.products.forEach(p => {
-    if (p === 'Special') return;  // batch-5: exclude Special from drill-down
+    if (p === 'Special') return;
     const key = state.geo + '|' + p + '|' + state.partner;
-    const sMa = DATA.series[key];
     const sRaw = (DATA.seriesRaw || {})[key];
-    const lm = DATA.latestMi[key];
-    if (lm == null || (sMa == null && sRaw == null)) return;
-    const rawCur = sRaw ? valueAt(sRaw, lm) : null;
-    const ma12Cur = sMa ? valueAt(sMa, lm) : null;
-    let avg5 = null;
-    if (sRaw) {
-      const start = sRaw[0]; const arr = sRaw[1];
-      const wStart = Math.max(0, lm - 59 - start);
-      const wEnd = lm - start;
-      if (wEnd >= 0) {
-        let sum = 0, count = 0;
-        for (let i = wStart; i <= wEnd; i++) {
-          const v = arr[i];
-          if (v != null) { sum += v / 100; count++; }
-        }
-        if (count > 0) avg5 = sum / count;
-      }
-    }
-    const pctVs5  = (rawCur != null && avg5    != null && avg5    > 0) ? ((rawCur - avg5) / avg5) * 100 : null;
-    const pctVs12 = (rawCur != null && ma12Cur != null && ma12Cur > 0) ? ((rawCur - ma12Cur) / ma12Cur) * 100 : null;
+    if (!sRaw) return;
+
+    const cur  = ytdAvg(sRaw, ytdMis);
+    const prev = ytdAvg(sRaw, prevMis);
+    if (cur == null) return;
+
+    const pct   = (prev != null && prev > 0) ? ((cur - prev) / prev) * 100 : null;
+    const delta = (prev != null) ? cur - prev : null;
+
     function fmtPct(v) {
-      if (v == null) return '—';
+      if (v == null) return '<span style="color:var(--color-text-tertiary)">—</span>';
       const sign = v > 0 ? '+' : (v < 0 ? '−' : '');
-      const cls = v > 0.5 ? ' style="color: var(--color-text-danger);"' : (v < -0.5 ? ' style="color: var(--color-text-success);"' : '');
-      return '<span' + cls + '>' + sign + Math.abs(v).toFixed(1) + '%</span>';
+      const style = v > 0.5 ? 'color:var(--color-text-danger);font-weight:600'
+                  : v < -0.5 ? 'color:var(--color-text-success);font-weight:600'
+                  : 'color:var(--color-text-secondary)';
+      return '<span style="' + style + '">' + sign + Math.abs(v).toFixed(1) + '%</span>';
     }
-    const tr = document.createElement('tr');
-    if (p === 'Special') tr.className = 'special-row';
+
+    let trendHtml;
+    if (delta == null) {
+      trendHtml = '<span style="color:var(--color-text-tertiary)">—</span>';
+    } else if (delta > 0.005) {
+      trendHtml = '<span class="pill pill-h">▲ More concentrated</span>';
+    } else if (delta < -0.005) {
+      trendHtml = '<span class="pill pill-l">▼ Less concentrated</span>';
+    } else {
+      trendHtml = '<span style="color:var(--color-text-secondary);font-size:12px;">— Unchanged</span>';
+    }
+
     const prodLabel = PRODUCT_LONG_NAMES[p] || p;
+    const tr = document.createElement('tr');
     tr.innerHTML =
-      '<td>' + prodLabel + (p === 'Special' ? ' †' : '') + '</td>' +
-      '<td class="r">' + (avg5    != null ? avg5.toFixed(2)    : '—') + '</td>' +
-      '<td class="r">' + (ma12Cur != null ? ma12Cur.toFixed(2) : '—') + '</td>' +
-      '<td class="r">' + (rawCur  != null ? rawCur.toFixed(2)  : '—') + '</td>' +
-      '<td class="r">' + fmtPct(pctVs5)  + '</td>' +
-      '<td class="r">' + fmtPct(pctVs12) + '</td>';
+      '<td>' + prodLabel + '</td>' +
+      '<td class="r" style="font-variant-numeric:tabular-nums;">' + cur.toFixed(2) + '</td>' +
+      '<td class="r">' + fmtPct(pct) + '</td>' +
+      '<td>' + trendHtml + '</td>';
     tbody.appendChild(tr);
   });
   t.appendChild(tbody);
