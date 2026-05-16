@@ -144,8 +144,10 @@ a:hover { text-decoration: underline; }
 /* === MAIN LAYOUT === */
 .wrap { max-width: 1040px; margin: 0 auto; padding: 28px 24px 48px; }
 .page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 4px; }
-.page-title { font-size: 26px; font-weight: 600; color: var(--color-text-primary); margin: 0; letter-spacing: -0.01em; }
-.page-subtitle { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+.page-title { font-size: 22px; font-weight: 600; color: var(--color-text-primary); margin: 0; letter-spacing: -0.01em; }
+.page-subtitle { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
+.page-meta { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+.page-meta .meta-sep { margin: 0 7px; }
 .freshness {
   background: var(--color-background-success);
   color: var(--color-text-success);
@@ -185,11 +187,14 @@ a:hover { text-decoration: underline; }
 .dash { font-family: var(--font-sans); font-size: 13px; }
 .dash h3 { font-size: 14px; font-weight: 600; margin: 0 0 6px; color: var(--color-text-primary); letter-spacing: -0.005em; }
 .dash .card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; margin-bottom: 10px; background: var(--color-card-bg); }
-.dash .filters { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.dash .filters { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
 .dash .ctrl { display: flex; flex-direction: column; gap: 3px; }
 .dash .ctrl label { font-size: 10px; color: var(--color-text-tertiary); padding-left: 2px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
 .dash select { width: 100%; padding: 7px 9px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); font-family: inherit; }
 .dash select:focus { outline: 2px solid var(--brand-blue); outline-offset: -1px; }
+.dash .chart-window-select { width: auto; font-size: 12px; padding: 4px 8px; }
+.dash .mover-hint { font-size: 11px; color: var(--color-text-tertiary); opacity: 0; transition: opacity 0.12s; flex-shrink: 0; margin: 0 2px; }
+.dash .mover:hover .mover-hint { opacity: 1; }
 
 /* Narrative card - brand navy hero */
 .dash .narrative {
@@ -553,12 +558,12 @@ a:hover { text-decoration: underline; }
 
   <div class="page-header">
     <div>
-      <h1 class="page-title">Canadian Export Market Concentration Intelligence</h1>
-      <div class="page-subtitle">Monthly Tracking of Canada's Export Market Diversification</div>
-      <div class="page-subtitle" style="margin-top: 6px; font-size: 12px; color: var(--color-text-tertiary);">
+      <h1 class="page-title">Canadian Export Concentration Dashboard</h1>
+      <div class="page-subtitle">Monthly HHI tracking of Canada's export market diversification</div>
+      <div class="page-meta">
         <span id="pub-date">Updated: —</span>
-        <span style="margin: 0 8px;">·</span>
-        <strong id="latest-data" style="color: var(--color-text-primary); font-size: 13px; font-weight: 700;">Latest trade data: —</strong>
+        <span class="meta-sep">·</span>
+        <span id="latest-data">Latest data: —</span>
       </div>
     </div>
   </div>
@@ -567,9 +572,8 @@ a:hover { text-decoration: underline; }
 
     <div class="filters">
       <div class="ctrl"><label>Geography</label><select id="f-geo"></select></div>
-      <div class="ctrl"><label>Product (NAPCS)</label><select id="f-product"></select></div>
-      <div class="ctrl"><label>Partner</label><select id="f-partner"><option value="all">All countries</option><option value="exus">Excluding US</option></select></div>
-      <div class="ctrl"><label>Time window</label><select id="f-window"><option value="60">Last 5 years</option><option value="120">Last 10 years</option><option value="240">Last 20 years</option><option value="0">Full history (1997+)</option></select></div>
+      <div class="ctrl"><label>Product category</label><select id="f-product"></select></div>
+      <div class="ctrl"><label>Trading partner</label><select id="f-partner"><option value="all">All countries</option><option value="exus">Excluding US</option></select></div>
     </div>
 
     <div class="section-label">Executive Snapshot</div>
@@ -580,6 +584,7 @@ a:hover { text-decoration: underline; }
       </div>
     </div>
 
+    <div class="section-label">Export Market Concentration Trend</div>
     <div class="threshold-legend" aria-label="Concentration thresholds">
       <span style="font-weight: 600; color: var(--color-text-primary);">Concentration level:</span>
       <span><span class="box" style="background: #5BA59A;"></span> Low (HHI &lt;0.15)</span>
@@ -587,12 +592,16 @@ a:hover { text-decoration: underline; }
       <span><span class="box" style="background: #C75A35;"></span> High (&gt;0.25)</span>
     </div>
 
-    <div class="section-label">Export Market Concentration Trend</div>
-
     <div class="card hero-card-wrap">
-      <h3>Concentration over time</h3>
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 4px;">
+        <h3 style="margin: 0;">Concentration over time</h3>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 6px;">
+          <label for="f-window" style="font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; white-space: nowrap;">Time window</label>
+          <select id="f-window" class="chart-window-select"><option value="60">Last 5 years</option><option value="120">Last 10 years</option><option value="240">Last 20 years</option><option value="0">Full history (1997+)</option></select>
+        </div>
+      </div>
       <div class="sub" id="hero-subtitle">&mdash;</div>
-      <svg id="hero" viewBox="0 0 600 260" preserveAspectRatio="none" style="width: 100%; height: 280px;"></svg>
+      <svg id="hero" viewBox="0 0 700 320" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: clamp(260px, 38vw, 480px);"></svg>
       <div id="hero-tooltip" class="hero-tooltip"></div>
       <div class="legend" style="row-gap: 4px;">
         <span><span class="swatch-solid"></span>Raw HHI (solid)</span>
@@ -608,7 +617,7 @@ a:hover { text-decoration: underline; }
 
     <div class="card">
       <h3 id="movers-title">What's moved &middot; last 12 months</h3>
-      <div class="sub">Largest year-over-year changes in HHI across province &times; product combinations, partner view: <strong id="movers-partner-label"></strong>. Click any row to load it in the panels below.</div>
+      <div class="sub">Biggest concentration shifts by product for <strong id="movers-geo-label"></strong> &middot; <strong id="movers-partner-label"></strong> &middot; Click any row to update the charts below.</div>
       <div class="movers">
         <div>
           <div class="movers-side-label" style="color: var(--color-text-danger); font-weight: 600;">&#9650; More concentrated</div>
@@ -641,6 +650,7 @@ a:hover { text-decoration: underline; }
       </div>
     </div>
 
+    <div class="section-label">Product breakdown</div>
     <div class="card">
       <h3 id="drill-title">Product detail &middot; &mdash;</h3>
       <div class="sub" id="drill-sub">&mdash;</div>
@@ -671,7 +681,7 @@ a:hover { text-decoration: underline; }
       </dl>
     </div>
 
-    <h3>About this product?</h3>
+    <h3>About this dashboard</h3>
     <p class="context-body" style="margin: 0 0 14px 0;">
         As US trade policy shifts and Canada targets doubling its non-US exports over the next decade, near-real-time monitoring of export market concentration is essential. Statistics Canada publishes <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210012901" target="_blank" rel="noopener">export market concentration data</a> at the national and provincial levels, but only annually and without an industry breakdown. Annual aggregates are too slow and too coarse to monitor progress as it happens. This dashboard fills that gap: it replicates StatCan's concentration index methodology at a monthly frequency, disaggregated by province and product category, so analysts and policymakers can track shifts in near-real time.
       </p>
@@ -682,7 +692,7 @@ a:hover { text-decoration: underline; }
         High export market concentration increases vulnerability to <strong>tariffs, sanctions, recessions, geopolitical shocks, and commodity cycles</strong>. A small number of dominant trading relationships amplifies the policy and macroeconomic risk transmitted by any one of them. Low export market concentration, especially for trade-reliant economies, is better for economic resilience.
     </p>
 	<p class="context-body" style="margin: 0; background: var(--color-background-warning); color: var(--color-text-primary); border-left: 3px solid var(--color-text-warning); padding: 12px 14px; border-radius: 0 8px 8px 0; font-size: 13.5px;">
-        <strong>Lower concentration does not necessarily imply successful strategic diversification.</strong> Changes in HHI can reflect cyclical demand, commodity prices, FX movements, or temporary trade disruptions in addition to structural diversification. See <a href="#methodology">Methodology</a> for more info.
+        <strong>Lower concentration does not necessarily imply successful strategic diversification.</strong> Changes in HHI can reflect cyclical demand, commodity prices, FX movements, or temporary trade disruptions in addition to structural diversification.
       </p>
 
     <h3>What is HHI?</h3>
@@ -727,7 +737,7 @@ a:hover { text-decoration: underline; }
       <li>Economic modelling and data analytics</li>
       <li>Advisory and training for public, private, and institutional clients</li>
     </ul>
-    <p>Our shorter analysis appears on <a href="https://www.linkedin.com/company/tl-economic-intelligence/" target="_blank" rel="noopener">LinkedIn</a>. Subscribe to our <a href="https://substack.com/@tleconomicintel" target="_blank" rel="noopener">Substack</a> for long-form research and policy commentary. For commissioned work or advisory engagements, reach us at <a href="mailto:info@tleconomicintel.com">info@tleconomicintel.com</a>.</p>
+    <p>Our shorter analysis appears on <a href="#" target="_blank" rel="noopener">LinkedIn</a>. Subscribe to our <a href="#" target="_blank" rel="noopener">Substack</a> for long-form research and policy commentary. For commissioned work or advisory engagements, reach us at <a href="mailto:info@tleconomicintel.com">info@tleconomicintel.com</a>.</p>
   </section>
 
 </main>
@@ -749,8 +759,9 @@ a:hover { text-decoration: underline; }
         <a href="mailto:info@tleconomicintel.com">info@tleconomicintel.com</a>
       </div>
       <div class="footer-col">
-        <h4>Data</h4>
-        <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501" target="_blank" rel="noopener">StatCan</a>
+        <h4>Data &amp; methods</h4>
+        <a href="#methodology">Methodology</a><br>
+        <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501" target="_blank" rel="noopener">StatCan source</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -846,23 +857,6 @@ function setFreshnessLabel() {
   if (c) c.textContent = 'TL Economic Intelligence. Canadian Export Market Diversification Intelligence. Data as of ' + label + '. https://tleconomicintel.com/hhi/';
 }
 
-function computeTrend(ser, lm) {
-  // Walk back from latest month counting consecutive month-over-month moves in same direction
-  let dir = null, count = 0, firstStreakMi = lm, mi = lm;
-  while (mi > 0) {
-    const cur = valueAt(ser, mi), prev = valueAt(ser, mi - 1);
-    if (cur == null || prev == null) break;
-    const d = cur - prev;
-    if (Math.abs(d) < 0.0001) break;
-    const thisDir = d > 0 ? 'up' : 'down';
-    if (dir == null) dir = thisDir;
-    else if (dir !== thisDir) break;
-    firstStreakMi = mi;
-    count++;
-    mi--;
-  }
-  return { dir: dir, streakLen: count, firstStreakLabel: count > 0 ? monthYearLabel(DATA.dates[firstStreakMi]) : null };
-}
 
 function renderLede() {
   const bulletsEl = document.getElementById('lede-bullets');
@@ -930,10 +924,11 @@ function buildLinePath(series, s, e, sx, sy) {
   return path;
 }
 
-function drawAxes(svg, s, e, yMax, ML, MR, MT, MB, W, H, sx, sy) {
+function drawAxes(svg, s, e, yMin, yMax, ML, MR, MT, MB, W, H, sx, sy) {
   const yTicks = [];
-  const step = yMax > 0.5 ? 0.25 : (yMax > 0.2 ? 0.1 : 0.05);
-  for (let v = 0; v <= yMax + 0.001; v += step) yTicks.push(Math.round(v * 100) / 100);
+  const yRange = yMax - yMin;
+  const step = yRange > 0.5 ? 0.25 : (yRange > 0.2 ? 0.1 : 0.05);
+  for (let v = yMin; v <= yMax + 0.001; v += step) yTicks.push(Math.round(v * 100) / 100);
   yTicks.forEach(t => {
     const y = sy(t);
     svg.appendChild(el(svg, 'line', {x1: ML, y1: y, x2: W - MR, y2: y, stroke: 'var(--color-border-tertiary)', 'stroke-width': '0.5'}));
@@ -973,154 +968,26 @@ function productPhrase(p) {
   return map[p] || p.toLowerCase();
 }
 
-function renderNarrative() {
-  const k = state.geo + '|' + state.product + '|' + state.partner;
-  const lm = DATA.latestMi[k];
-  const target = document.getElementById('narrative');
-  if (lm == null) { target.textContent = 'No data available for this selection.'; return; }
-  const ser = DATA.series[k];
-  const cur = valueAt(ser, lm);
-  const prev = lm >= 12 ? valueAt(ser, lm - 12) : null;
-  const lvl = bandFor(cur);
-  const eff = cur > 0 ? 1 / cur : null;
-  const partnerClause = state.partner === 'exus' ? ' (excluding the US)' : '';
-  const productLabel = productPhrase(state.product);
-  const subject = productLabel + ' exports from ' + geoDisplay(state.geo) + partnerClause;
-  const subjectCap = subject.charAt(0).toUpperCase() + subject.slice(1);
 
-  const items = [];
-  const levelName = LEVEL_NAMES[lvl] || 'mixed';
-  items.push(subjectCap + ' are <span class="nval">' + levelName + '</span> (HHI <span class="nval">' + cur.toFixed(2) + '</span>)');
-  if (eff != null && isFinite(eff)) {
-    items.push('Equivalent to <span class="nval">~' + eff.toFixed(1) + '</span> equal-sized trading partners');
-  }
-  if (prev != null && prev > 0) {
-    const d = cur - prev;
-    const pct = (d / prev) * 100;
-    if (Math.abs(d) < 0.005) items.push('Concentration <span class="nval">held steady</span> year-over-year');
-    else if (d > 0) items.push('Concentration <span class="nval">rose</span> by ' + d.toFixed(2) + ' points (or ' + Math.abs(pct).toFixed(1) + '%) year-over-year');
-    else items.push('Concentration <span class="nval">fell</span> by ' + Math.abs(d).toFixed(2) + ' points (or ' + Math.abs(pct).toFixed(1) + '%) year-over-year');
-  }
-  if (state.partner === 'all') {
-    const exK = state.geo + '|' + state.product + '|exus';
-    const exLm = DATA.latestMi[exK];
-    if (exLm != null) {
-      const exV = valueAt(DATA.series[exK], exLm);
-      if (exV != null) {
-        // Smoothing artifact guard: deriveUSShare returns null when ex-US HHI > all-HHI
-        const usShare = deriveUSShare(cur, exV);
-        if (usShare == null) {
-          items.push('Ex-US HHI is <span class="nval">' + exV.toFixed(2) + '</span> — anomalous vs the all-countries reading (likely 12M-MA smoothing artifact, see Deep Dive)');
-        } else {
-          let direction;
-          if (Math.abs(exV - cur) < 0.005) direction = 'holds at';
-          else if (exV < cur) direction = 'drops to';
-          else direction = 'rises to';
-          const exLvl = bandFor(exV);
-          const exLvlName = LEVEL_NAMES[exLvl] || 'mixed';
-          items.push('Excluding the US, HHI ' + direction + ' <span class="nval">' + exV.toFixed(2) + '</span> — ' + exLvlName);
-        }
-      }
-    }
-  }
-
-  target.innerHTML = '<ul>' + items.map(t => '<li><span>' + t + '</span></li>').join('') + '</ul>';
-}
-
-function fmtPts(v) { const s = v > 0 ? '+' : ''; return s + v.toFixed(2); }
-function fmtPct(v) { const s = v > 0 ? '+' : ''; return s + v.toFixed(1) + '%'; }
-function renderKpiCard(prefix, hhiSeries, latestMi) {
-  // prefix = 'kpi-hhi-all' or 'kpi-hhi-exus' — fills the value, delta, and sub elements.
-  const valEl = document.getElementById(prefix);
-  const dEl = document.getElementById(prefix + '-delta');
-  const sEl = document.getElementById(prefix + '-sub');
-  if (!valEl) return;
-  if (hhiSeries == null || latestMi == null) {
-    valEl.textContent = '—'; if (dEl) { dEl.textContent = ''; dEl.className = 'kpi-delta flat'; } if (sEl) sEl.textContent = '';
-    return;
-  }
-  const cur = valueAt(hhiSeries, latestMi);
-  const prev = latestMi >= 12 ? valueAt(hhiSeries, latestMi - 12) : null;
-  if (cur == null) {
-    valEl.textContent = '—'; if (dEl) { dEl.textContent = ''; dEl.className = 'kpi-delta flat'; } if (sEl) sEl.textContent = '';
-    return;
-  }
-  valEl.textContent = cur.toFixed(2);
-  if (prev == null || prev <= 0) {
-    if (dEl) { dEl.textContent = 'no 12M comparison'; dEl.className = 'kpi-delta flat'; }
-    if (sEl) sEl.textContent = '';
-    return;
-  }
-  const ptsChg = cur - prev;
-  const pctChg = (ptsChg / prev) * 100;
-  let arrow, cls;
-  if (Math.abs(ptsChg) < 0.005) { arrow = '◆'; cls = 'kpi-delta flat'; }
-  else if (ptsChg > 0) { arrow = '▲'; cls = 'kpi-delta up'; }      // higher HHI → more concentrated → red
-  else { arrow = '▼'; cls = 'kpi-delta down'; }                     // lower HHI → less concentrated → green
-  if (dEl) {
-    const signedPts = (ptsChg >= 0 ? '+' : '−') + Math.abs(ptsChg).toFixed(2);
-    const signedPct = (pctChg >= 0 ? '+' : '−') + Math.abs(pctChg).toFixed(1) + '%';
-    dEl.textContent = arrow + ' ' + signedPts + ' (' + signedPct + ') year-over-year';
-    dEl.className = cls;
-  }
-  if (sEl) {
-    if (Math.abs(ptsChg) < 0.005) sEl.textContent = 'Similar concentration to a year ago';
-    else if (ptsChg > 0) sEl.textContent = 'More concentrated than a year ago';
-    else sEl.textContent = 'Less concentrated than a year ago';
-  }
-}
-
-function renderKpis() {
-  // KPIs are anchored on (geo, product); they always show both All-Partners and Ex-US
-  // side by side, regardless of the partner filter (which still affects the explore charts).
-  const allK = state.geo + '|' + state.product + '|all';
-  const exK  = state.geo + '|' + state.product + '|exus';
-  const allSer = DATA.series[allK];
-  const exSer  = DATA.series[exK];
-  const allLm = DATA.latestMi[allK];
-  const exLm  = DATA.latestMi[exK];
-
-  // Card 1 — HHI All Partners
-  renderKpiCard('kpi-hhi-all', allSer, allLm);
-  // Card 2 — HHI Excluding US
-  renderKpiCard('kpi-hhi-exus', exSer, exLm);
-
-  // Card 3 — Concentration level (based on All-Partners HHI for the current geo/product)
-  const allCur = (allSer != null && allLm != null) ? valueAt(allSer, allLm) : null;
-  const lvl = bandFor(allCur);
-  const band = document.getElementById('kpi-band');
-  const bandNote = document.getElementById('kpi-band-note');
-  if (lvl) {
-    band.textContent = LEVEL_SHORT[lvl];
-    band.className = 'pill pill-' + lvl;
-    if (bandNote) {
-      const desc = lvl === 'h' ? 'HHI at or above 0.25' : (lvl === 'm' ? 'HHI between 0.15 and 0.25' : 'HHI below 0.15');
-      bandNote.textContent = desc;
-    }
-  } else {
-    band.textContent = '—'; band.className = 'pill';
-    if (bandNote) bandNote.textContent = '';
-  }
-}
 
 function renderMovers() {
   const movers = [];
   Object.keys(DATA.seriesRaw || {}).forEach(k => {
     const parts = k.split('|');
     const g = parts[0], p = parts[1], c = parts[2];
+    if (g !== state.geo) return;          // scope to selected geography
     if (c !== state.partner) return;
     if (p === 'Total') return;
-    if (p === 'Special') return; // NAPCS residual bucket — economically meaningless changes
-    if (g === 'CA') return;
+    if (p === 'Special') return;
     const lm = DATA.latestMi[k];
     if (lm == null || lm < 12) return;
     const ser = (DATA.seriesRaw || {})[k];
     const cur = valueAt(ser, lm);
     const prev = valueAt(ser, lm - 12);
     if (cur == null || prev == null || prev <= 0) return;
-    movers.push({g: g, p: p, delta: cur - prev, prev: prev});
+    movers.push({p: p, delta: cur - prev, prev: prev});
   });
-  const up = movers.filter(m => m.delta > 0).sort((a,b) => b.delta - a.delta).slice(0, 4);
+  const up   = movers.filter(m => m.delta > 0).sort((a,b) => b.delta - a.delta).slice(0, 4);
   const down = movers.filter(m => m.delta < 0).sort((a,b) => a.delta - b.delta).slice(0, 4);
 
   function build(side, list, dir) {
@@ -1135,11 +1002,12 @@ function renderMovers() {
       const pctTxt = pctSign + Math.abs(pct).toFixed(1) + '%';
       const row = document.createElement('div');
       row.className = 'mover';
-      row.innerHTML = '<span class="mover-name">' + DATA.geo_names[m.g] + ' · ' + m.p + '</span>' +
+      const prodLabel = PRODUCT_LONG_NAMES[m.p] || m.p;
+      row.innerHTML = '<span class="mover-name">' + prodLabel + '</span>' +
+        '<span class="mover-hint">↗</span>' +
         '<span class="mover-delta ' + dir + '">' + ptsTxt + ' (' + pctTxt + ')</span>';
       row.addEventListener('click', () => {
-        state.geo = m.g; state.product = m.p;
-        document.getElementById('f-geo').value = m.g;
+        state.product = m.p;
         document.getElementById('f-product').value = m.p;
         renderAll();
       });
@@ -1148,11 +1016,16 @@ function renderMovers() {
   }
   build('up', up, 'up');
   build('down', down, 'down');
-  document.getElementById('movers-partner-label').textContent = DATA.partner_names[state.partner];
 
-  // Dynamic movers title: "What's moved · March 2026 vs March 2025"
-  const refKey = 'CA|Total|all';
-  const refLm = DATA.latestMi[refKey];
+  // Update geo and partner labels in subtitle
+  const geoEl = document.getElementById('movers-geo-label');
+  if (geoEl) geoEl.textContent = geoDisplay(state.geo);
+  const partnerEl = document.getElementById('movers-partner-label');
+  if (partnerEl) partnerEl.textContent = DATA.partner_names[state.partner];
+
+  // Dynamic title: "What's moved · March 2026 vs March 2025"
+  const refKey = state.geo + '|Total|' + state.partner;
+  const refLm = DATA.latestMi[refKey] != null ? DATA.latestMi[refKey] : DATA.latestMi['CA|Total|all'];
   if (refLm != null && refLm >= 12) {
     const curLbl = monthYearLabelFull(DATA.dates[refLm]);
     const prevLbl = monthYearLabelFull(DATA.dates[refLm - 12]);
@@ -1164,34 +1037,38 @@ function renderMovers() {
 function renderHero() {
   const svg = document.getElementById('hero');
   svg.innerHTML = '';
-  const W = 600, H = 260, ML = 38, MR = 14, MT = 12, MB = 24;
+  const W = 700, H = 320, ML = 42, MR = 14, MT = 14, MB = 26;
   const [s, e] = getDateRange();
   const dur = Math.max(1, e - s);
   // Only the currently-selected partner view is plotted, with raw (solid) + 12MA (dashed)
   const c = state.partner;
   const ma12 = getSeries(state.geo, state.product, c);
   const raw  = getSeriesRaw(state.geo, state.product, c);
-  let maxV = 0.1;
+  let maxV = 0.1, minV = Infinity;
   for (const ser of [raw, ma12]) {
     if (!ser) continue;
-    for (let mi = s; mi <= e; mi++) { const v = valueAt(ser, mi); if (v != null && v > maxV) maxV = v; }
+    for (let mi = s; mi <= e; mi++) { const v = valueAt(ser, mi); if (v != null) { if (v > maxV) maxV = v; if (v < minV) minV = v; } }
   }
+  if (!isFinite(minV)) minV = 0;
   const yMax = Math.min(1.0, Math.ceil(maxV * 10) / 10);
+  // Dynamic floor: round down to nearest 0.05, with a small buffer below the minimum
+  const rawFloor = Math.max(0, minV - 0.04);
+  const yMin = Math.floor(rawFloor * 20) / 20;
   const sx = mi => ML + ((mi - s) / dur) * (W - ML - MR);
-  const sy = v => MT + (1 - v / yMax) * (H - MT - MB);
+  const sy = v => MT + (1 - (v - yMin) / (yMax - yMin)) * (H - MT - MB);
   // Trade-adapted threshold bands (Low <0.15, Mod 0.15-0.25, High >0.25)
   const bands = [
     {lo: 0.25, hi: yMax, color: 'var(--color-text-danger)'},
     {lo: 0.15, hi: 0.25, color: 'var(--color-text-warning)'},
-    {lo: 0, hi: 0.15, color: 'var(--color-text-success)'},
+    {lo: yMin, hi: 0.15, color: 'var(--color-text-success)'},
   ];
   bands.forEach(b => {
-    if (b.lo >= yMax) return;
+    if (b.lo >= yMax || b.hi <= yMin) return;
     const yTop = sy(Math.min(b.hi, yMax));
-    const yBot = sy(b.lo);
+    const yBot = sy(Math.max(b.lo, yMin));
     svg.appendChild(el(svg, 'rect', {x: ML, y: yTop, width: W - ML - MR, height: Math.max(0, yBot - yTop), fill: b.color, opacity: 0.05}));
   });
-  drawAxes(svg, s, e, yMax, ML, MR, MT, MB, W, H, sx, sy);
+  drawAxes(svg, s, e, yMin, yMax, ML, MR, MT, MB, W, H, sx, sy);
   const yLabelLeft = el(svg, 'text', {x: ML - 30, y: MT + 8, 'font-size': 9, fill: 'var(--color-text-tertiary)'});
   yLabelLeft.textContent = 'HHI';
   svg.appendChild(yLabelLeft);
