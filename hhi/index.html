@@ -148,6 +148,34 @@ a:hover { text-decoration: underline; }
 .page-subtitle { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
 .page-meta { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
 .page-meta .meta-sep { margin: 0 7px; }
+
+/* === SHARE BAR === */
+.share-bar { display: flex; align-items: center; gap: 5px; flex-shrink: 0; padding-top: 2px; }
+.share-bar-label { font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-right: 3px; white-space: nowrap; }
+.share-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 0.5px solid var(--color-border-tertiary);
+  background: var(--color-background-primary);
+  color: var(--color-text-tertiary);
+  cursor: pointer; transition: all 0.12s; text-decoration: none; flex-shrink: 0;
+}
+.share-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-secondary); transform: translateY(-1px); text-decoration: none; }
+.share-btn.btn-li:hover { color: #0A66C2; border-color: #0A66C2; }
+.share-btn.btn-x:hover  { color: var(--color-text-primary); border-color: var(--color-text-primary); }
+.share-btn.btn-fb:hover { color: #1877F2; border-color: #1877F2; }
+.share-btn.btn-mail:hover { color: var(--brand-blue); border-color: var(--brand-blue); }
+.share-btn-copy {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 30px; padding: 0 11px; border-radius: 15px;
+  border: 0.5px solid var(--color-border-tertiary);
+  background: var(--color-background-primary);
+  color: var(--color-text-tertiary); cursor: pointer;
+  font-size: 11px; font-weight: 500; font-family: var(--font-sans);
+  transition: all 0.12s; white-space: nowrap;
+}
+.share-btn-copy:hover { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-secondary); transform: translateY(-1px); }
+.share-btn-copy.copied { color: var(--color-text-success); border-color: var(--color-text-success); background: var(--color-background-success); }
 .freshness {
   background: var(--color-background-success);
   color: var(--color-text-success);
@@ -519,26 +547,63 @@ a:hover { text-decoration: underline; }
   gap: 12px;
 }
 
-/* === MOBILE === */
+/* === TABLET (≤ 900px) === */
+@media (max-width: 900px) {
+  .wrap { padding: 24px 20px 44px; }
+  .dash .kpis { grid-template-columns: 1fr 1fr; }
+  #hero { height: 340px !important; }
+}
+
+/* === MOBILE (≤ 720px) === */
 @media (max-width: 720px) {
-  .wrap { padding: 20px 16px 40px; }
+  .wrap { padding: 18px 16px 36px; }
   .brand-header { padding: 18px 0; }
   .brand-header-inner { padding: 0 16px; }
   .brand-logo { width: 44px; height: 44px; }
   .brand-name { font-size: 17px; }
   .brand-tagline { font-size: 12px; }
-  .page-title { font-size: 21px; }
+  .page-title { font-size: 20px; }
   .page-header { flex-direction: column; }
+  .share-bar { margin-top: 8px; }
   .dash .filters { grid-template-columns: 1fr 1fr; }
   .dash .kpis { grid-template-columns: 1fr 1fr; }
   .dash .movers { grid-template-columns: 1fr; gap: 16px; }
   .dash .grid2 { grid-template-columns: 1fr; }
   .dash .compare-row { grid-template-columns: 14px 1fr; row-gap: 4px; }
   .dash .compare-row .dot { grid-row: span 3; }
+  .lede { padding: 16px 18px; }
+  .lede-bullets li { font-size: 13px; }
+  .dash .threshold-legend { gap: 10px; padding: 8px 12px; font-size: 11px; }
   .docsection { padding: 20px 18px; }
   .docsection h2 { font-size: 19px; }
   .footer-grid { grid-template-columns: 1fr; gap: 22px; }
   .footer-pillars { margin-left: 0; width: 100%; }
+  #hero { height: 280px !important; }
+}
+
+/* === SMALL MOBILE (≤ 480px) === */
+@media (max-width: 480px) {
+  .wrap { padding: 14px 14px 32px; }
+  .brand-tagline { display: none; }
+  .share-bar-label { display: none; }
+  .share-btn-copy span.copy-txt { display: none; }
+  .page-title { font-size: 18px; }
+  .page-subtitle { font-size: 11px; }
+  .page-meta { font-size: 10px; }
+  .dash .filters { grid-template-columns: 1fr; }
+  .dash .kpis { grid-template-columns: 1fr; }
+  .dash .card { padding: 12px 14px; }
+  .lede { padding: 14px 16px; }
+  .lede-bullets li { font-size: 12px; padding-top: 5px; padding-bottom: 5px; }
+  .dash .threshold-legend { gap: 8px; font-size: 11px; padding: 7px 10px; }
+  .dash .movers { gap: 12px; }
+  .dash .mover { font-size: 12px; }
+  .dash h3 { font-size: 13px; }
+  .dash .sub { font-size: 11px; }
+  #hero { height: 220px !important; }
+  .hero-card-wrap .legend { flex-direction: column; gap: 6px; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+  .footer-col { font-size: 12px; }
 }
 </style>
 </head>
@@ -566,6 +631,25 @@ a:hover { text-decoration: underline; }
         <span id="latest-data">Latest data: —</span>
       </div>
     </div>
+    <div class="share-bar" role="group" aria-label="Share dashboard">
+      <span class="share-bar-label">Share</span>
+      <a class="share-btn btn-li" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn" aria-label="Share on LinkedIn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a class="share-btn btn-x" href="https://twitter.com/intent/tweet?text=Track%20Canada%E2%80%99s%20export%20market%20concentration%20%E2%80%94%20dashboard%20by%20TL%20Economic%20Intelligence&url=https%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" target="_blank" rel="noopener noreferrer" title="Share on X" aria-label="Share on X">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.213 5.567 5.951-5.567zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a class="share-btn btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" target="_blank" rel="noopener noreferrer" title="Share on Facebook" aria-label="Share on Facebook">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+      <a class="share-btn btn-mail" href="mailto:?subject=Canadian%20Export%20Concentration%20Dashboard&body=Check%20out%20this%20dashboard%20tracking%20Canada%E2%80%99s%20export%20market%20diversification%3A%0A%0Ahttps%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" title="Share via email" aria-label="Share via email">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+      </a>
+      <button class="share-btn-copy" id="share-copy" onclick="copyShareLink(this)" title="Copy link" aria-label="Copy link to clipboard">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <span class="copy-txt">Copy link</span>
+      </button>
+    </div>
   </div>
 
   <div class="dash">
@@ -579,7 +663,7 @@ a:hover { text-decoration: underline; }
     <div class="section-label">Executive Snapshot</div>
     <div class="lede">
       <div class="lede-text">
-        <div class="lede-eyebrow">Where Things Stand</div>
+        <div class="lede-eyebrow" id="lede-eyebrow">Where Things Stand</div>
         <ul class="lede-bullets" id="lede-bullets"></ul>
       </div>
     </div>
@@ -841,6 +925,9 @@ function setFreshnessLabel() {
   // Latest trade data line in subheader
   const ld = document.getElementById('latest-data');
   if (ld) ld.textContent = 'Latest trade data: ' + label;
+  // Where Things Stand eyebrow date
+  const le = document.getElementById('lede-eyebrow');
+  if (le) le.textContent = 'Where Things Stand · ' + monthYearLabelFull(last);
   // Publication date — auto-set to today on load
   const pd = document.getElementById('pub-date');
   if (pd) {
@@ -1391,6 +1478,25 @@ function renderAll() {
   renderHero();
   renderRankings();
   renderTable();
+}
+
+function copyShareLink(btn) {
+  var url = 'https://tleconomicintel.com/hhi/';
+  var orig = btn.innerHTML;
+  function showCopied() {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2200);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(showCopied).catch(function() {
+      try { var t = document.createElement('textarea'); t.value = url; t.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); } catch(e) {}
+      showCopied();
+    });
+  } else {
+    try { var t = document.createElement('textarea'); t.value = url; t.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); } catch(e) {}
+    showCopied();
+  }
 }
 
 function init() {
