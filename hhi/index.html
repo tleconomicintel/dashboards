@@ -1425,7 +1425,7 @@ function renderTable() {
 
   // ── Title / subtitle ────────────────────────────────────────────
   const titleEl = document.getElementById('drill-title');
-  if (titleEl) titleEl.textContent = 'Concentration by Product Group · Year-to-date ' + curYear + ' (' + ytdRange + ')';
+  if (titleEl) titleEl.textContent = 'Concentration by Product Group · Year-to-date ' + ' (' + ytdRange + ')';
   const subEl = document.getElementById('drill-sub');
   const partnerLbl = DATA.partner_names[state.partner];
   const geoLbl = DATA.geo_names[state.geo] || 'Canada';
