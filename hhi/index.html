@@ -1539,7 +1539,6 @@ function renderTable() {
     }
 
     const pct   = (prev != null && prev > 0) ? ((cur - prev) / prev) * 100 : null;
-    const delta = (prev != null) ? cur - prev : null;
 
     function fmtPct(v) {
       if (v == null) return '<span style="color:var(--color-text-tertiary)">—</span>';
@@ -1551,11 +1550,11 @@ function renderTable() {
     }
 
     let trendHtml;
-    if (delta == null) {
+    if (pct == null) {
       trendHtml = '<span style="color:var(--color-text-tertiary)">—</span>';
-    } else if (delta > 0.005) {
+    } else if (pct > 0.5) {
       trendHtml = '<span class="pill pill-h">▲ More concentrated</span>';
-    } else if (delta < -0.005) {
+    } else if (pct < -0.5) {
       trendHtml = '<span class="pill pill-l">▼ Less concentrated</span>';
     } else {
       trendHtml = '<span style="color:var(--color-text-secondary);font-size:12px;">— Unchanged</span>';
