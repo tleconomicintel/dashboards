@@ -47,6 +47,8 @@ body { margin: 0; background: var(--color-page-bg); color: var(--color-text-prim
 a { color: var(--link); }
 img { max-width: 100%; height: auto; }
 :focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+p, li, dd, figcaption { text-wrap: pretty; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* avoid a single word alone on the last line */
 
 /* Page frame: wide on desktop; text keeps a comfortable line length inside it */
 .wrap { max-width: var(--tl-page-max); margin: 0 auto; padding: 44px var(--tl-gutter) 8px; }
@@ -119,8 +121,8 @@ figcaption { font-size: 14px; color: var(--color-text-tertiary); margin-top: 8px
 .promise { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
 .promise li { padding-left: 34px; position: relative; }
 .promise li::before { content: ""; position: absolute; left: 0; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--rule-strong) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5l2.5 2.5L14 7.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 20px no-repeat; }
-.promise strong { display: block; font-size: 16px; }
-.promise span { font-size: 15px; color: var(--color-text-secondary); }
+.promise p { font-size: 15px; }
+.promise .promise-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); }
 .home-section { margin-top: 64px; }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; border-bottom: 1px solid var(--color-border); padding-bottom: 10px; margin-bottom: 20px; }
 .section-head h2 { font-family: var(--font-serif); font-size: 28px; line-height: 1.25; margin: 0; }
@@ -152,7 +154,7 @@ figcaption { font-size: 14px; color: var(--color-text-tertiary); margin-top: 8px
 .about { margin: 24px 0 0; color: var(--color-text-secondary); max-width: 760px; }
 
 /* Data page */
-.download .dl-meta { display: block; margin-top: 10px; font-size: 14px; color: var(--color-text-secondary); }
+.dl-facts { list-style: none; margin: 12px 0 0; padding: 0; font-size: 14px; line-height: 1.6; color: var(--color-text-secondary); }
 .columns { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 10px 20px; background: var(--color-card-bg); border: 1px solid var(--color-border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 22px; font-size: 15px; line-height: 1.55; }
 .columns dt { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; font-weight: 600; }
 .columns dd { margin: 0; color: var(--color-text-secondary); }
@@ -160,7 +162,7 @@ figcaption { font-size: 14px; color: var(--color-text-tertiary); margin-top: 8px
 
 /* Share links */
 .share { display: flex; flex-wrap: wrap; gap: 6px 16px; }
-.share a, .share button { font: inherit; font-size: 15px; font-weight: 600; color: var(--link); background: none; border: 0; padding: 0; cursor: pointer; }
+.share a, .share button { font: inherit; font-size: 15px; font-weight: 600; color: var(--link); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: none; }
 .share a:hover, .share button:hover { text-decoration: underline; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -171,7 +173,8 @@ figcaption { font-size: 14px; color: var(--color-text-tertiary); margin-top: 8px
   .layout { grid-template-columns: minmax(0, 1fr); }
   /* One column: the intro, then any .rail-top panel (the download), then the text, then the other panels */
   .layout > .main, .rail { display: contents; }
-  .layout .page-intro { order: -2; margin-bottom: 0; }
+  .layout .page-intro { order: -2; }
+  .layout > .main > .page-intro { margin-bottom: 0; }
   .rail > * { order: 1; }
   .rail > .rail-top { order: -1; }
   .toc { display: none; }
@@ -185,6 +188,7 @@ figcaption { font-size: 14px; color: var(--color-text-tertiary); margin-top: 8px
   .home-section { margin-top: 44px; }
   .section-head h2 { font-size: 24px; }
   .product-card { grid-template-columns: 1fr; padding: 22px; }
+  .product-links .btn { flex: 1 1 100%; justify-content: center; }
   .columns { grid-template-columns: 1fr; gap: 2px; }
   .columns dd { margin-bottom: 10px; }
 }

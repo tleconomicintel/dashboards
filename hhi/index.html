@@ -24,7 +24,7 @@ else if (location.hash === '#data-download') location.replace('/hhi/data/');
 </script>
 
 <!-- tl-chrome:head -->
-<link rel="stylesheet" href="/assets/chrome.css">
+<link rel="stylesheet" href="/assets/chrome.css?v=e3d0f04f">
 <link rel="icon" type="image/png" href="/assets/logo.png">
 <!-- /tl-chrome:head -->
 
@@ -49,6 +49,12 @@ else if (location.hash === '#data-download') location.replace('/hhi/data/');
   --band-l: #5BA59A;
   --band-m: #E8B470;
   --band-h: #C75A35;
+  /* Text-safe inks (4.5:1 or better on the card) for chart labels; the fills above stay decorative */
+  --band-l-ink: #2F7A6E;
+  --band-h-ink: #A8452A;
+  --ev-shock: #8A5A0B;
+  --ev-agreement: #0F6E56;
+  --ev-friction: #9A3D1F;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
 }
@@ -69,6 +75,11 @@ else if (location.hash === '#data-download') location.replace('/hhi/data/');
     --border: rgba(255,255,255,0.12);
     --border-2: rgba(255,255,255,0.24);
     --shadow: none;
+    --band-l-ink: #7CC4B8;
+    --band-h-ink: #EE8C6B;
+    --ev-shock: #E0A94A;
+    --ev-agreement: #5DCAA5;
+    --ev-friction: #EE8C6B;
   }
 }
 
@@ -79,6 +90,7 @@ a { color: var(--link); }
 button, select { font: inherit; }
 :focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 [hidden] { display: none !important; }
+p { text-wrap: pretty; }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .wrap { max-width: var(--tl-page-max); margin: 0 auto; padding: 36px var(--tl-gutter) 8px; }
@@ -115,6 +127,9 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 .stat-label { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
 .stat-value { font-size: 30px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 .stat-note { font-size: 12.5px; color: var(--text-3); }
+.stat-switch { font: inherit; text-align: left; color: inherit; cursor: pointer; transition: border-color 0.15s; }
+.stat-switch:hover { border-color: var(--link); }
+.stat-switch .stat-label::after { content: " \2192"; color: var(--link); }
 .scale-note { font-size: 13px; color: var(--text-3); margin: 10px 2px 24px; }
 .pos { color: var(--pos); }
 .neg { color: var(--neg); }
@@ -137,24 +152,23 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 .swatch-ev { width: 10px; height: 10px; border: 0; border-radius: 2px; }
 .legend-hint { color: var(--text-3); }
 #hero { display: block; width: 100%; height: clamp(240px, 32vw, 460px); touch-action: pan-y; }
-#event-strip { display: block; width: 100%; height: 50px; margin-top: 4px; }
+#event-strip { display: block; width: 100%; height: 84px; margin-top: 6px; }
 #event-strip .ev { cursor: pointer; outline: none; }
-#event-strip .ev:hover rect.ev-bar, #event-strip .ev:focus-visible rect.ev-bar { opacity: 0.4; }
+#event-strip .ev:hover rect.ev-bar, #event-strip .ev:focus-visible rect.ev-bar { opacity: 0.32; }
 #event-strip .ev:focus-visible rect.ev-hit { stroke: var(--link); stroke-width: 2; }
 .event-desc { margin: 10px 0 0; padding: 10px 14px; border-radius: 8px; background: var(--card-soft); font-size: 13px; line-height: 1.6; color: var(--text-2); }
 .hero-tooltip { position: absolute; z-index: 5; display: none; pointer-events: none; padding: 8px 10px; border-radius: 8px; background: var(--navy); color: #FFFFFF; font-size: 12px; line-height: 1.5; white-space: nowrap; box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
 .hero-tooltip .ht-month { font-weight: 700; margin-bottom: 2px; }
 .hero-tooltip .ht-row { display: flex; justify-content: space-between; gap: 16px; }
 .hero-tooltip .ht-row span { opacity: 0.8; }
-.chart-toolbar { position: absolute; top: 22px; right: 24px; opacity: 0; transition: opacity 0.15s; }
-.card:hover .chart-toolbar, .chart-toolbar:focus-within { opacity: 1; }
-.tb-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-2); border-radius: 6px; background: var(--card); color: var(--text-2); cursor: pointer; }
-.tb-btn:hover { color: var(--text-1); }
+.tb-btn { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 11px; border: 1px solid var(--border-2); border-radius: 15px; background: var(--card); color: var(--text-2); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.tb-btn:hover { color: var(--text-1); border-color: var(--text-3); }
 
 /* Comparison table */
 .seg { display: inline-flex; padding: 2px; border: 1px solid var(--border-2); border-radius: 999px; }
 .seg button { padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--text-2); font-size: 13px; font-weight: 600; line-height: 1.2; cursor: pointer; transition: background-color 0.15s, color 0.15s; }
 .seg button[aria-pressed="true"] { background: var(--navy); color: #FFFFFF; }
+.seg-period { display: none; margin: 0 0 12px; }
 .table-wrap { overflow-x: auto; margin: 0 -4px; }
 .cmp { width: 100%; border-collapse: collapse; font-size: 14px; }
 .cmp th, .cmp td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); }
@@ -176,6 +190,11 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 .cmp .row-btn { padding: 0; border: 0; background: none; color: var(--text-1); text-align: left; cursor: pointer; }
 .cmp tr.is-selected .row-btn { font-weight: 700; }
 .cmp tbody.ref td { font-weight: 600; border-bottom-color: var(--border-2); }
+.cmp-key { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 12px 2px 0; font-size: 12.5px; color: var(--text-3); }
+.cmp-key > span { display: inline-flex; align-items: center; gap: 7px; }   /* a dot never parts from its words */
+.key-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.pos-bg { background: var(--pos); }
+.neg-bg { background: var(--neg); }
 .hhi-cell { display: inline-flex; align-items: center; gap: 10px; }
 .bar-track { width: 96px; height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
 .bar-fill { display: block; height: 100%; border-radius: 4px; }
@@ -187,7 +206,6 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stat-value { font-size: 26px; }
   .card { padding: 18px 16px; }
-  .chart-toolbar { display: none; }
 }
 @media (max-width: 560px) {
   .filters { grid-template-columns: 1fr 1fr; grid-template-areas: "geo partner" "product product"; }
@@ -199,7 +217,8 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
   .cmp { font-size: 13px; }
   .cmp th { font-size: 11.5px; }
   .cmp th, .cmp td { padding: 8px 4px; }
-  .cmp .row-btn { hyphens: auto; -webkit-hyphens: auto; }
+  .seg-period { display: inline-flex; }
+  .cmp.show-p12 .pytd, .cmp.show-pytd .p12 { display: none; }   /* three columns fit a phone */
   #compare { padding: 14px 12px; }
 }
 </style>
@@ -254,6 +273,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
         <span id="copy-txt">Copy link</span>
       </button>
+      <span class="sr-only" id="copy-status" role="status"></span>
     </div>
   </div>
 
@@ -271,8 +291,8 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
   <section class="stats" id="stats" aria-label="Summary for this view" aria-live="polite">
     <div class="stat"><span class="stat-label" id="s1-label">12-month average HHI</span><span class="stat-value" id="s1-value">&mdash;</span><span class="stat-note" id="s1-note"></span></div>
     <div class="stat"><span class="stat-label" id="s2-label">Change from a year earlier</span><span class="stat-value" id="s2-value">&mdash;</span><span class="stat-note" id="s2-note"></span></div>
-    <div class="stat"><span class="stat-label">Equivalent partners</span><span class="stat-value" id="s3-value">&mdash;</span><span class="stat-note">Equal-sized partners that would give the same HHI</span></div>
-    <div class="stat"><span class="stat-label" id="s4-label">Excluding the US</span><span class="stat-value" id="s4-value">&mdash;</span><span class="stat-note" id="s4-note"></span></div>
+    <div class="stat"><span class="stat-label">Equivalent partners</span><span class="stat-value" id="s3-value">&mdash;</span><span class="stat-note" id="s3-note"></span></div>
+    <button type="button" class="stat stat-switch" id="stat-other"><span class="stat-label" id="s4-label">Excluding the US</span><span class="stat-value" id="s4-value">&mdash;</span><span class="stat-note" id="s4-note"></span></button>
   </section>
   <p class="scale-note">The HHI runs from 0 (exports spread evenly across many partners) to 1 (all exports to one partner). Low is below 0.15, moderate 0.15 to 0.25, high above 0.25. <a href="/hhi/methodology/">How it is measured</a></p>
 
@@ -284,7 +304,11 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
       </div>
       <div class="controls">
         <select id="f-window" aria-label="Time window"><option value="60">Last 5 years</option><option value="120" selected>Last 10 years</option><option value="240">Last 20 years</option><option value="0">Since 1997</option></select>
-        <label class="check" for="f-events"><input type="checkbox" id="f-events"> Show events</label>
+        <label class="check" for="f-events"><input type="checkbox" id="f-events" checked> Show events</label>
+        <button class="tb-btn" type="button" id="chart-png" title="Download the chart as PNG">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>PNG</span>
+        </button>
       </div>
     </div>
     <div class="legend" id="legend">
@@ -296,11 +320,6 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
     <p class="event-desc" id="event-desc" aria-live="polite" hidden></p>
     <div class="hero-tooltip" id="hero-tooltip"></div>
     <p class="card-source">Source: Statistics Canada <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501" target="_blank" rel="noopener">Table 12-10-0175-01</a>; TL Economic Intelligence calculations.</p>
-    <div class="chart-toolbar">
-      <button class="tb-btn" type="button" id="chart-png" title="Download the chart as PNG" aria-label="Download the chart as PNG">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-    </div>
   </section>
 
   <section class="card" id="compare" aria-labelledby="cmp-title">
@@ -314,7 +333,12 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
         <button type="button" data-by="geo" aria-pressed="false">Provinces</button>
       </div>
     </div>
+    <div class="seg seg-period" role="group" aria-label="Columns shown">
+      <button type="button" data-period="p12" aria-pressed="true">Past 12 months</button>
+      <button type="button" data-period="pytd" aria-pressed="false">Year to date</button>
+    </div>
     <div class="table-wrap"><table class="cmp" id="cmp"></table></div>
+    <p class="cmp-key"><span><span class="key-dot pos-bg"></span>Red: more concentrated than a year earlier</span><span><span class="key-dot neg-bg"></span>Green: less concentrated</span></p>
   </section>
 
 </main>
@@ -346,7 +370,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
     </div>
     <div class="tl-footer-bottom">
       <span>&copy; 2026 TL Economic Intelligence</span>
-      <span>Data products are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a></span>
+      <span>Data products are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a></span>
     </div>
   </div>
 </footer>
@@ -360,18 +384,19 @@ const state = {
   product: 'Total',
   partner: 'all',
   window: 120,          // months shown on the trend chart; 0 = since 1997
-  events: false,
+  events: true,         // event overlays start on: they are much of the chart's context
   by: 'product',        // comparison table rows: 'product' or 'geo'
+  period: 'p12',        // on phones the table shows one column pair: 'p12' or 'pytd'
   sortKey: 'ma',
   sortDir: -1,
 };
 
 // Episodes marked on the trend chart when "Show events" is on.
-// point: a milestone line rather than a period; labelRow staggers overlapping milestone labels.
+// point: a milestone (one month) rather than a period.
 const EVENT_CATS = {
-  shock:     {label: 'Market shocks',    color: '#B07820'},
-  agreement: {label: 'Trade agreements', color: '#0F6E56'},
-  friction:  {label: 'Trade friction',   color: '#9A3D1F'},
+  shock:     {label: 'Market shocks',    color: 'var(--ev-shock)'},       // colours are text-safe in both themes
+  agreement: {label: 'Trade agreements', color: 'var(--ev-agreement)'},
+  friction:  {label: 'Trade friction',   color: 'var(--ev-friction)'},
 };
 const ECON_EVENTS = [
   {label: 'Oil boom', start: '2005-01', end: '2008-08', cat: 'shock',
@@ -386,15 +411,15 @@ const ECON_EVENTS = [
    desc: "Post-pandemic demand recovery pushed energy prices to multi-year highs, briefly reversing the diversification trend as energy's share of exports surged."},
   {label: 'Russia-Ukraine', start: '2022-02', end: '2023-06', cat: 'shock',
    desc: "Russia's invasion of Ukraine triggered a global commodity shock, driving record prices for Canadian agriculture (wheat, canola), fertilizers (potash), and energy, altering export weightings."},
-  {label: 'CKFTA', start: '2015-01', cat: 'agreement', point: true, labelRow: 0,
+  {label: 'CKFTA', start: '2015-01', cat: 'agreement', point: true,
    desc: "Canada–Korea Free Trade Agreement — Canada's first FTA in the Asia-Pacific region, eliminating tariffs on nearly all industrial and agricultural goods and providing an early foothold in Korean markets."},
-  {label: 'CETA', start: '2017-09', cat: 'agreement', point: true, labelRow: 1,
+  {label: 'CETA', start: '2017-09', cat: 'agreement', point: true,
    desc: "Canada–EU Comprehensive Economic and Trade Agreement — eliminates tariffs on ~98% of EU tariff lines, opening access to EU government procurement and establishing regulatory cooperation frameworks."},
-  {label: 'CPTPP', start: '2018-12', cat: 'agreement', point: true, labelRow: 0,
+  {label: 'CPTPP', start: '2018-12', cat: 'agreement', point: true,
    desc: "Comprehensive and Progressive Agreement for Trans-Pacific Partnership — connects Canada to 10 Pacific Rim economies including Japan, Australia, and Vietnam, significantly lowering tariffs on agricultural products, forestry, and industrial goods."},
-  {label: 'CUSMA', start: '2020-07', cat: 'agreement', point: true, labelRow: 1,
+  {label: 'CUSMA', start: '2020-07', cat: 'agreement', point: true,
    desc: "Canada–US–Mexico Agreement — replaced NAFTA, resolving years of severe trade uncertainty and securing tariff-free access for most merchandise, anchoring the HHI baseline."},
-  {label: 'TMX pipeline', start: '2024-05', cat: 'agreement', point: true, labelRow: 0,
+  {label: 'TMX pipeline', start: '2024-05', cat: 'agreement', point: true,
    desc: "Trans Mountain Expansion — increased tidewater pipeline capacity, enabling heavy crude to reach Asian markets and directly reducing reliance on the US energy corridor."},
   {label: 'US Steel/Alu tariffs', start: '2018-06', end: '2019-05', cat: 'friction',
    desc: "Section 232 tariffs — the US imposed 25% on steel and 10% on aluminum imports from Canada. Canada responded with retaliatory tariffs; both sides lifted measures in May 2019 ahead of CUSMA ratification."},
@@ -515,10 +540,12 @@ function renderStats() {
     : signed(pct, 1) + '%, ' + (pct > 0.5 ? 'more concentrated' : pct < -0.5 ? 'less concentrated' : 'little changed');
 
   setText('s3-value', v == null ? '—' : (1 / v).toFixed(1));
+  setText('s3-note', v == null ? '' : 'Same HHI as exports split evenly across ' + (1 / v).toFixed(1) + ' markets');
 
   const other = state.partner === 'all' ? 'exus' : 'all';
   const maO = getSeries(state.geo, state.product, other), vO = reading(maO, REF_MI);
   setText('s4-label', other === 'exus' ? 'Excluding the US' : 'Including the US');
+  $('stat-other').title = 'Switch to ' + (other === 'exus' ? 'exports excluding the US' : 'exports to all countries');
   setText('s4-value', vO == null ? '—' : vO.toFixed(2));
   setText('s4-note', levelNote(maO, vO));
 }
@@ -566,27 +593,32 @@ function renderHero() {
   const label = (x, y, text, color, attrs) => labels.push(svgEl('text', {x, y, fill: color, 'font-size': 10, 'font-weight': 600,
     stroke: 'var(--card)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'paint-order': 'stroke', ...attrs}, text));
 
+  // Faint concentration bands, drawn only when the chart crosses a threshold (a single band would just tint everything)
+  if (yMin < 0.25) {
+    [[0, 0.15, 'var(--band-l)'], [0.15, 0.25, 'var(--band-m)'], [0.25, 1, 'var(--band-h)']].forEach(([a, b, fill]) => {
+      const top = Math.min(b, yMax), bottom = Math.max(a, yMin);
+      if (top > bottom) svg.appendChild(svgEl('rect', {x: x0, y: sy(top), width: x1 - x0, height: sy(bottom) - sy(top), fill, opacity: 0.08}));
+    });
+  }
+
+  // Events: periods live in the strip below; the chart keeps thin milestone lines and highlights a selected event
   if (state.events) {
     const g = svgEl('g', {'pointer-events': 'none'});
     ECON_EVENTS.forEach(ev => {
-      const a = ymToMi(ev.start), color = EVENT_CATS[ev.cat].color;
-      if (a > e || (ev.point && a < s)) return;
-      if (ev.point) {
-        g.appendChild(svgEl('line', {x1: sx(a), y1: y0, x2: sx(a), y2: y1, stroke: color, 'stroke-width': 1.2, 'stroke-dasharray': '4,3', opacity: 0.65}));
-        label(sx(a) + 4, y0 + (ev.labelRow ? 26 : 12), ev.label, color, {'font-weight': 700});
-      } else {
-        const b = ev.end ? Math.min(e, ymToMi(ev.end)) : e;
-        if (b < s) return;
-        g.appendChild(svgEl('rect', {x: sx(Math.max(s, a)), y: y0, width: Math.max(0, sx(b) - sx(Math.max(s, a))), height: y1 - y0, fill: color, opacity: 0.09}));
+      const a = ymToMi(ev.start);
+      if (ev.point && a >= s && a <= e) {
+        g.appendChild(svgEl('line', {x1: sx(a), y1: y0, x2: sx(a), y2: y1, stroke: EVENT_CATS[ev.cat].color, 'stroke-width': 1, 'stroke-dasharray': '3,4', opacity: 0.5}));
       }
     });
+    g.appendChild(svgEl('rect', {id: 'ev-highlight', y: y0, height: y1 - y0, width: 0, opacity: 0.12}));
     svg.appendChild(g);
   }
 
-  // Gridlines and axes
-  const span = yMax - yMin, step = span > 0.5 ? 0.25 : span > 0.2 ? 0.1 : 0.05;
-  for (let t = Math.ceil(yMin / step - 1e-9) * step; t <= yMax + 0.001; t += step) {   // round values only
-    const y = sy(t);
+  // Gridlines and axes: ticks on round values, counted in whole steps to avoid floating-point drift
+  const tickCount = st => Math.floor(yMax / st + 1e-9) - Math.ceil(yMin / st - 1e-9) + 1;
+  const step = [0.5, 0.25, 0.2, 0.1, 0.05, 0.02].find(st => tickCount(st) >= 4) || 0.01;   // largest round step giving 4+ ticks
+  for (let n = Math.ceil(yMin / step - 1e-9); n <= Math.floor(yMax / step + 1e-9); n++) {
+    const t = Math.round(n * step * 1000) / 1000, y = sy(t);
     svg.appendChild(svgEl('line', {x1: x0, y1: y, x2: x1, y2: y, stroke: 'var(--border)', 'stroke-width': 1}));
     svg.appendChild(svgEl('text', {x: x0 - 6, y: y + 4, 'font-size': 11, fill: 'var(--text-3)', 'text-anchor': 'end'}, t.toFixed(2)));
   }
@@ -603,10 +635,10 @@ function renderHero() {
   }
 
   // Concentration thresholds, labelled at the left so the latest readings on the right stay clear
-  [[0.15, 'Moderate 0.15', 'var(--band-l)'], [0.25, 'High 0.25', 'var(--band-h)']].forEach(([v, text, color]) => {
+  [[0.15, 'Moderate 0.15', 'var(--band-l)', 'var(--band-l-ink)'], [0.25, 'High 0.25', 'var(--band-h)', 'var(--band-h-ink)']].forEach(([v, text, color, ink]) => {
     if (v <= yMin || v >= yMax) return;
     svg.appendChild(svgEl('line', {x1: x0, y1: sy(v), x2: x1, y2: sy(v), stroke: color, 'stroke-width': 1, opacity: 0.7}));
-    label(x0 + 4, sy(v) - 4, text, color);
+    label(x0 + 4, sy(v) - 4, text, ink, {'font-size': 11});
   });
 
   // Series: monthly (dashed, faint) under the 12-month average, which ends in a dot
@@ -669,11 +701,19 @@ function eventRange(ev) {
 }
 
 function showEvent(ev) {
-  const p = $('event-desc'), b = document.createElement('strong');
+  const p = $('event-desc'), b = document.createElement('strong'), color = EVENT_CATS[ev.cat].color;
   b.textContent = ev.label;
-  b.style.color = EVENT_CATS[ev.cat].color;
+  b.style.color = color;
   p.replaceChildren(b, ' (' + eventRange(ev) + '). ' + ev.desc);
   p.hidden = false;
+  // Shade the event's span on the chart (a milestone gets a narrow band)
+  const hl = $('ev-highlight'), {s, e, sx} = chart;
+  if (!hl) return;
+  const a = Math.max(s, ymToMi(ev.start)), z = ev.point ? a : Math.min(e, ev.end ? ymToMi(ev.end) : e);
+  const left = sx(a) - (ev.point ? 3 : 0), right = sx(z) + (ev.point ? 3 : 0);
+  hl.setAttribute('x', left);
+  hl.setAttribute('width', Math.max(0, right - left));
+  hl.setAttribute('fill', color);
 }
 
 function renderEventStrip() {
@@ -681,29 +721,44 @@ function renderEventStrip() {
   strip.toggleAttribute('hidden', !state.events);   // SVG elements have no .hidden property
   document.querySelectorAll('.legend-ev').forEach(n => { n.hidden = !state.events; });
   if (!state.events) { $('event-desc').hidden = true; return; }
-  const {W, s, e, x0, x1, sx} = chart, ROW_H = 14;
+  // Three 24px lanes (market shocks, agreements, friction); every target is at least 24px wide
+  const {W, s, e, x0, x1, sx} = chart, ROW_H = 24, PITCH = 28, H = 84, CHAR = 6.8;
   const row = {shock: 0, agreement: 1, friction: 2};
-  strip.setAttribute('viewBox', '0 0 ' + W + ' 50');
+  strip.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   strip.innerHTML = '';
   Object.keys(EVENT_CATS).forEach(cat => {
-    strip.appendChild(svgEl('rect', {x: x0, y: 2 + row[cat] * 16, width: x1 - x0, height: ROW_H, rx: 2, fill: EVENT_CATS[cat].color, opacity: 0.06}));
+    strip.appendChild(svgEl('rect', {x: x0, y: row[cat] * PITCH, width: x1 - x0, height: ROW_H, rx: 3, fill: EVENT_CATS[cat].color, opacity: 0.06}));
   });
+  // A label is drawn only where it fits without clipping or touching the previous label in its lane;
+  // selecting any event still shows its full name and description.
+  const laneEnd = {shock: -Infinity, agreement: -Infinity, friction: -Infinity};
+  const place = (cat, start, text) => {
+    const end = start + text.length * CHAR;
+    if (start < laneEnd[cat] + 8 || start < x0 || end > x1) return false;
+    laneEnd[cat] = end;
+    return true;
+  };
   ECON_EVENTS.forEach(ev => {
     const a = ymToMi(ev.start), b = ev.point ? a : (ev.end ? Math.min(e, ymToMi(ev.end)) : e);
     if (a > e || b < s) return;
-    const color = EVENT_CATS[ev.cat].color, y = 2 + row[ev.cat] * 16;
+    const color = EVENT_CATS[ev.cat].color, y = row[ev.cat] * PITCH, ty = y + 16;
     const left = sx(Math.max(s, a)), width = ev.point ? 0 : sx(b) - left;
     const g = svgEl('g', {class: 'ev', tabindex: 0, role: 'button', 'aria-label': ev.label + ', ' + eventRange(ev)});
     g.appendChild(svgEl('title', {}, ev.label + ' (' + eventRange(ev) + ')'));
+    const text = (attrs, content) => svgEl('text', {y: ty, 'font-size': 12, 'font-weight': 600, fill: color, ...attrs}, content);
     if (ev.point) {
-      g.appendChild(svgEl('rect', {class: 'ev-hit', x: left - 5, y: y, width: 10, height: ROW_H, fill: 'transparent'}));
-      g.appendChild(svgEl('line', {x1: left, y1: 0, x2: left, y2: 50, stroke: color, 'stroke-width': 1.2, 'stroke-dasharray': '2,2'}));
-      g.appendChild(svgEl('text', {x: left + 3, y: y + 11, 'font-size': 10, 'font-weight': 600, fill: color}, ev.label));
+      g.appendChild(svgEl('rect', {class: 'ev-hit', x: left - 12, y: y, width: 24, height: ROW_H, fill: 'transparent'}));
+      g.appendChild(svgEl('line', {x1: left, y1: 0, x2: left, y2: H, stroke: color, 'stroke-width': 1.2, 'stroke-dasharray': '2,2'}));
+      const tw = ev.label.length * CHAR, halo = {stroke: 'var(--card)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'paint-order': 'stroke'};
+      if (place(ev.cat, left + 4, ev.label)) g.appendChild(text({x: left + 4, ...halo}, ev.label));   // right of the line
+      else if (place(ev.cat, left - 4 - tw, ev.label)) g.appendChild(text({x: left - 4, 'text-anchor': 'end', ...halo}, ev.label));   // or left of it
     } else {
-      g.appendChild(svgEl('rect', {class: 'ev-bar ev-hit', x: left, y: y, width: Math.max(3, width), height: ROW_H, rx: 2, fill: color, opacity: 0.25}));
-      const fits = ev.label.length * 6 + 8 <= width, first = ev.label.split(/[ \/-]/)[0];
-      const label = fits ? ev.label : first.length * 6 + 6 <= width ? first : '';
-      if (label) g.appendChild(svgEl('text', {x: left + width / 2, y: y + 11, 'font-size': 10, 'font-weight': 600, 'text-anchor': 'middle', fill: color}, label));
+      // The bar keeps the event's true length; a transparent target makes short events easy to hit
+      g.appendChild(svgEl('rect', {class: 'ev-hit', x: Math.min(left, left + width / 2 - 12), y: y, width: Math.max(24, width), height: ROW_H, rx: 3, fill: 'transparent'}));
+      g.appendChild(svgEl('rect', {class: 'ev-bar', x: left, y: y, width: Math.max(3, width), height: ROW_H, rx: 3, fill: color, opacity: 0.2, 'pointer-events': 'none'}));
+      const first = ev.label.split(/[ \/-]/)[0];
+      const label = [ev.label, first].find(t => t.length * CHAR + 10 <= width && place(ev.cat, left + (width - t.length * CHAR) / 2, t));
+      if (label) g.appendChild(text({x: left + width / 2, 'text-anchor': 'middle'}, label));
     }
     g.addEventListener('click', () => showEvent(ev));
     g.addEventListener('keydown', k => { if (k.key === 'Enter' || k.key === ' ') { k.preventDefault(); showEvent(ev); } });
@@ -738,14 +793,14 @@ function rowFor(val, name, g, p) {
 
 const CMP_COLS = [
   {key: 'name'},
-  {key: 'ma',     label: 'HHI, 12-month average', sub: () => refMonth(0, true)},
-  {key: 'yoy',    label: 'Change',       sub: () => 'from ' + refMonth(12, true)},
-  {key: 'ytd',    label: 'Year to date', sub: () => YTD.range},
-  {key: 'ytdChg', label: 'Change',       sub: () => 'from ' + YTD.prevRange},
-];
+  {key: 'ma',     group: 'p12',  label: 'HHI, 12-month average', sub: () => refMonth(0, true)},
+  {key: 'yoy',    group: 'p12',  label: 'Change in HHI', sub: () => 'from ' + refMonth(12, true)},
+  {key: 'ytd',    group: 'pytd', label: 'Year to date', sub: () => YTD.range},
+  {key: 'ytdChg', group: 'pytd', label: 'Change in HHI', sub: () => 'from ' + YTD.prevRange},
+];   // group: the column pair a phone shows at a time (12-month figures or year to date)
 
-function pctCell(v) {
-  return '<td class="r num ' + changeClass(v) + '">' + (v == null ? '—' : signed(v, 1) + '%') + '</td>';
+function pctCell(v, group) {
+  return '<td class="r num ' + group + ' ' + changeClass(v) + '">' + (v == null ? '—' : signed(v, 1) + '%') + '</td>';
 }
 
 function rowHtml(r, selected) {
@@ -755,10 +810,10 @@ function rowHtml(r, selected) {
       + '<span class="sr-only"> (' + levelName(r.ma) + ')</span></span>';
   return '<tr data-val="' + r.val + '"' + (selected ? ' class="is-selected"' : '') + '>'
     + '<td><button type="button" class="row-btn"' + (selected ? ' aria-current="true"' : '') + '>' + r.name + '</button></td>'
-    + '<td class="r num">' + hhi + '</td>'
-    + pctCell(r.yoy)
-    + '<td class="r num">' + (r.ytd == null ? '—' : r.ytd.toFixed(2)) + '</td>'
-    + pctCell(r.ytdChg)
+    + '<td class="r num p12">' + hhi + '</td>'
+    + pctCell(r.yoy, 'p12')
+    + '<td class="r num pytd">' + (r.ytd == null ? '—' : r.ytd.toFixed(2)) + '</td>'
+    + pctCell(r.ytdChg, 'pytd')
     + '</tr>';
 }
 
@@ -779,11 +834,12 @@ function renderCompare(focusKey) {
   const head = CMP_COLS.map(c => {
     const sort = c.key === k ? ' aria-sort="' + (dir < 0 ? 'descending' : 'ascending') + '"' : '';
     const label = c.label || (byProduct ? 'Product category' : 'Province');
-    return '<th scope="col"' + (c.sub ? ' class="r"' : '') + sort + '><button type="button" data-key="' + c.key + '">'
+    return '<th scope="col"' + (c.group ? ' class="r ' + c.group + '"' : '') + sort + '><button type="button" data-key="' + c.key + '">'
       + '<span class="th-label">' + label + '</span>' + (c.sub ? '<span class="th-sub">' + c.sub() + '</span>' : '') + '</button></th>';
   }).join('');
   const selected = byProduct ? state.product : state.geo;
   const t = $('cmp');
+  t.className = 'cmp show-' + state.period;
   t.innerHTML = '<thead><tr>' + head + '</tr></thead>'
     + '<tbody class="ref">' + rowHtml(ref, ref.val === selected) + '</tbody>'
     + '<tbody>' + rows.map(r => rowHtml(r, r.val === selected)).join('') + '</tbody>';
@@ -813,9 +869,12 @@ function initCompare() {
       $('stats').scrollIntoView({behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'start'});
     }
   });
-  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
-    state.by = b.dataset.by;
-    document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  // Segmented switches: rows by product or province, and (on phones) which column pair to show
+  document.querySelectorAll('#compare .seg').forEach(seg => seg.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.by) state.by = b.dataset.by; else state.period = b.dataset.period;
+    seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     renderCompare();
   }));
 }
@@ -842,15 +901,37 @@ function syncUrl() {
   $('share-li').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareUrl());
 }
 
+// Copies the link to this view. Tries the Clipboard API, then the older copy command, and always says
+// what happened, on the button and to screen readers. The address bar holds the same link if both fail.
 function copyShareLink() {
   const url = shareUrl(), btn = $('share-copy');
-  const done = () => {
-    setText('copy-txt', 'Link copied');
-    btn.classList.add('copied');
-    setTimeout(() => { setText('copy-txt', 'Copy link'); btn.classList.remove('copied'); }, 2000);
+  const feedback = (label, status, ok) => {
+    setText('copy-txt', label);
+    setText('copy-status', status);
+    btn.classList.toggle('copied', ok);
+    clearTimeout(copyShareLink.timer);
+    copyShareLink.timer = setTimeout(() => { setText('copy-txt', 'Copy link'); setText('copy-status', ''); btn.classList.remove('copied'); }, ok ? 2500 : 5000);
   };
-  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => window.prompt('Copy this link:', url));
-  else window.prompt('Copy this link:', url);
+  const legacyCopy = () => {
+    const t = document.createElement('textarea');
+    t.value = url;
+    t.setAttribute('readonly', '');
+    t.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(t);
+    t.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+    t.remove();
+    btn.focus();
+    return ok;
+  };
+  const copied = () => feedback('Copied ✓', 'Link copied to the clipboard', true);
+  const fallback = () => {
+    if (legacyCopy()) copied();
+    else feedback('Copy the address bar', 'Could not copy automatically. The link to this view is in the address bar.', false);
+  };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(copied, fallback);
+  else fallback();
 }
 
 // Newest published analysis for this product; the card stays hidden if there is none.
@@ -871,12 +952,12 @@ function renderLatestAnalysis() {
 
 // Saves the trend chart card as a 2x PNG (html2canvas loads on first use).
 function downloadChartPng() {
-  const card = $('trend'), toolbar = card.querySelector('.chart-toolbar');
+  const card = $('trend'), controls = card.querySelector('.controls');
   const root = getComputedStyle(document.documentElement);
   const resolve = v => v.replace(/var\((--[\w-]+)\)/g, (_, n) => root.getPropertyValue(n).trim());
   const capture = () => html2canvas(card, {
     scale: 2, logging: false, backgroundColor: getComputedStyle(card).backgroundColor,
-    ignoreElements: n => n === toolbar,
+    ignoreElements: n => n === controls,   // the saved image shows the chart, not its buttons
     // html2canvas cannot read CSS variables inside SVG attributes
     onclone: (_doc, clone) => clone.querySelectorAll('svg *').forEach(n => ['fill', 'stroke'].forEach(a => {
       const v = n.getAttribute(a);
@@ -918,6 +999,12 @@ function init() {
   $('f-window').addEventListener('change', e => { state.window = +e.target.value; renderHero(); syncUrl(); });
   $('f-events').addEventListener('change', e => { state.events = e.target.checked; renderHero(); });
   $('share-copy').addEventListener('click', copyShareLink);
+  // The fourth summary tile is a shortcut to the other partner view
+  $('stat-other').addEventListener('click', () => {
+    state.partner = state.partner === 'all' ? 'exus' : 'all';
+    $('f-partner').value = state.partner;
+    renderAll();
+  });
   $('chart-png').addEventListener('click', downloadChartPng);
 
   // Event categories join the chart legend while events are shown

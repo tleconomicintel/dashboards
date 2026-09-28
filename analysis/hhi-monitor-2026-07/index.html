@@ -16,8 +16,8 @@
 <meta name="twitter:image" content="https://tleconomicintel.com/analysis/hhi-monitor-2026-07/chart.png">
 <meta property="og:site_name" content="TL Economic Intelligence">
 <link rel="canonical" href="https://tleconomicintel.com/analysis/hhi-monitor-2026-07/">
-<link rel="stylesheet" href="/assets/chrome.css">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/chrome.css?v=e3d0f04f">
+<link rel="stylesheet" href="/assets/site.css?v=e3d0f04f">
 <link rel="icon" type="image/png" href="/assets/logo.png">
 </head>
 <body>
@@ -65,7 +65,7 @@
     </header>
     <div class="prose">
 <p>Canada&rsquo;s exports were less concentrated in July 2026 than at any point since our series began in 1997. The Herfindahl-Hirschman Index (HHI) measures how concentrated a country&rsquo;s exports are across its trading partners, from 0 (spread evenly across many partners) to 1 (all exports to one). The 12-month moving average of the HHI fell to 0.48, from 0.56 a year earlier. The monthly HHI for July was 0.46. In plain terms, Canada&rsquo;s exports now behave as though they go to about two equal-sized partners.</p>
-<figure><img src="chart.png" srcset="chart.png 1200w, chart@2x.png 2400w" sizes="(max-width: 720px) 100vw, 672px" width="1200" height="900" alt="Canada&#x27;s export concentration is at a record low. The monthly HHI (dashed) and its 12-month moving average (solid), January 1997 to July 2026."><figcaption>The monthly HHI (dashed) and its 12-month moving average (solid), January 1997 to July 2026.</figcaption></figure>
+<figure><a href="chart@2x.png" title="Open the chart full size"><img src="chart.png" srcset="chart.png 1200w, chart@2x.png 2400w" sizes="(max-width: 720px) 100vw, 700px" width="1200" height="900" alt="Canada&#x27;s export concentration is at a record low. The monthly HHI (dashed) and its 12-month moving average (solid), January 1997 to July 2026."></a><figcaption>The monthly HHI (dashed) and its 12-month moving average (solid), January 1997 to July 2026.</figcaption></figure>
 <h2>What moved the index</h2>
 <p>The US share of Canadian exports fell because exports elsewhere grew. From January to July 2026, exports to the United States were flat at $310.2 billion (−0.3%), while exports to all other markets rose 34%, from $111.1 billion to $149.3 billion. Over the past 12 months, 68.1% of Canada&rsquo;s domestic exports went to the United States, down from 74.1% a year earlier and 87.0% at the September 2001 peak.</p>
 <h2>Where the new exports went</h2>
@@ -88,6 +88,7 @@
           <a href="mailto:?subject=Canada%27s%20export%20concentration%20hits%20a%20record%20low%2C%20and%20one%20market%20carries%20the%20gains&amp;body=https%3A//tleconomicintel.com/analysis/hhi-monitor-2026-07/">Email</a>
           <button type="button" id="copy-link" data-url="https://tleconomicintel.com/analysis/hhi-monitor-2026-07/">Copy link</button>
         </div>
+        <span class="sr-only" id="copy-status" role="status"></span>
       </div>
       
       <div class="panel">
@@ -133,17 +134,35 @@
     </div>
     <div class="tl-footer-bottom">
       <span>&copy; 2026 TL Economic Intelligence</span>
-      <span>Data products are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a></span>
+      <span>Data products are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a></span>
     </div>
   </div>
 </footer>
 
 <script>
+// Copy the note's link: Clipboard API, then the older copy command. The button and a screen-reader
+// announcement always say what happened; the address bar holds the same link if both fail.
+var copyTimer;
 document.getElementById('copy-link').addEventListener('click', function (e) {
-  var btn = e.currentTarget;
-  var done = function () { btn.textContent = 'Link copied'; setTimeout(function () { btn.textContent = 'Copy link'; }, 2000); };
-  if (navigator.clipboard) navigator.clipboard.writeText(btn.dataset.url).then(done, function () { window.prompt('Copy this link:', btn.dataset.url); });
-  else window.prompt('Copy this link:', btn.dataset.url);
+  var btn = e.currentTarget, url = btn.dataset.url, status = document.getElementById('copy-status');
+  var say = function (label, message, ms) {
+    btn.textContent = label;
+    status.textContent = message;
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(function () { btn.textContent = 'Copy link'; status.textContent = ''; }, ms);
+  };
+  var done = function () { say('Copied ✓', 'Link copied to the clipboard', 2500); };
+  var legacy = function () {
+    var t = document.createElement('textarea'), ok = false;
+    t.value = url; t.setAttribute('readonly', ''); t.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(t); t.select();
+    try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+    t.remove(); btn.focus();
+    if (ok) done();
+    else say('Copy the address bar', 'Could not copy automatically. The link to this note is in the address bar.', 5000);
+  };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(done, legacy);
+  else legacy();
 });
 </script>
 
