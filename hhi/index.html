@@ -3,21 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Canadian Export Concentration Intelligence Tool | TL Economic Intelligence</title>
-<meta name="description" content="A monthly index of Canadian export market concentration by province and product category, built by TL Economic Intelligence to track Canada's diversification away from the United States in near-real time.">
+<title>Canadian Export Concentration: dashboard | TL Economic Intelligence</title>
+<meta name="description" content="How concentrated Canada's exports are across trading partners: a monthly Herfindahl-Hirschman Index (HHI) since 1997, for Canada and each province, by product category and with or without the United States.">
 <meta name="author" content="TL Economic Intelligence">
+<link rel="canonical" href="https://tleconomicintel.com/hhi/">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Canadian Export Concentration Intelligence Tool · HHI">
-<meta property="og:description" content="A monthly index of Canadian export market concentration by province and product. By TL Economic Intelligence.">
+<meta property="og:title" content="Canadian Export Concentration: dashboard">
+<meta property="og:description" content="A monthly index of how concentrated Canada's exports are across trading partners, by province and product category. By TL Economic Intelligence.">
 <meta property="og:url" content="https://tleconomicintel.com/hhi/">
-<meta property="og:image" content="https://tleconomicintel.com/hhi/og-image.jpg">
+<meta property="og:image" content="https://tleconomicintel.com/hhi/og-image.png">
 <meta property="og:site_name" content="TL Economic Intelligence">
-
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Canadian Export Concentration Intelligence Tool · HHI">
-<meta name="twitter:description" content="A monthly index of Canadian export market concentration. By TL Economic Intelligence.">
-<meta name="twitter:image" content="https://tleconomicintel.com/hhi/og-image.jpg">
+<meta name="twitter:image" content="https://tleconomicintel.com/hhi/og-image.png">
+
+<script>
+// The methodology and download sections now have their own pages; keep old links working.
+if (location.hash === '#methodology') location.replace('/hhi/methodology/');
+else if (location.hash === '#data-download') location.replace('/hhi/data/');
+</script>
 
 <!-- tl-chrome:head -->
 <link rel="stylesheet" href="/assets/chrome.css">
@@ -26,440 +30,174 @@
 
 <style>
 :root {
-  /* Brand palette */
-  --brand-navy: #1B3A6B;
-  --brand-navy-deep: #122648;
-  --brand-navy-darker: #0A1729;
-  --brand-blue: #2D5293;
-  --brand-blue-light: #4F73B0;
-  --brand-silver: #B8C5D4;
-  --brand-platinum: #D8DDE3;
-
-  /* Surface palette - editorial light */
-  --color-page-bg: #F4F2EC;
-  --color-card-bg: #FFFFFF;
-  --color-card-bg-soft: #F7F6F0;
-  --color-text-primary: #14181F;
-  --color-text-secondary: #4C5562;
-  --color-text-tertiary: #8A92A0;
-
-  /* Functional - mapped to brand */
-  --color-text-info: var(--brand-blue);
-  --color-text-success: #0F6E56;
-  --color-text-warning: #B86C18;
-  --color-text-danger: #A32D2D;
-  --color-background-primary: #FFFFFF;
-  --color-background-secondary: #F0EDE5;
-  --color-background-tertiary: var(--color-page-bg);
-  --color-background-info: #E8EEF7;
-  --color-background-success: #E1F5EE;
-  --color-background-warning: #FAEEDA;
-  --color-background-danger: #FCEBEB;
-  --color-border-tertiary: rgba(20,24,31,0.13);
-  --color-border-secondary: rgba(20,24,31,0.28);
-
+  --navy: #1B3A6B;
+  --page: #F4F2EC;
+  --card: #FFFFFF;
+  --card-soft: #F7F6F0;
+  --text-1: #14181F;
+  --text-2: #4C5562;
+  --text-3: #666D7A;
+  --link: #2D5293;
+  --info-bg: #E8EEF7;
+  --pos: #A32D2D;          /* more concentrated */
+  --neg: #0F6E56;          /* less concentrated */
+  --line: #2D5293;
+  --track: #ECE9E1;
+  --border: rgba(20,24,31,0.13);
+  --border-2: rgba(20,24,31,0.26);
+  --band-l: #5BA59A;
+  --band-m: #E8B470;
+  --band-h: #C75A35;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
-  --border-radius-xl: 16px;
 }
-
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-page-bg: #0E1218;
-    --color-card-bg: #161B24;
-    --color-card-bg-soft: #1A1F29;
-    --color-text-primary: #ECEDEF;
-    --color-text-secondary: #A6ADBA;
-    --color-text-tertiary: #6C7484;
-
-    --color-text-info: #6FAEEC;
-    --color-text-success: #5DCAA5;
-    --color-text-warning: #EF9F27;
-    --color-text-danger: #E24B4A;
-    --color-background-primary: #161B24;
-    --color-background-secondary: #1F2530;
-    --color-background-tertiary: var(--color-page-bg);
-    --color-background-info: #14304F;
-    --color-background-success: #103E33;
-    --color-background-warning: #4B2D0A;
-    --color-background-danger: #4E1818;
-    --color-border-tertiary: rgba(255,255,255,0.10);
-    --color-border-secondary: rgba(255,255,255,0.22);
+    --page: #0E1218;
+    --card: #161B24;
+    --card-soft: #1A1F29;
+    --text-1: #ECEDEF;
+    --text-2: #A6ADBA;
+    --text-3: #8A92A0;
+    --link: #8FB3E8;
+    --info-bg: #14304F;
+    --pos: #F08A89;
+    --neg: #5DCAA5;
+    --line: #8FB3E8;
+    --track: #252C38;
+    --border: rgba(255,255,255,0.12);
+    --border-2: rgba(255,255,255,0.24);
   }
 }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--color-page-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  font-size: 14px;
-  line-height: 1.5;
+body { margin: 0; background: var(--page); color: var(--text-1); font-family: var(--font-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+a { color: var(--link); }
+button, select { font: inherit; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.wrap { max-width: 1040px; margin: 0 auto; padding: 28px 24px 8px; }
+
+/* Heading */
+.page-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 24px; margin-bottom: 18px; }
+.page-title { font-family: var(--font-serif); font-size: 30px; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; }
+.page-meta { margin: 0; font-size: 13px; color: var(--text-3); }
+.share { display: flex; align-items: center; gap: 8px; }
+.share-btn, .copy-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; border: 1px solid var(--border); background: var(--card); color: var(--text-2); cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+.share-btn { width: 34px; border-radius: 50%; }
+.copy-btn { padding: 0 14px; border-radius: 17px; font-size: 13px; font-weight: 600; }
+.share-btn:hover { color: #0A66C2; border-color: #0A66C2; }
+.copy-btn:hover { color: var(--text-1); border-color: var(--border-2); }
+.copy-btn.copied { color: var(--neg); border-color: var(--neg); }
+
+/* Latest analysis: one link */
+.analysis-card { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; padding: 12px 16px; margin: 0 0 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--info-bg); color: var(--text-1); text-decoration: none; }
+.analysis-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--link); white-space: nowrap; }
+.analysis-title { flex: 1 1 320px; font-family: var(--font-serif); font-size: 16px; font-weight: 600; line-height: 1.4; }
+.analysis-card:hover .analysis-title { color: var(--link); text-decoration: underline; }
+
+/* View filters */
+.filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+.filters label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-2); margin: 0 0 4px 2px; }
+select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(--border-2); border-radius: 8px; background: var(--card); color: var(--text-1); cursor: pointer; }
+
+/* The four figures that answer the page's question */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+/* Each tile spans three rows of the shared grid, so labels, figures and notes line up across a row */
+.stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 2px; align-content: start; min-width: 0; padding: 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+.stat:first-child { border-top: 3px solid var(--navy); }
+.stat-label { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
+.stat-value { font-size: 30px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.stat-note { font-size: 12.5px; color: var(--text-3); }
+.scale-note { font-size: 13px; color: var(--text-3); margin: 10px 2px 24px; }
+.pos { color: var(--pos); }
+.neg { color: var(--neg); }
+.flat { color: var(--text-3); }
+
+/* Cards */
+.card { position: relative; margin-bottom: 16px; padding: 18px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+.card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 10px 20px; margin-bottom: 10px; }
+.card-title { font-family: var(--font-serif); font-size: 20px; line-height: 1.3; margin: 0; }
+.card-sub { margin: 2px 0 0; font-size: 13px; color: var(--text-2); }
+.card-source { margin: 10px 0 0; font-size: 12px; color: var(--text-3); }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.controls select { width: auto; padding: 5px 8px; font-size: 13px; }
+.check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; }
+
+/* Trend chart: drawn at its on-screen size, so text is never stretched */
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px; margin: 0 0 6px; font-size: 12px; color: var(--text-2); }
+.swatch { display: inline-block; width: 16px; margin-right: 6px; vertical-align: middle; border-top: 2.5px solid var(--line); }
+.swatch-dash { border-top: 1.5px dashed var(--line); }
+.swatch-ev { width: 10px; height: 10px; border: 0; border-radius: 2px; }
+.legend-hint { color: var(--text-3); }
+#hero { display: block; width: 100%; height: clamp(240px, 36vw, 420px); touch-action: pan-y; }
+#event-strip { display: block; width: 100%; height: 50px; margin-top: 4px; }
+#event-strip .ev { cursor: pointer; outline: none; }
+#event-strip .ev:hover rect.ev-bar, #event-strip .ev:focus-visible rect.ev-bar { opacity: 0.4; }
+#event-strip .ev:focus-visible rect.ev-hit { stroke: var(--link); stroke-width: 2; }
+.event-desc { margin: 10px 0 0; padding: 10px 14px; border-radius: 8px; background: var(--card-soft); font-size: 13px; line-height: 1.6; color: var(--text-2); }
+.hero-tooltip { position: absolute; z-index: 5; display: none; pointer-events: none; padding: 8px 10px; border-radius: 8px; background: var(--navy); color: #FFFFFF; font-size: 12px; line-height: 1.5; white-space: nowrap; box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+.hero-tooltip .ht-month { font-weight: 700; margin-bottom: 2px; }
+.hero-tooltip .ht-row { display: flex; justify-content: space-between; gap: 16px; }
+.hero-tooltip .ht-row span { opacity: 0.8; }
+.chart-toolbar { position: absolute; top: 18px; right: 20px; opacity: 0; transition: opacity 0.15s; }
+.card:hover .chart-toolbar, .chart-toolbar:focus-within { opacity: 1; }
+.tb-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-2); border-radius: 6px; background: var(--card); color: var(--text-2); cursor: pointer; }
+.tb-btn:hover { color: var(--text-1); }
+
+/* Comparison table */
+.seg { display: inline-flex; padding: 2px; border: 1px solid var(--border-2); border-radius: 999px; }
+.seg button { padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--text-2); font-size: 13px; font-weight: 600; line-height: 1.2; cursor: pointer; transition: background-color 0.15s, color 0.15s; }
+.seg button[aria-pressed="true"] { background: var(--navy); color: #FFFFFF; }
+.table-wrap { overflow-x: auto; margin: 0 -4px; }
+.cmp { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cmp th, .cmp td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.cmp th { vertical-align: bottom; font-size: 12px; font-weight: 600; color: var(--text-2); }
+.cmp th button { padding: 0; border: 0; background: none; color: inherit; text-align: inherit; cursor: pointer; }
+.cmp th button:hover .th-label { color: var(--text-1); }
+/* Sort arrows sit on the side of the label nearest the column's edge */
+.cmp th:not(.r) .th-label::after, .cmp th.r .th-label::before { content: "\2195"; opacity: 0.35; }
+.cmp th:not(.r) .th-label::after { margin-left: 3px; }
+.cmp th.r .th-label::before { margin-right: 3px; }
+.cmp th:not(.r)[aria-sort="descending"] .th-label::after, .cmp th.r[aria-sort="descending"] .th-label::before { content: "\2193"; opacity: 1; }
+.cmp th:not(.r)[aria-sort="ascending"] .th-label::after, .cmp th.r[aria-sort="ascending"] .th-label::before { content: "\2191"; opacity: 1; }
+.cmp .th-sub { display: block; font-weight: 400; color: var(--text-3); }
+.cmp .r { text-align: right; }
+.cmp td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cmp tbody tr { cursor: pointer; transition: background-color 0.12s; }
+.cmp tbody tr:hover { background: var(--card-soft); }
+.cmp tr.is-selected, .cmp tr.is-selected:hover { background: var(--info-bg); }
+.cmp .row-btn { padding: 0; border: 0; background: none; color: var(--text-1); text-align: left; cursor: pointer; }
+.cmp tr.is-selected .row-btn { font-weight: 700; }
+.cmp tbody.ref td { font-weight: 600; border-bottom-color: var(--border-2); }
+.hhi-cell { display: inline-flex; align-items: center; gap: 10px; }
+.bar-track { width: 96px; height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
+.bar-fill { display: block; height: 100%; border-radius: 4px; }
+
+@media (max-width: 760px) {
+  .wrap { padding: 20px 16px 8px; }
+  .page-title { font-size: 25px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat-value { font-size: 26px; }
+  .card { padding: 16px; }
+  .chart-toolbar { display: none; }
 }
-a { color: var(--brand-blue); text-decoration: none; }
-a:hover { text-decoration: underline; }
-@media (prefers-color-scheme: dark) {
-  a { color: var(--brand-blue-light); }
+@media (max-width: 560px) {
+  .filters { grid-template-columns: 1fr 1fr; grid-template-areas: "geo partner" "product product"; }
+  .f-geo { grid-area: geo; }
+  .f-product { grid-area: product; }
+  .f-partner { grid-area: partner; }
+  .bar-track { display: none; }
+  .table-wrap { margin: 0; }
+  .cmp { font-size: 13px; }
+  .cmp th { font-size: 11.5px; }
+  .cmp th, .cmp td { padding: 8px 4px; }
+  .cmp .row-btn { hyphens: auto; -webkit-hyphens: auto; }
+  #compare { padding: 14px 12px; }
 }
-
-/* === BRAND HEADER === */
-
-/* === MAIN LAYOUT === */
-.wrap { max-width: 1040px; margin: 0 auto; padding: 28px 24px 48px; }
-.page-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 4px; }
-.page-title { font-size: 22px; font-weight: 600; color: var(--color-text-primary); margin: 0; letter-spacing: -0.01em; }
-.page-subtitle { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
-.page-meta { font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
-.page-meta .meta-sep { margin: 0 7px; }
-
-/* === SHARE BAR === */
-.share-bar { display: flex; align-items: center; gap: 5px; flex-shrink: 0; padding-top: 2px; }
-.share-bar-label { font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-right: 3px; white-space: nowrap; }
-.share-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px; border-radius: 50%;
-  border: 0.5px solid var(--color-border-tertiary);
-  background: var(--color-background-primary);
-  color: var(--color-text-tertiary);
-  cursor: pointer; transition: all 0.12s; text-decoration: none; flex-shrink: 0;
-}
-.share-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-secondary); transform: translateY(-1px); text-decoration: none; }
-.share-btn.btn-li:hover { color: #0A66C2; border-color: #0A66C2; }
-.share-btn.btn-x:hover  { color: var(--color-text-primary); border-color: var(--color-text-primary); }
-.share-btn.btn-fb:hover { color: #1877F2; border-color: #1877F2; }
-.share-btn.btn-mail:hover { color: var(--brand-blue); border-color: var(--brand-blue); }
-.share-btn-copy {
-  display: inline-flex; align-items: center; gap: 5px;
-  height: 30px; padding: 0 11px; border-radius: 15px;
-  border: 0.5px solid var(--color-border-tertiary);
-  background: var(--color-background-primary);
-  color: var(--color-text-tertiary); cursor: pointer;
-  font-size: 11px; font-weight: 500; font-family: var(--font-sans);
-  transition: all 0.12s; white-space: nowrap;
-}
-.share-btn-copy:hover { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-secondary); transform: translateY(-1px); }
-.share-btn-copy.copied { color: var(--color-text-success); border-color: var(--color-text-success); background: var(--color-background-success); }
-
-.context-card {
-  background: var(--color-card-bg-soft);
-  border-left: 3px solid var(--brand-navy);
-  padding: 16px 20px;
-  margin: 18px 0 22px;
-  border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
-}
-.context-eyebrow {
-  font-size: 10px;
-  color: var(--brand-navy);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
-}
-@media (prefers-color-scheme: dark) { .context-eyebrow { color: var(--brand-blue-light); } }
-.docsection details summary::-webkit-details-marker { display: none; }
-.docsection details summary { user-select: none; }
-.docsection details > summary:hover h2 { color: var(--brand-blue); }
-@media (prefers-color-scheme: dark) { .docsection details > summary:hover h2 { color: var(--brand-blue-light); } }
-@media (prefers-color-scheme: dark) { .about-h4 { color: var(--brand-blue-light) !important; } }
-.context-body { font-size: 14px; line-height: 1.65; color: var(--color-text-primary); margin: 0; }
-.context-body strong { font-weight: 600; }
-
-/* === DASHBOARD WIDGET (same as before, themed) === */
-.dash { font-family: var(--font-sans); font-size: 13px; }
-.dash h3 { font-size: 14px; font-weight: 600; margin: 0 0 6px; color: var(--color-text-primary); letter-spacing: -0.005em; }
-.dash .card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; margin-bottom: 10px; background: var(--color-card-bg); position: relative; }
-.dash .filters { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-.dash .ctrl { display: flex; flex-direction: column; gap: 3px; }
-.dash .ctrl label { font-size: 10px; color: var(--color-text-tertiary); padding-left: 2px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
-.dash select { width: 100%; padding: 7px 9px; font-size: 13px; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); font-family: inherit; }
-.dash select:focus { outline: 2px solid var(--brand-blue); outline-offset: -1px; }
-.dash .chart-window-select { width: auto; font-size: 12px; padding: 4px 8px; }
-.dash .mover-hint { font-size: 11px; color: var(--color-text-tertiary); opacity: 0; transition: opacity 0.12s; flex-shrink: 0; margin: 0 2px; }
-.dash .mover:hover .mover-hint { opacity: 1; }
-
-/* Narrative card - brand navy hero */
-.dash .narrative {
-  background: linear-gradient(135deg, var(--brand-navy-deep) 0%, var(--brand-navy) 100%);
-  color: #FFFFFF;
-  border-radius: var(--border-radius-lg);
-  padding: 16px 20px;
-  margin-bottom: 10px;
-}
-.dash .narrative-eyebrow {
-  font-size: 10px;
-  color: var(--brand-silver);
-  font-weight: 600;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.dash .narrative-body { font-size: 14px; line-height: 1.65; }
-.dash .narrative-body strong { color: #FFFFFF; font-weight: 600; }
-.dash .narrative-body ul { list-style: none; padding: 0; margin: 0; }
-.dash .narrative-body li { display: flex; gap: 10px; padding: 5px 0; line-height: 1.45; font-size: 13.5px; align-items: baseline; }
-.dash .narrative-body li::before { content: "→"; color: var(--brand-silver); font-weight: 600; flex-shrink: 0; }
-.dash .narrative-body li .nval { color: #FFFFFF; font-weight: 600; }
-
-
-
-/* Executive snapshot — dark navy card */
-.lede {
-  background: var(--brand-navy);
-  border-radius: var(--border-radius-lg);
-  padding: 20px 24px;
-  margin-bottom: 14px;
-}
-.lede-eyebrow { font-size: 11px; color: rgba(255,255,255,0.65); font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; }
-.lede-bullets { list-style: none; padding: 0; margin: 0; }
-.lede-bullets li { position: relative; padding-left: 20px; padding-top: 7px; padding-bottom: 7px; font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.92); border-top: 0.5px solid rgba(255,255,255,0.13); }
-.lede-bullets li:first-child { border-top: 0; padding-top: 2px; }
-.lede-bullets li::before { content: "→"; position: absolute; left: 0; top: 7px; color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1; }
-.lede-bullets li:first-child::before { top: 2px; }
-.lede-bullets li strong { font-weight: 700; color: #FFFFFF; }
-
-
-/* Citation block */
-.cite-block {
-  background: var(--color-card-bg);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
-  padding: 16px 20px;
-  margin-top: 18px;
-  font-size: 12.5px;
-  line-height: 1.6;
-}
-.cite-block .cite-eyebrow { font-size: 10px; color: var(--color-text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-.analysis-card { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; background: var(--color-background-info); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px 16px; margin: 0 0 16px; }
-.analysis-card[hidden] { display: none; }
-.analysis-text { flex: 1 1 280px; min-width: 0; }
-.analysis-eyebrow { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-info); margin-bottom: 2px; }
-.analysis-title { font-family: var(--font-serif); font-size: 16px; font-weight: 600; line-height: 1.35; color: var(--color-text-primary); }
-.analysis-title:hover { color: var(--color-text-info); }
-.analysis-sub { font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--color-text-info); }
-.dl-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 10px 0 8px; }
-.dl-btn { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px; border-radius: 16px; border: 1px solid var(--brand-blue); background: var(--color-background-primary); color: var(--brand-blue); font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.12s; }
-.dl-btn:hover { background: var(--brand-blue); color: #FFFFFF; text-decoration: none; }
-.dl-meta { font-size: 11.5px; color: var(--color-text-tertiary); }
-@media (prefers-color-scheme: dark) { .dl-btn { border-color: var(--brand-blue-light); color: var(--brand-blue-light); } .dl-btn:hover { background: var(--brand-blue-light); color: #0B1220; } }
-.cite-block code { background: var(--color-card-bg-soft); padding: 8px 12px; border-radius: var(--border-radius-md); display: block; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: var(--color-text-primary); }
-
-/* Glossary */
-.glossary { background: var(--color-card-bg-soft); border-radius: var(--border-radius-md); padding: 12px 16px; font-size: 13px; line-height: 1.55; margin: 14px 0 16px; }
-.glossary h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 8px; color: var(--color-text-tertiary); font-weight: 600; }
-.glossary dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; column-gap: 14px; row-gap: 4px; }
-.glossary dt { font-weight: 600; color: var(--color-text-primary); }
-.glossary dd { margin: 0; color: var(--color-text-secondary); }
-
-
-
-
-.dash .caveat { background: var(--color-card-bg-soft); border-left: 2px solid var(--color-text-warning); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 10px 14px; font-size: 12px; line-height: 1.55; color: var(--color-text-secondary); margin-bottom: 10px; }
-.dash .caveat strong { color: var(--color-text-primary); font-weight: 600; }
-.dash .caveat a { color: var(--brand-blue); }
-@media (prefers-color-scheme: dark) { .dash .caveat a { color: var(--brand-blue-light); } }
-
-.dash .movers { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.dash .movers-side-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 8px; font-weight: 500; letter-spacing: 0.02em; }
-.dash .mover { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 5px 0; gap: 8px; cursor: pointer; border-radius: 4px; transition: background 0.1s; }
-.dash .mover:hover { background: var(--color-background-secondary); padding-left: 4px; padding-right: 4px; }
-.dash .mover-name { color: var(--color-text-secondary); }
-.dash .mover-delta { font-weight: 600; flex-shrink: 0; }
-.dash .mover-delta.up { color: var(--color-text-danger); }
-.dash .mover-delta.down { color: var(--color-text-success); }
-
-.dash .sub { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px; line-height: 1.5; }
-.dash .legend { display: flex; gap: 16px; font-size: 11px; color: var(--color-text-secondary); margin-top: 6px; flex-wrap: wrap; }
-.dash .legend .swatch-solid { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 4px; background: var(--color-text-info); }
-.dash .legend .swatch-dash-info { display: inline-block; width: 14px; height: 0; vertical-align: middle; margin-right: 4px; border-top: 2px dashed var(--color-text-info); }
-.dash .hero-card-wrap { position: relative; }
-.dash .hero-tooltip {
-  position: absolute;
-  pointer-events: none;
-  background: var(--brand-navy);
-  color: #FFFFFF;
-  padding: 8px 10px;
-  border-radius: var(--border-radius-md);
-  font-size: 11px;
-  line-height: 1.45;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-  z-index: 50;
-  white-space: nowrap;
-  display: none;
-  min-width: 180px;
-}
-@media (prefers-color-scheme: dark) { .dash .hero-tooltip { background: var(--brand-blue); } }
-.dash .hero-tooltip .ht-month { font-weight: 700; margin-bottom: 4px; font-size: 12px; }
-.dash .hero-tooltip .ht-row { display: flex; justify-content: space-between; gap: 10px; }
-.dash .hero-tooltip .ht-label { opacity: 0.8; }
-.dash .hero-tooltip .ht-val { font-weight: 600; }
-.dash .hero-tooltip .ht-yoy { font-size: 10.5px; opacity: 0.85; margin-top: 4px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.18); }
-.dash .hero-tooltip .ht-yoy .pos { color: #ffb3b3; }
-.dash .hero-tooltip .ht-yoy .neg { color: #b6f0d6; }
-.dash .hero-tooltip .ht-yoy .flat { color: #d8dde3; }
-.dash .hero-overlay { fill: transparent; pointer-events: all; cursor: crosshair; }
-.dash .threshold-legend { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; font-size: 12px; color: var(--color-text-secondary); padding: 10px 14px; background: var(--color-card-bg-soft); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); margin: 16px 0 18px; }
-.dash .threshold-legend .box { display: inline-block; width: 11px; height: 11px; vertical-align: middle; margin-right: 5px; border-radius: 2px; }
-
-.dash .legend .box { display: inline-block; width: 10px; height: 10px; vertical-align: middle; margin-right: 4px; border-radius: 2px; }
-
-.dash table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.dash th, .dash td { padding: 7px 9px; text-align: left; border-bottom: 0.5px solid var(--color-border-tertiary); }
-.dash th { font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
-.dash td.r, .dash th.r { text-align: right; }
-.dash .pill { display: inline-block; padding: 2px 8px; font-size: 11px; border-radius: var(--border-radius-md); font-weight: 600; }
-.dash .pill-h { background: var(--color-background-danger); color: var(--color-text-danger); }
-.dash .pill-m { background: var(--color-background-warning); color: var(--color-text-warning); }
-.dash .pill-l { background: var(--color-background-success); color: var(--color-text-success); }
-.dash .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.dash svg { display: block; max-width: 100%; }
-
-.dash .section-label {
-  font-size: 11px;
-  color: var(--color-text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: 22px 2px 10px;
-  font-weight: 600;
-  padding-bottom: 4px;
-  border-bottom: 0.5px solid var(--color-border-tertiary);
-}
-.dash .section-label:first-of-type { margin-top: 4px; }
-
-/* === METHODOLOGY / ABOUT === */
-.docsection {
-  background: var(--color-card-bg);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-radius: var(--border-radius-lg);
-  padding: 24px 28px;
-  margin-top: 24px;
-}
-.docsection h2 {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--brand-navy);
-  margin: 0 0 14px;
-  letter-spacing: -0.01em;
-}
-@media (prefers-color-scheme: dark) { .docsection h2 { color: var(--brand-blue-light); } }
-.docsection h3 {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 22px 0 6px;
-  letter-spacing: -0.005em;
-}
-.docsection h3:first-of-type { margin-top: 4px; }
-.docsection p, .docsection li {
-  font-size: 14px;
-  line-height: 1.65;
-  color: var(--color-text-primary);
-}
-.docsection p { margin: 0 0 12px; }
-.docsection ul { margin: 0 0 14px; padding-left: 22px; }
-.docsection li { margin-bottom: 6px; }
-.docsection .note {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  border-left: 2px solid var(--color-border-tertiary);
-  padding: 4px 0 4px 12px;
-  margin: 12px 0 16px;
-  background: var(--color-card-bg-soft);
-  border-radius: 0 4px 4px 0;
-  padding: 8px 12px;
-}
-
-/* === FOOTER === */
-
-/* === TABLET (≤ 900px) === */
-@media (max-width: 900px) {
-  .wrap { padding: 24px 20px 44px; }
-  #hero { height: 340px !important; }
-}
-
-/* === MOBILE (≤ 720px) === */
-@media (max-width: 720px) {
-  .wrap { padding: 18px 16px 36px; }
-  .page-title { font-size: 20px; }
-  .page-header { flex-direction: column; }
-  .share-bar { margin-top: 8px; }
-  .dash .filters { grid-template-columns: 1fr 1fr; }
-  .dash .movers { grid-template-columns: 1fr; gap: 16px; }
-  .dash .grid2 { grid-template-columns: 1fr; }
-  .lede { padding: 16px 18px; }
-  .lede-bullets li { font-size: 13px; }
-  .dash .threshold-legend { gap: 10px; padding: 8px 12px; font-size: 11px; }
-  .docsection { padding: 20px 18px; }
-  .docsection h2 { font-size: 19px; }
-  #hero { height: 280px !important; }
-}
-
-/* === SMALL MOBILE (≤ 480px) === */
-@media (max-width: 480px) {
-  .wrap { padding: 14px 14px 32px; }
-  .share-bar-label { display: none; }
-  .share-btn-copy span.copy-txt { display: none; }
-  .page-title { font-size: 18px; }
-  .page-subtitle { font-size: 11px; }
-  .page-meta { font-size: 10px; }
-  .dash .filters { grid-template-columns: 1fr; }
-  .dash .card { padding: 12px 14px; }
-  .lede { padding: 14px 16px; }
-  .lede-bullets li { font-size: 12px; padding-top: 5px; padding-bottom: 5px; }
-  .dash .threshold-legend { gap: 8px; font-size: 11px; padding: 7px 10px; }
-  .dash .movers { gap: 12px; }
-  .dash .mover { font-size: 12px; }
-  .dash h3 { font-size: 13px; }
-  .dash .sub { font-size: 11px; }
-  #hero { height: 220px !important; }
-  .hero-card-wrap .legend { flex-direction: column; gap: 6px; }
-}
-
-/* ── Chart / table toolbars ─────────────────────────────── */
-.chart-toolbar {
-  position: absolute; bottom: 10px; right: 10px;
-  display: flex; gap: 4px;
-  opacity: 0; transition: opacity 0.15s;
-  z-index: 20;
-}
-.card:hover .chart-toolbar { opacity: 1; }
-.tb-btn {
-  width: 26px; height: 26px; padding: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-border-secondary);
-  border-radius: 4px; cursor: pointer;
-  color: var(--color-text-tertiary);
-  transition: color 0.12s, background 0.12s;
-}
-.tb-btn:hover { color: var(--color-text-primary); background: var(--color-background-secondary); }
-
-/* ── HHI explainer callout ──────────────────────────────── */
-.hhi-explainer {
-  position: relative;
-  background: var(--color-card-bg-soft);
-  border: 0.5px solid var(--color-border-tertiary);
-  border-left: 3px solid var(--color-text-info);
-  border-radius: var(--border-radius-md);
-  padding: 10px 36px 10px 14px;
-  margin-bottom: 10px;
-  font-size: 12px;
-  line-height: 1.65;
-  color: var(--color-text-secondary);
-}
-.hhi-explainer strong { color: var(--color-text-primary); }
-.hhi-explainer-close {
-  position: absolute; top: 8px; right: 10px;
-  background: none; border: none; cursor: pointer;
-  font-size: 16px; line-height: 1; color: var(--color-text-tertiary);
-  padding: 0 2px; transition: color 0.12s;
-}
-.hhi-explainer-close:hover { color: var(--color-text-primary); }
 </style>
 </head>
 <body>
@@ -490,6 +228,7 @@ a:hover { text-decoration: underline; }
       <a href="/hhi/" aria-current="page">Dashboard</a>
       <a href="/analysis/hhi/">Analysis</a>
       <a href="/hhi/data/">Data</a>
+      <a href="/hhi/methodology/">Methodology</a>
     </div>
   </div>
 </nav>
@@ -497,262 +236,80 @@ a:hover { text-decoration: underline; }
 
 <main class="wrap" id="content">
 
-  <div class="page-header">
+  <div class="page-head">
     <div>
-      <h1 class="page-title">Canadian Export Concentration Intelligence Tool</h1>
-      <div class="page-subtitle">Monthly tracking of Canada's export market diversification</div>
-      <div class="page-meta">
-        <span id="pub-date">Updated: —</span>
-        <span class="meta-sep">·</span>
-        <span id="latest-data">Latest data: —</span>
-      </div>
+      <h1 class="page-title" id="page-title">How concentrated are Canada's exports?</h1>
+      <p class="page-meta"><span id="latest-data">Data to &mdash;</span> &middot; <span id="pub-date">Updated &mdash;</span></p>
     </div>
-    <div class="share-bar" role="group" aria-label="Share dashboard">
-      <span class="share-bar-label">Share</span>
-      <a class="share-btn btn-li" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn" aria-label="Share on LinkedIn">
+    <div class="share" role="group" aria-label="Share this view">
+      <a class="share-btn" id="share-li" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn" aria-label="Share on LinkedIn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
       </a>
-      <a class="share-btn btn-x" href="https://twitter.com/intent/tweet?text=Track%20Canada%E2%80%99s%20export%20market%20concentration%20%E2%80%94%20dashboard%20by%20TL%20Economic%20Intelligence&url=https%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" target="_blank" rel="noopener noreferrer" title="Share on X" aria-label="Share on X">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.213 5.567 5.951-5.567zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      </a>
-      <a class="share-btn btn-fb" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" target="_blank" rel="noopener noreferrer" title="Share on Facebook" aria-label="Share on Facebook">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-      </a>
-      <a class="share-btn btn-mail" href="mailto:?subject=Canadian%20Export%20Concentration%20Dashboard&body=Check%20out%20this%20dashboard%20tracking%20Canada%E2%80%99s%20export%20market%20diversification%3A%0A%0Ahttps%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" title="Share via email" aria-label="Share via email">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-      </a>
-      <button class="share-btn-copy" id="share-copy" onclick="copyShareLink(this)" title="Copy link" aria-label="Copy link to clipboard">
+      <button class="copy-btn" id="share-copy" type="button">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        <span class="copy-txt">Copy link</span>
+        <span id="copy-txt">Copy link</span>
       </button>
     </div>
   </div>
 
-  <div class="analysis-card" id="analysis-card" hidden>
-    <div class="analysis-text">
-      <div class="analysis-eyebrow" id="analysis-eyebrow">Latest analysis</div>
-      <a class="analysis-title" id="analysis-title" href="/analysis/"></a>
-    </div>
-    <a class="analysis-sub" href="https://tleconomicintel.substack.com/subscribe">Get it by email</a>
+  <a class="analysis-card" id="analysis-card" href="/analysis/hhi/" hidden>
+    <span class="analysis-eyebrow" id="analysis-eyebrow">Latest analysis</span>
+    <span class="analysis-title" id="analysis-title"></span>
+  </a>
+
+  <div class="filters" role="group" aria-label="Choose a view">
+    <div class="f-geo"><label for="f-geo">Geography</label><select id="f-geo"></select></div>
+    <div class="f-product"><label for="f-product">Product category</label><select id="f-product"></select></div>
+    <div class="f-partner"><label for="f-partner">Trading partners</label><select id="f-partner"><option value="all">All countries</option><option value="exus">Excluding the US</option></select></div>
   </div>
 
-  <div class="dash">
+  <section class="stats" id="stats" aria-label="Summary for this view" aria-live="polite">
+    <div class="stat"><span class="stat-label" id="s1-label">12-month average HHI</span><span class="stat-value" id="s1-value">&mdash;</span><span class="stat-note" id="s1-note"></span></div>
+    <div class="stat"><span class="stat-label" id="s2-label">Change from a year earlier</span><span class="stat-value" id="s2-value">&mdash;</span><span class="stat-note" id="s2-note"></span></div>
+    <div class="stat"><span class="stat-label">Equivalent partners</span><span class="stat-value" id="s3-value">&mdash;</span><span class="stat-note">Equal-sized partners that would give the same HHI</span></div>
+    <div class="stat"><span class="stat-label" id="s4-label">Excluding the US</span><span class="stat-value" id="s4-value">&mdash;</span><span class="stat-note" id="s4-note"></span></div>
+  </section>
+  <p class="scale-note">The HHI runs from 0 (exports spread evenly across many partners) to 1 (all exports to one partner). Low is below 0.15, moderate 0.15 to 0.25, high above 0.25. <a href="/hhi/methodology/">How it is measured</a></p>
 
-    <div class="filters">
-      <div class="ctrl"><label for="f-geo">Geography</label><select id="f-geo"></select></div>
-      <div class="ctrl"><label for="f-product">Product category</label><select id="f-product"></select></div>
-      <div class="ctrl"><label for="f-partner">Trading partner</label><select id="f-partner"><option value="all">All countries</option><option value="exus">Excluding US</option></select></div>
-    </div>
-
-    <div class="section-label">Snapshot</div>
-    <div class="lede">
-      <div class="lede-text">
-        <div class="lede-eyebrow" id="lede-eyebrow">Where Things Stand</div>
-        <ul class="lede-bullets" id="lede-bullets"></ul>
+  <section class="card" id="trend" aria-labelledby="trend-title">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title" id="trend-title">HHI over time</h2>
+        <p class="card-sub" id="hero-subtitle">&mdash;</p>
+      </div>
+      <div class="controls">
+        <select id="f-window" aria-label="Time window"><option value="60">Last 5 years</option><option value="120" selected>Last 10 years</option><option value="240">Last 20 years</option><option value="0">Since 1997</option></select>
+        <label class="check" for="f-events"><input type="checkbox" id="f-events"> Show events</label>
       </div>
     </div>
-
-    <div class="hhi-explainer" id="hhi-explainer">
-      <button class="hhi-explainer-close" onclick="dismissHhiExplainer()" title="Dismiss" aria-label="Dismiss HHI explainer">&times;</button>
-      <strong>HHI (Herfindahl–Hirschman Index)</strong> measures how concentrated a country’s exports are across trading partners, on a scale of 0 to 1. A score near 0 means exports are spread across many partners (diversified). A score near 1 means nearly all exports go to a single partner (highly concentrated). On this dashboard: <span style="color:#5BA59A;font-weight:600;">Low</span> = below 0.15 · <span style="color:#E8B470;font-weight:600;">Moderate</span> = 0.15–0.25 · <span style="color:#C75A35;font-weight:600;">High</span> = above 0.25.
+    <div class="legend" id="legend">
+      <span><span class="swatch"></span>12-month average</span>
+      <span><span class="swatch swatch-dash"></span>Monthly</span>
     </div>
-
-    <div class="section-label">Export market concentration trend</div>
-    
-    <div class="card hero-card-wrap">
-      <div style="margin-bottom: 4px;">
-        <h3 style="margin: 0 0 2px 0;">Concentration over time</h3>
-        <div class="sub" id="hero-subtitle" style="margin-bottom: 6px;">&mdash;</div>
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; row-gap: 6px;">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <label for="f-window" style="font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; white-space: nowrap;">Time window</label>
-            <select id="f-window" class="chart-window-select"><option value="60">Last 5 years</option><option value="120" selected>Last 10 years</option><option value="240">Last 20 years</option><option value="0">Full history (1997+)</option></select>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;row-gap:5px;">
-            <span style="font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.06em;font-weight:500;white-space:nowrap;">Events:</span>
-            <label for="f-ev-shock" style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;white-space:nowrap;cursor:pointer;" title="Market shocks — commodity cycles, financial crises, geopolitical events">
-              <input type="checkbox" id="f-ev-shock" style="accent-color:#B07820;cursor:pointer;width:12px;height:12px;"><span style="color:#B07820;">Shocks</span>
-            </label>
-            <label for="f-ev-agreement" style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;white-space:nowrap;cursor:pointer;" title="Trade agreements — FTAs and infrastructure that opened new markets">
-              <input type="checkbox" id="f-ev-agreement" style="accent-color:#0F6E56;cursor:pointer;width:12px;height:12px;"><span style="color:#0F6E56;">Agreements</span>
-            </label>
-            <label for="f-ev-friction" style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;white-space:nowrap;cursor:pointer;" title="Trade friction — deliberate barriers and sanctions">
-              <input type="checkbox" id="f-ev-friction" style="accent-color:#9A3D1F;cursor:pointer;width:12px;height:12px;"><span style="color:#9A3D1F;">Friction</span>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="legend" style="row-gap:4px;margin:6px 0 2px;">
-        <span><span class="swatch-dash-info"></span>Raw HHI (dashed)</span>
-        <span><span class="swatch-solid"></span>12-month moving average (solid)</span>
-      </div>
-      <svg id="hero" viewBox="0 0 700 320" preserveAspectRatio="none" style="width: 100%; height: clamp(260px, 38vw, 480px);"></svg>
-      <svg id="event-strip" viewBox="0 0 700 50" preserveAspectRatio="none" style="width:100%;height:clamp(40px,5.5vw,58px);margin-top:2px;display:block;"></svg>
-      <div id="event-desc-panel" style="display:none;margin-top:10px;padding:10px 14px;background:var(--color-card-bg-soft);border-radius:6px;font-size:12px;line-height:1.6;color:var(--color-text-secondary);"></div>
-      <div id="hero-tooltip" class="hero-tooltip"></div>
-      <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 8px; line-height: 1.5;">
-        <details>
-          <summary style="cursor:pointer;font-size:11px;color:var(--color-text-tertiary);font-weight:500;list-style:none;user-select:none;outline:none;">Chart notes &#9656;</summary>
-          <div style="margin-top:5px;">Solid line shows the 12-month moving average (primary trend signal); dashed line shows raw monthly HHI. Dashed gridlines mark the concentration thresholds (0.15 = Moderate, 0.25 = High). The strip below the chart marks major economic events by category — Market shocks (amber), Trade agreements (teal), Trade friction (terracotta) — with subtle colour tints in the chart body. Toggle categories with the checkboxes above. Hover the chart for monthly values and year-over-year change.</div>
-        </details>
-        <div style="margin-top:4px;">Source: Statistics Canada <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501" target="_blank" rel="noopener">Table 12-10-0175-01</a> and TL Economic Intelligence.</div>
-      </div>
-      <div class="chart-toolbar">
-        <button class="tb-btn" onclick="downloadCardAsPng(this,'canada-hhi-concentration-trend')" title="Download as PNG">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </button>
-      </div>
+    <svg id="hero" role="img" aria-labelledby="trend-title hero-subtitle"></svg>
+    <svg id="event-strip" role="group" aria-label="Events" hidden></svg>
+    <p class="event-desc" id="event-desc" aria-live="polite" hidden></p>
+    <div class="hero-tooltip" id="hero-tooltip"></div>
+    <p class="card-source">Source: Statistics Canada <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501" target="_blank" rel="noopener">Table 12-10-0175-01</a>; TL Economic Intelligence calculations.</p>
+    <div class="chart-toolbar">
+      <button class="tb-btn" type="button" id="chart-png" title="Download the chart as PNG" aria-label="Download the chart as PNG">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
     </div>
-
-    <div class="section-label">What's moved · year-over-year</div>
-
-    <div class="card">
-      <h3 id="movers-title">What's moved &middot; year-over-year</h3>
-      <div class="sub">Biggest concentration shifts by product for <strong id="movers-geo-label"></strong> &middot; <strong id="movers-partner-label"></strong> &middot; Click any row to update the charts below.</div>
-      <div class="movers">
-        <div>
-          <div class="movers-side-label" style="color: var(--color-text-danger); font-weight: 600;">&#9650; More concentrated</div>
-          <div id="movers-up"></div>
-        </div>
-        <div>
-          <div class="movers-side-label" style="color: var(--color-text-success); font-weight: 600;">&#9660; Less concentrated</div>
-          <div id="movers-down"></div>
-        </div>
-      </div>
-    </div>
-
-<div class="section-label">Provincial concentration ranking</div>
-
-        <div class="card">
-      <h3 id="rank-geo-title">Provincial ranking &middot; &mdash;</h3>
-      <div class="sub" id="rank-geo-sub">&mdash;</div>
-      <svg id="rank-geo" viewBox="0 0 720 220" preserveAspectRatio="xMidYMid meet" style="width: 100%; max-height: 360px;"></svg>
-      <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; line-height: 1.5;">
-        Dashed line marks Canada's national HHI for the same product/partner. The currently-selected province is outlined.
-      </div>
-      <div class="chart-toolbar">
-        <button class="tb-btn" onclick="downloadCardAsPng(this,'canada-hhi-provincial-ranking')" title="Download as PNG">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </button>
-      </div>
-    </div>    <div class="section-label">Product concentration ranking</div>
-
-    <div class="card">
-      <h3 id="rank-prod-title">Product ranking &middot; &mdash;</h3>
-      <div class="sub" id="rank-prod-sub">&mdash;</div>
-      <svg id="rank-prod" viewBox="0 0 720 220" preserveAspectRatio="xMidYMid meet" style="width: 100%; max-height: 360px;"></svg>
-      <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 6px; line-height: 1.5;">
-        Products sorted by HHI (descending). Concentration colors match the legend at the top.
-      </div>
-      <div class="chart-toolbar">
-        <button class="tb-btn" onclick="downloadCardAsPng(this,'canada-hhi-product-ranking')" title="Download as PNG">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="section-label">Product breakdown</div>
-    <div class="card">
-      <h3 id="drill-title">Product detail &middot; &mdash;</h3>
-      <div class="sub" id="drill-sub">&mdash;</div>
-      <table id="drill"></table>
-      <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 8px; line-height: 1.5;">
-        Source: Statistics Canada <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501" target="_blank" rel="noopener">Table 12-10-0175-01</a> and TL Economic Intelligence.
-      </div>
-      <div class="chart-toolbar">
-        <button class="tb-btn" onclick="downloadCardAsPng(this,'canada-hhi-product-detail')" title="Download as PNG">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </button>
-      </div>
-    </div>
-
-  </div>  <section class="docsection" id="methodology">
-    <details>
-      <summary style="cursor: pointer; outline: none; list-style: none; display: flex; align-items: center; gap: 8px;">
-        <h2 style="margin: 0; display: inline;">Methodology</h2>
-        <span style="font-size: 11px; color: var(--color-text-tertiary); margin-left: auto; font-weight: 500;">expand / collapse</span>
-      </summary>
-      <div style="margin-top: 14px;">
-
-    <div class="glossary">
-      <h4>Glossary</h4>
-      <dl>
-        <dt>HHI</dt><dd>Herfindahl–Hirschman Index: sum of squared partner shares. Ranges 0–1; higher values mean greater concentration (less diversification).</dd>
-        <dt>Equivalent partners</dt><dd>1 / HHI &mdash; the concentration-equivalent count of trading relationships, not a literal head-count.</dd>
-        <dt>Raw HHI</dt><dd>HHI computed from a single calendar month's export values. Volatile; influenced by individual shipments, seasonality, and commodity-price swings.</dd>
-        <dt>12-month moving average</dt><dd>Average of the most recent 12 monthly raw HHI values. Smooths shipment-timing and seasonal noise to expose the underlying trend.</dd>
-        <dt>YTD / Year-to-date</dt><dd>Cumulative average from January through the latest available month of the current year. YTD % change compares that window to the identical period in the prior year.</dd>
-        <dt>Ex-US / Excluding US</dt><dd>HHI recomputed after dropping the United States from the partner set and renormalizing the remaining shares.</dd>
-        <dt>NAPCS</dt><dd>North American Product Classification System &mdash; the StatCan product category schema. Full category names appear in the filter; short labels appear in compact views (rankings, movers).</dd>
-      </dl>
-    </div>
-
-    <h3>About this dashboard</h3>
-    <p class="context-body" style="margin: 0 0 14px 0;">
-        As US trade policy shifts and Canada targets doubling its non-US exports over the next decade, near-real-time monitoring of export market concentration is essential. Statistics Canada publishes <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210012901" target="_blank" rel="noopener">export market concentration data</a> at the national and provincial levels, but only annually and without an industry breakdown. Annual aggregates are too slow and too coarse to monitor progress as it happens. This dashboard fills that gap: it replicates StatCan's concentration index methodology at a monthly frequency, disaggregated by province and product category, so analysts and policymakers can track shifts in near-real time.
-      </p>
-
-
-    <h3>Why export market concentration matters</h3>
- 	<p class="context-body" style="margin: 0 0 14px 0;">
-        High export market concentration increases vulnerability to <strong>tariffs, sanctions, recessions, geopolitical shocks, and commodity cycles</strong>. A small number of dominant trading relationships amplifies the policy and macroeconomic risk transmitted by any one of them. Low export market concentration, especially for trade-reliant economies, is better for economic resilience.
-    </p>
-	<p class="context-body" style="margin: 0; background: var(--color-background-warning); color: var(--color-text-primary); border-left: 3px solid var(--color-text-warning); padding: 12px 14px; border-radius: 0 8px 8px 0; font-size: 13.5px;">
-        <strong>Lower concentration does not necessarily imply successful strategic diversification.</strong> Changes in HHI can reflect cyclical demand, commodity prices, FX movements, or temporary trade disruptions in addition to structural diversification.
-      </p>
-
-    <h3>What is HHI?</h3>
-    <p>The Herfindahl-Hirschman Index (HHI) measures concentration by summing the squared shares of each participant. Applied to trade, HHI = &Sigma;(share<sub>i</sub>)<sup>2</sup>, where share<sub>i</sub> is partner country <em>i</em>'s share of total exports for a given province and product category. An HHI of 1.0 means a single partner accounts for 100% of exports; an HHI near 0 indicates exports are evenly distributed across many partners. The <em>effective number of trading partners</em> shown in the dashboard is computed as 1 / HHI.</p>
-
-    <h3>Data source</h3>
-    <p>Statistics Canada, <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501" target="_blank" rel="noopener">Table 12-10-0175-01: International merchandise trade by province, commodity, and principal trading partners</a> (values in CAD x 1,000). StatCan publishes the underlying raw monthly trade data; this dashboard applies the HHI calculation, smoothing, and partner-view aggregations.</p>
-
-    <h3>Downloading the data</h3>
-    <p>The full dataset, its column definitions, licence and suggested citation are on the <a href="/hhi/data/">Data page</a>.</p>
-
-    <h3>Concentration thresholds </h3>
-    
-    <ul>
-      <li><span class="pill pill-l">&nbsp;Low:</span>&nbsp; HHI below 0.15</li>
-      <li><span class="pill pill-m">&nbsp;Moderate:</span>&nbsp; HHI from 0.15 to below 0.25</li>
-      <li><span class="pill pill-h">&nbsp;High:</span>&nbsp; HHI above 0.25</li>
-    </ul>
-    
-    <h3>Raw monthly HHI vs the 12-month moving average</h3>
-    <p>Monthly trade data is highly volatile &mdash; a single large shipment, seasonal pattern, or invoicing-timing artifact can swing the raw monthly HHI dramatically. The trend chart plots both: the <strong>raw monthly HHI</strong> (dashed line) shows the latest actual movement, while the <strong>12-month moving average</strong> (solid line) suppresses month-to-month noise and surfaces the underlying trend. The Product detail table reports the YTD average HHI and the year-over-year percentage change for the current year-to-date window. The smoothing trade-off: recent shifts take roughly six months to fully reflect in the moving average.</p>
-
-    <h3>Limitations</h3>
-    <ul>
-      <li>This index measures the concentration of <strong>destinations</strong>, not of products or producing provinces. A province exporting one commodity to many partners reads as diversified by this measure; a province exporting many commodities to one partner does not.</li>
-      <li>HHI is computed from <strong>export values</strong>. Commodity-price movements &mdash; particularly energy and metals &mdash; can shift the index independently of any change in physical trade diversification.</li>
-      <li>Statistics Canada periodically revises back-data; the values shown reflect the most recent vintage retrieved.</li>
-    </ul>
-      </div>
-    </details>
   </section>
 
-  <div class="cite-block" id="data-download">
-    <div class="cite-eyebrow">Download the data</div>
-    <div>Monthly HHI for Canada and the ten provinces, 13 product categories and two partner views (all countries, and excluding the US), from January 1997 to the latest month, at full precision.</div>
-    <div class="dl-row">
-      <a class="dl-btn" href="data/hhi_monthly.csv" download>
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8"/><path d="M4.5 6.5 8 10l3.5-3.5"/><path d="M2.5 13.5h11"/></svg>
-        hhi_monthly.csv
-      </a>
-      <span class="dl-meta" id="dl-meta"></span>
+  <section class="card" id="compare" aria-labelledby="cmp-title">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title" id="cmp-title">Compare</h2>
+        <p class="card-sub" id="cmp-sub">&mdash;</p>
+      </div>
+      <div class="seg" role="group" aria-label="Compare by">
+        <button type="button" data-by="product" aria-pressed="true">Products</button>
+        <button type="button" data-by="geo" aria-pressed="false">Provinces</button>
+      </div>
     </div>
-    <div class="dl-meta">Column definitions, licence and citation are on the <a href="/hhi/data/">Data page</a>. For the underlying export values, use Statistics Canada <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501" target="_blank" rel="noopener">Table 12-10-0175-01</a>.</div>
-    <div class="dl-meta" style="margin-top: 6px;">Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener">CC BY 4.0</a>. Credit: TL Economic Intelligence calculations based on Statistics Canada Table 12-10-0175-01. The source data are used under the <a href="https://www.statcan.gc.ca/en/terms-conditions/open-licence" target="_blank" rel="noopener">Statistics Canada Open Licence</a>.</div>
-  </div>
-
-  <div class="cite-block">
-    <div class="cite-eyebrow">Cite this dashboard</div>
-    <code id="cite-text">TL Economic Intelligence. Canadian Export Concentration Intelligence Tool · HHI. https://tleconomicintel.com/hhi/</code>
-  </div>
-
-  <section class="docsection" id="about">
-    <h2>About TL Economic Intelligence</h2>
-    <p>This dashboard is one of the data products of TL Economic Intelligence, an independent research and advisory firm built to follow the evidence, not the consensus. <a href="/">See our other work</a>, or write to <a href="mailto:info@tleconomicintel.com">info@tleconomicintel.com</a> for commissioned work and advisory engagements.</p>
+    <div class="table-wrap"><table class="cmp" id="cmp"></table></div>
   </section>
 
 </main>
@@ -797,62 +354,53 @@ const state = {
   geo: 'CA',
   product: 'Total',
   partner: 'all',
-  window: 120,
-  showShock:     false,
-  showAgreement: false,
-  showFriction:  false,
+  window: 120,          // months shown on the trend chart; 0 = since 1997
+  events: false,
+  by: 'product',        // comparison table rows: 'product' or 'geo'
+  sortKey: 'ma',
+  sortDir: -1,
 };
 
-// Economic event periods — rendered in the event strip below the chart.
-// cat: 'shock' | 'agreement' | 'friction'
-// point: true  → dashed vertical milestone line (no shaded region)
-// labelRow: 0|1 → stagger overlapping point-event labels on the main chart
+// Episodes marked on the trend chart when "Show events" is on.
+// point: a milestone line rather than a period; labelRow staggers overlapping milestone labels.
+const EVENT_CATS = {
+  shock:     {label: 'Market shocks',    color: '#B07820'},
+  agreement: {label: 'Trade agreements', color: '#0F6E56'},
+  friction:  {label: 'Trade friction',   color: '#9A3D1F'},
+};
 const ECON_EVENTS = [
-  // ── Market shocks — external forces that moved concentration
-  {label: 'Oil boom',              start: '2005-01', end: '2008-08', color: '#B07820', cat: 'shock',
+  {label: 'Oil boom', start: '2005-01', end: '2008-08', cat: 'shock',
    desc: "A commodity super-cycle drove oil from ~$50 to $147/barrel, sharply raising the value of Canadian energy exports and reinforcing concentration toward US-bound crude."},
-  {label: 'GFC',                   start: '2008-09', end: '2009-06', color: '#B07820', cat: 'shock',
+  {label: 'GFC', start: '2008-09', end: '2009-06', cat: 'shock',
    desc: "The global financial crisis triggered a steep contraction in global trade volumes, particularly affecting Canadian manufacturing and resource exports."},
-  {label: 'Oil collapse',          start: '2014-06', end: '2016-12', color: '#B07820', cat: 'shock',
+  {label: 'Oil collapse', start: '2014-06', end: '2016-12', cat: 'shock',
    desc: "Oil prices fell from ~$100 to under $30/barrel, compressing the value of Canadian energy exports and temporarily easing HHI as energy's outsized weight shrank."},
-  {label: 'COVID-19',              start: '2020-03', end: '2021-06', color: '#B07820', cat: 'shock',
+  {label: 'COVID-19', start: '2020-03', end: '2021-06', cat: 'shock',
    desc: "Pandemic lockdowns disrupted global supply chains and demand, causing sharp swings in export volumes and partner mix across nearly all product categories."},
-  {label: 'Energy prices spike',   start: '2021-07', end: '2022-01', color: '#B07820', cat: 'shock',
+  {label: 'Energy prices spike', start: '2021-07', end: '2022-01', cat: 'shock',
    desc: "Post-pandemic demand recovery pushed energy prices to multi-year highs, briefly reversing the diversification trend as energy's share of exports surged."},
-  {label: 'Russia-Ukraine',        start: '2022-02', end: '2023-06', color: '#B07820', cat: 'shock',
+  {label: 'Russia-Ukraine', start: '2022-02', end: '2023-06', cat: 'shock',
    desc: "Russia's invasion of Ukraine triggered a global commodity shock, driving record prices for Canadian agriculture (wheat, canola), fertilizers (potash), and energy, altering export weightings."},
-  // ── Trade agreements — deliberate market-access levers
-  {label: 'CKFTA',           start: '2015-01', end: '2015-01', color: '#0F6E56', cat: 'agreement', point: true, labelRow: 0,
+  {label: 'CKFTA', start: '2015-01', cat: 'agreement', point: true, labelRow: 0,
    desc: "Canada–Korea Free Trade Agreement — Canada's first FTA in the Asia-Pacific region, eliminating tariffs on nearly all industrial and agricultural goods and providing an early foothold in Korean markets."},
-  {label: 'CETA',            start: '2017-09', end: '2017-09', color: '#0F6E56', cat: 'agreement', point: true, labelRow: 1,
+  {label: 'CETA', start: '2017-09', cat: 'agreement', point: true, labelRow: 1,
    desc: "Canada–EU Comprehensive Economic and Trade Agreement — eliminates tariffs on ~98% of EU tariff lines, opening access to EU government procurement and establishing regulatory cooperation frameworks."},
-  {label: 'CPTPP',           start: '2018-12', end: '2018-12', color: '#0F6E56', cat: 'agreement', point: true, labelRow: 0,
+  {label: 'CPTPP', start: '2018-12', cat: 'agreement', point: true, labelRow: 0,
    desc: "Comprehensive and Progressive Agreement for Trans-Pacific Partnership — connects Canada to 10 Pacific Rim economies including Japan, Australia, and Vietnam, significantly lowering tariffs on agricultural products, forestry, and industrial goods."},
-  {label: 'CUSMA',           start: '2020-07', end: '2020-07', color: '#0F6E56', cat: 'agreement', point: true, labelRow: 1,
+  {label: 'CUSMA', start: '2020-07', cat: 'agreement', point: true, labelRow: 1,
    desc: "Canada–US–Mexico Agreement — replaced NAFTA, resolving years of severe trade uncertainty and securing tariff-free access for most merchandise, anchoring the HHI baseline."},
-  {label: 'TMX pipeline',    start: '2024-05', end: '2024-05', color: '#0F6E56', cat: 'agreement', point: true, labelRow: 0,
+  {label: 'TMX pipeline', start: '2024-05', cat: 'agreement', point: true, labelRow: 0,
    desc: "Trans Mountain Expansion — increased tidewater pipeline capacity, enabling heavy crude to reach Asian markets and directly reducing reliance on the US energy corridor."},
-  // ── Trade friction — deliberate barriers
-  {label: 'US Steel/Alu tariffs', start: '2018-06', end: '2019-05', color: '#9A3D1F', cat: 'friction',
+  {label: 'US Steel/Alu tariffs', start: '2018-06', end: '2019-05', cat: 'friction',
    desc: "Section 232 tariffs — the US imposed 25% on steel and 10% on aluminum imports from Canada. Canada responded with retaliatory tariffs; both sides lifted measures in May 2019 ahead of CUSMA ratification."},
-  {label: 'China trade ban',  start: '2019-03', end: '2022-12', color: '#9A3D1F', cat: 'friction',
+  {label: 'China trade ban', start: '2019-03', end: '2022-12', cat: 'friction',
    desc: "China suspended Canadian canola seed and pork imports, forcing a rapid redirection of agricultural trade and driving temporary but notable market diversification away from China."},
-  {label: 'US tariffs',       start: '2025-01', end: null,      color: '#9A3D1F', cat: 'friction',
+  {label: 'US tariffs', start: '2025-03', end: null, cat: 'friction',
    desc: "Broad tariffs on Canadian goods imposed under Trump's second term, reigniting Canada–US trade tensions and accelerating Canada's push to diversify export destinations."},
 ];
-// Category meta — colour used for row labels and checkboxes
-const EVENT_CATS = {
-  shock:     {label: 'Shocks',     color: '#B07820'},
-  agreement: {label: 'Agreements', color: '#0F6E56'},
-  friction:  {label: 'Friction',   color: '#9A3D1F'},
-};
-function ymToMi(yyyyMM) {
-  const [y, m] = yyyyMM.split('-').map(Number);
-  const [ry, rm] = DATA.dates[0].split('-').map(Number);
-  return (y - ry) * 12 + (m - rm);
-}
-const PRODUCT_LONG_NAMES = {
-  'Total': 'Total of all merchandise',
+
+const PRODUCT_NAMES = {
+  'Total': 'All merchandise',
   'Energy': 'Energy products',
   'Farm/Food': 'Farm, fishing and intermediate food products',
   'Metal ores': 'Metal ores and non-metallic minerals',
@@ -866,719 +414,396 @@ const PRODUCT_LONG_NAMES = {
   'Consumer': 'Consumer goods',
   'Special': 'Special transactions trade',
 };
-const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const MONTH_NAMES_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+// How each category reads inside the page heading ("Ontario's energy exports")
+const PRODUCT_PHRASES = {
+  'Total': '', 'Energy': 'energy', 'Farm/Food': 'farm and food', 'Metal ores': 'metal ore',
+  'Metal prod': 'metal product', 'Chemicals': 'chemical and plastic', 'Forestry': 'forestry',
+  'Machinery': 'machinery', 'Electrical': 'electronics', 'Motor veh': 'motor vehicle',
+  'Aircraft': 'aircraft and transport equipment', 'Consumer': 'consumer goods', 'Special': 'special transactions',
+};
+const MONTHS =['January','February','March','April','May','June','July','August','September','October','November','December'];
+const BAND_COLORS = {l: 'var(--band-l)', m: 'var(--band-m)', h: 'var(--band-h)'};
+const REF_MI = DATA.latestMi['CA|Total|all'];   // every figure on the page is read at this month
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// ── Data access ─────────────────────────────────────────────────
 function getSeries(g, p, c) { return DATA.series[g + '|' + p + '|' + c] || null; }
-function getSeriesRaw(g, p, c) { return (DATA.seriesRaw || {})[g + '|' + p + '|' + c] || null; }
-function valueAt(s, mi) { if (!s) return null; const o = mi - s[0]; if (o < 0 || o >= s[1].length) return null; const v = s[1][o]; return v == null ? null : v / DATA.scale; }
-function el(svg, tag, attrs) { const e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; }
-function getDateRange() { const N = DATA.dates.length; if (state.window === 0) return [0, N - 1]; return [Math.max(0, N - state.window), N - 1]; }
-
-// Trade-adapted concentration bands — match the methodology section, kept here so the
-// data and the documentation cannot drift apart even if the data file ships with
-// different precomputed levels.
-function bandFor(v) {
-  if (v == null) return null;
-  if (v === 0)   return 'n';   // no exports — not a diversification reading
-  if (v < 0.15) return 'l';
-  if (v < 0.25) return 'm';   // High band is HHI >= 0.25
-  return 'h';
+function getSeriesRaw(g, p, c) { return DATA.seriesRaw[g + '|' + p + '|' + c] || null; }
+function valueAt(s, mi) { if (!s) return null; const o = mi - s[0]; if (o < 0 || o >= s[1].length) return null; return s[1][o] / DATA.scale; }
+// A stored 0 means no exports were recorded (or a 12-month window has a gap): not a reading.
+function reading(s, mi) { return valueAt(s, mi) || null; }
+function ymToMi(ym) {
+  const [y, m] = ym.split('-').map(Number), [y0, m0] = DATA.dates[0].split('-').map(Number);
+  return (y - y0) * 12 + (m - m0);
 }
 
-function monthYearLabel(yyyy_mm) {
-  const parts = yyyy_mm.split('-');
-  return MONTH_NAMES[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+// ── Labels and formatting ───────────────────────────────────────
+function bandFor(v) { return v == null ? null : v < 0.15 ? 'l' : v < 0.25 ? 'm' : 'h'; }
+function levelName(v) { return {l: 'Low', m: 'Moderate', h: 'High'}[bandFor(v)] || ''; }
+function monthLabel(ym, short) { const name = MONTHS[+ym.slice(5) - 1]; return (short ? name.slice(0, 3) : name) + ' ' + ym.slice(0, 4); }
+function refMonth(back, short) { return monthLabel(DATA.dates[REF_MI - (back || 0)], short); }
+function geoName(g) { return g === 'CA' ? 'Canada' : DATA.geo_names[g]; }
+function productName(p) { return PRODUCT_NAMES[p] || p; }
+function partnerName(c) { return c === 'exus' ? 'Excluding the US' : 'All countries'; }
+function signed(v, digits) { return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(digits); }
+function pctChange(cur, prev) { return cur != null && prev ? (cur - prev) / prev * 100 : null; }
+function changeClass(pct) { return pct == null ? 'flat' : pct > 0.5 ? 'pos' : pct < -0.5 ? 'neg' : 'flat'; }
+function $(id) { return document.getElementById(id); }
+function setText(id, text) { $(id).textContent = text; }
+function svgEl(tag, attrs, text) {
+  const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  return e;
 }
 
-function monthYearLabelFull(yyyy_mm) {
-  const parts = yyyy_mm.split('-');
-  return MONTH_NAMES_FULL[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+// "lowest on record" / "highest on record" for a 12-month average, against every earlier month
+function recordStatus(ser, mi) {
+  const cur = reading(ser, mi);
+  if (cur == null) return null;
+  let lo = Infinity, hi = -Infinity, n = 0;
+  for (let i = ser[0]; i < mi; i++) {
+    const v = reading(ser, i);
+    if (v == null) continue;
+    n++; lo = Math.min(lo, v); hi = Math.max(hi, v);
+  }
+  if (n < 36) return null;
+  return cur <= lo ? 'lowest on record' : cur >= hi ? 'highest on record' : null;
 }
 
-function setFreshnessLabel() {
-  const last = DATA.dates[DATA.dates.length - 1]; // "YYYY-MM"
-  const label = monthYearLabel(last);
-  // Latest trade data line in subheader
-  const ld = document.getElementById('latest-data');
-  if (ld) ld.textContent = 'Latest trade data: ' + label;
-  // Where Things Stand eyebrow date
-  const le = document.getElementById('lede-eyebrow');
-  if (le) le.textContent = 'Where Things Stand · ' + monthYearLabelFull(last);
-  // Publication date — the day the data last changed, written by the publish pipeline
-  const pd = document.getElementById('pub-date');
-  if (pd && DATA.updated) {
-    const [uy, um, ud] = DATA.updated.split('-').map(Number);
-    pd.textContent = 'Updated: ' + MONTH_NAMES[um - 1] + ' ' + ud + ', ' + uy;
-  }
-  const dm = document.getElementById('dl-meta');
-  if (dm && DATA.download) {
-    dm.textContent = 'Data to ' + label + ' · ' + DATA.download.rows.toLocaleString('en-CA') + ' rows · ' + (DATA.download.bytes / 1e6).toFixed(1) + ' MB';
-  }
-  // Legacy freshness pill (no longer in DOM but kept defensive)
-  const f = document.getElementById('freshness');
-  if (f) f.textContent = 'Updated ' + label;
-  // Citation block
-  const c = document.getElementById('cite-text');
-  if (c) c.textContent = 'TL Economic Intelligence. Canadian Export Concentration Intelligence Tool · HHI. Data as of ' + label + '. https://tleconomicintel.com/hhi/';
+// ── Summary figures ─────────────────────────────────────────────
+function levelNote(ser, v) {
+  if (v == null) return 'Not enough export data for this view';
+  const status = recordStatus(ser, REF_MI);
+  return levelName(v) + ' concentration' + (status ? ', ' + status : '');
 }
 
+function renderStats() {
+  const ma = getSeries(state.geo, state.product, state.partner);
+  const v = reading(ma, REF_MI), prev = reading(ma, REF_MI - 12);
+  const phrase = PRODUCT_PHRASES[state.product];
+  setText('page-title', 'How concentrated are ' + geoName(state.geo) + "'s " + (phrase ? phrase + ' ' : '')
+    + 'exports' + (state.partner === 'exus' ? ' outside the US' : '') + '?');
 
-function renderLede() {
-  const bulletsEl = document.getElementById('lede-bullets');
-  if (!bulletsEl) return;
-  const k = state.geo + '|' + state.product + '|' + state.partner;
-  const lm = DATA.latestMi[k];
-  if (lm == null) { bulletsEl.innerHTML = '<li>No data available for this selection.</li>'; return; }
-  const serRaw = (DATA.seriesRaw || {})[k];
-  const curRaw = serRaw ? valueAt(serRaw, lm) : null;
-  const prevRaw = (serRaw && lm >= 12) ? valueAt(serRaw, lm - 12) : null;
-  const bullets = [];
+  setText('s1-label', '12-month average HHI, ' + refMonth());
+  setText('s1-value', v == null ? '—' : v.toFixed(2));
+  setText('s1-note', levelNote(ma, v));
 
-  // Build subject label from current filter state
-  const prodPhrase = productPhrase(state.product);
-  const geoPhrase = geoDisplay(state.geo);
-  const partnerClause = state.partner === 'exus' ? ' (excluding the US)' : '';
-  const subjectCap = prodPhrase.charAt(0).toUpperCase() + prodPhrase.slice(1) + ' exports from ' + geoPhrase + partnerClause;
+  const pct = pctChange(v, prev), note2 = $('s2-note');
+  setText('s2-label', 'Change from ' + refMonth(12));
+  setText('s2-value', pct == null ? '—' : signed(v - prev, 2));
+  note2.className = 'stat-note ' + changeClass(pct);
+  note2.textContent = pct == null ? 'No comparison available'
+    : signed(pct, 1) + '%, ' + (pct > 0.5 ? 'more concentrated' : pct < -0.5 ? 'less concentrated' : 'little changed');
 
-  // Bullet 1 — level + raw HHI
-  if (curRaw != null) {
-    const lvl = bandFor(curRaw);
-    if (lvl === 'n') {
-      bullets.push(subjectCap + ': <strong>no export data available</strong> for this combination');
-    } else {
-      const lvlName = lvl === 'h' ? 'highly concentrated' : (lvl === 'm' ? 'moderately concentrated' : 'low concentration');
-      bullets.push(subjectCap + ' are <strong>' + lvlName + '</strong> (HHI <strong>' + curRaw.toFixed(2) + '</strong>)');
-    }
-  }
+  setText('s3-value', v == null ? '—' : (1 / v).toFixed(1));
 
-  // Bullet 2 — equivalent partners
-  if (curRaw != null && curRaw > 0) {
-    const eff = 1 / curRaw;
-    bullets.push('Equivalent to ~<strong>' + eff.toFixed(1) + '</strong> large equal-sized trading partners');
-  }
-
-  // Bullet 3 — YoY change (raw)
-  if (curRaw != null && prevRaw != null && prevRaw > 0) {
-    const pts = curRaw - prevRaw;
-    const pct = (pts / prevRaw) * 100;
-    const dir = pts < 0 ? 'fell' : 'rose';
-    bullets.push('Concentration <strong>' + dir + '</strong> by ' + Math.abs(pts).toFixed(2) + ' points (or ' + Math.abs(pct).toFixed(1) + '%) year-over-year');
-  }
-
-  // Bullet 4 — ex-US reading (only when showing all partners)
-  if (state.partner === 'all') {
-    const kEx = state.geo + '|' + state.product + '|exus';
-    const lmEx = DATA.latestMi[kEx];
-    const serRawEx = (DATA.seriesRaw || {})[kEx];
-    const exVal = (lmEx != null && serRawEx) ? valueAt(serRawEx, lmEx) : null;
-    if (exVal != null && curRaw != null) {
-      const lvlEx = bandFor(exVal);
-      const lvlNameEx = lvlEx === 'h' ? 'high concentration' : (lvlEx === 'm' ? 'moderate concentration' : (lvlEx === 'n' ? 'no export data' : 'low concentration'));
-      const dir2 = exVal < curRaw ? 'drops' : 'rises';
-      bullets.push('Excluding the US, HHI ' + dir2 + ' to <strong>' + exVal.toFixed(2) + '</strong> — ' + lvlNameEx);
-    }
-  }
-
-  bulletsEl.innerHTML = bullets.map(b => '<li>' + b + '</li>').join('');
+  const other = state.partner === 'all' ? 'exus' : 'all';
+  const maO = getSeries(state.geo, state.product, other), vO = reading(maO, REF_MI);
+  setText('s4-label', other === 'exus' ? 'Excluding the US' : 'Including the US');
+  setText('s4-value', vO == null ? '—' : vO.toFixed(2));
+  setText('s4-note', levelNote(maO, vO));
 }
 
-function buildLinePath(series, s, e, sx, sy) {
-  if (!series) return '';
-  let path = '', inSeg = false;
+// ── Trend chart ─────────────────────────────────────────────────
+// Drawn in screen pixels at the chart's current size (redrawn on resize).
+const M = {left: 40, right: 12, top: 12, bottom: 24};
+const chart = {};   // the current drawing, for the hover readout
+
+function linePath(ser, s, e, sx, sy) {   // months with no reading break the line
+  let d = '', on = false;
   for (let mi = s; mi <= e; mi++) {
-    const v = valueAt(series, mi);
-    if (v == null) { inSeg = false; }
-    else { path += (inSeg ? ' L' : 'M') + sx(mi).toFixed(1) + ',' + sy(v).toFixed(1); inSeg = true; }
+    const v = reading(ser, mi);
+    if (v == null) { on = false; continue; }
+    d += (on ? 'L' : 'M') + sx(mi).toFixed(1) + ',' + sy(v).toFixed(1);
+    on = true;
   }
-  return path;
-}
-
-function drawAxes(svg, s, e, yMin, yMax, ML, MR, MT, MB, W, H, sx, sy) {
-  const yTicks = [];
-  const yRange = yMax - yMin;
-  const step = yRange > 0.5 ? 0.25 : (yRange > 0.2 ? 0.1 : 0.05);
-  for (let v = yMin; v <= yMax + 0.001; v += step) yTicks.push(Math.round(v * 100) / 100);
-  yTicks.forEach(t => {
-    const y = sy(t);
-    svg.appendChild(el(svg, 'line', {x1: ML, y1: y, x2: W - MR, y2: y, stroke: 'var(--color-border-tertiary)', 'stroke-width': '0.5'}));
-    const tx = el(svg, 'text', {x: ML - 4, y: y + 3, 'font-size': 9, fill: 'var(--color-text-tertiary)', 'text-anchor': 'end'});
-    tx.textContent = t.toFixed(2);
-    svg.appendChild(tx);
-  });
-  const yearStarts = [];
-  for (let mi = s; mi <= e; mi++) if (DATA.dates[mi].slice(5) === '01') yearStarts.push(mi);
-  const stride = Math.max(1, Math.ceil(yearStarts.length / 7));
-  yearStarts.forEach((mi, i) => {
-    if (i % stride !== 0) return;
-    const x = sx(mi);
-    const tx = el(svg, 'text', {x: x, y: H - 6, 'font-size': 9, fill: 'var(--color-text-tertiary)', 'text-anchor': 'middle'});
-    tx.textContent = DATA.dates[mi].slice(0, 4);
-    svg.appendChild(tx);
-  });
-}
-
-function geoDisplay(g) { return g === 'CA' ? 'Canada' : DATA.geo_names[g]; }
-function productPhrase(p) {
-  const map = {
-    'Total': 'all merchandise',
-    'Energy': 'energy product',
-    'Farm/Food': 'farm and food product',
-    'Metal ores': 'metal ore',
-    'Metal prod': 'metal product',
-    'Chemicals': 'chemical and plastic product',
-    'Forestry': 'forestry and building material',
-    'Machinery': 'industrial machinery',
-    'Electrical': 'electrical and electronic',
-    'Motor veh': 'motor vehicle and parts',
-    'Aircraft': 'aircraft and transport equipment',
-    'Consumer': 'consumer goods',
-    'Special': 'special transactions',
-  };
-  return map[p] || p.toLowerCase();
-}
-
-
-
-function renderMovers() {
-  const movers = [];
-  Object.keys(DATA.seriesRaw || {}).forEach(k => {
-    const parts = k.split('|');
-    const g = parts[0], p = parts[1], c = parts[2];
-    if (g !== state.geo) return;          // scope to selected geography
-    if (c !== state.partner) return;
-    if (p === 'Total') return;
-    if (p === 'Special') return;
-    const lm = DATA.latestMi[k];
-    if (lm == null || lm < 12) return;
-    const ser = (DATA.seriesRaw || {})[k];
-    const cur = valueAt(ser, lm);
-    const prev = valueAt(ser, lm - 12);
-    if (cur == null || prev == null || prev <= 0) return;
-    movers.push({p: p, delta: cur - prev, prev: prev});
-  });
-  const up   = movers.filter(m => m.delta > 0).sort((a,b) => b.delta - a.delta).slice(0, 4);
-  const down = movers.filter(m => m.delta < 0).sort((a,b) => a.delta - b.delta).slice(0, 4);
-
-  function build(side, list, dir) {
-    const cont = document.getElementById('movers-' + side);
-    cont.innerHTML = '';
-    if (list.length === 0) { cont.innerHTML = '<div style="font-size:13px; color: var(--color-text-tertiary); padding: 4px 0;">No notable changes</div>'; return; }
-    list.forEach(m => {
-      const pct = (m.delta / m.prev) * 100;
-      const pctSign = pct >= 0 ? '+' : '−';
-      const ptsSign = m.delta >= 0 ? '+' : '−';
-      const ptsTxt = ptsSign + Math.abs(m.delta).toFixed(2);
-      const pctTxt = pctSign + Math.abs(pct).toFixed(1) + '%';
-      const row = document.createElement('div');
-      row.className = 'mover';
-      const prodLabel = PRODUCT_LONG_NAMES[m.p] || m.p;
-      row.innerHTML = '<span class="mover-name">' + prodLabel + '</span>' +
-        '<span class="mover-hint">↗</span>' +
-        '<span class="mover-delta ' + dir + '">' + ptsTxt + ' (' + pctTxt + ')</span>';
-      row.addEventListener('click', () => {
-        state.product = m.p;
-        document.getElementById('f-product').value = m.p;
-        renderAll();
-      });
-      cont.appendChild(row);
-    });
-  }
-  build('up', up, 'up');
-  build('down', down, 'down');
-
-  // Update geo and partner labels in subtitle
-  const geoEl = document.getElementById('movers-geo-label');
-  if (geoEl) geoEl.textContent = geoDisplay(state.geo);
-  const partnerEl = document.getElementById('movers-partner-label');
-  if (partnerEl) partnerEl.textContent = DATA.partner_names[state.partner];
-
-  // Dynamic title: "What's moved · March 2026 vs March 2025"
-  const refKey = state.geo + '|Total|' + state.partner;
-  const refLm = DATA.latestMi[refKey] != null ? DATA.latestMi[refKey] : DATA.latestMi['CA|Total|all'];
-  if (refLm != null && refLm >= 12) {
-    const curLbl = monthYearLabelFull(DATA.dates[refLm]);
-    const prevLbl = monthYearLabelFull(DATA.dates[refLm - 12]);
-    const titleEl = document.getElementById('movers-title');
-    if (titleEl) titleEl.textContent = "What's moved · " + curLbl + ' vs ' + prevLbl;
-  }
+  return d;
 }
 
 function renderHero() {
-  const svg = document.getElementById('hero');
+  const svg = $('hero');
+  const W = Math.round(svg.getBoundingClientRect().width) || 700;
+  const H = Math.round(svg.getBoundingClientRect().height) || 320;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
   svg.innerHTML = '';
-  const W = 700, H = 320, ML = 42, MR = 14, MT = 14, MB = 26;
-  const [s, e] = getDateRange();
-  const dur = Math.max(1, e - s);
-  // Only the currently-selected partner view is plotted, with raw (solid) + 12MA (dashed)
-  const c = state.partner;
-  const ma12 = getSeries(state.geo, state.product, c);
-  const raw  = getSeriesRaw(state.geo, state.product, c);
-  let maxV = 0.1, minV = Infinity;
-  for (const ser of [raw, ma12]) {
-    if (!ser) continue;
-    for (let mi = s; mi <= e; mi++) { const v = valueAt(ser, mi); if (v != null) { if (v > maxV) maxV = v; if (v < minV) minV = v; } }
+  const N = DATA.dates.length;
+  const s = state.window ? Math.max(0, N - state.window) : 0, e = N - 1;
+  const ma = getSeries(state.geo, state.product, state.partner);
+  const raw = getSeriesRaw(state.geo, state.product, state.partner);
+
+  let lo = Infinity, hi = 0.1;
+  for (const ser of [raw, ma]) for (let mi = s; mi <= e; mi++) {
+    const v = reading(ser, mi);
+    if (v != null) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
   }
-  if (!isFinite(minV)) minV = 0;
-  const yMax = Math.min(1.0, Math.ceil(maxV * 10) / 10);
-  // Dynamic floor: round down to nearest 0.05, with a small buffer below the minimum
-  const rawFloor = Math.max(0, minV - 0.04);
-  const yMin = Math.floor(rawFloor * 20) / 20;
-  const sx = mi => ML + ((mi - s) / dur) * (W - ML - MR);
-  const sy = v => MT + (1 - (v - yMin) / (yMax - yMin)) * (H - MT - MB);
-  // Threshold band fills removed — gridlines at 0.15/0.25 provide the boundary cues instead.
-  // === Economic event tints + policy milestone lines ===
-  const evG = el(svg, 'g', {'pointer-events': 'none'});
-  ECON_EVENTS.forEach(ev => {
-    const catOn = ev.cat === 'shock' ? state.showShock : (ev.cat === 'agreement' ? state.showAgreement : state.showFriction);
-    if (!catOn) return;
-    const miS = Math.max(0, ymToMi(ev.start));
-    if (miS > e || miS < s) return;
-    const x1 = sx(Math.max(s, miS));
+  const yMax = Math.min(1, Math.ceil(hi * 10) / 10);
+  const yMin = Math.floor(Math.max(0, (isFinite(lo) ? lo : 0) - 0.04) * 20) / 20;
+  const x0 = M.left, x1 = W - M.right, y0 = M.top, y1 = H - M.bottom;
+  const sx = mi => x0 + (mi - s) / Math.max(1, e - s) * (x1 - x0);
+  const sy = v => y0 + (1 - (v - yMin) / (yMax - yMin)) * (y1 - y0);
 
-    if (ev.point) {
-      // Milestone: solid-ish dashed vertical line + small label flag near the top
-      evG.appendChild(el(svg, 'line', {x1: x1, y1: MT, x2: x1, y2: H - MB, stroke: ev.color, 'stroke-width': '1.2', 'stroke-dasharray': '4,3', opacity: '0.65'}));
-      const lblY = MT + (ev.labelRow === 1 ? 22 : 11);
-      const t = el(svg, 'text', {x: x1 + 3, y: lblY, 'font-size': '8', 'font-weight': '700', fill: ev.color, opacity: '0.85'});
-      t.textContent = ev.label;
-      evG.appendChild(t);
-    } else {
-      const miE = ev.end ? Math.min(DATA.dates.length - 1, ymToMi(ev.end)) : e;
-      if (miE < s) return;
-      const x2 = sx(Math.min(e, miE));
-      const w  = x2 - x1;
-      if (w < 2) return;
-      evG.appendChild(el(svg, 'rect', {x: x1, y: MT, width: w, height: H - MT - MB, fill: ev.color, opacity: '0.09'}));
-      evG.appendChild(el(svg, 'line', {x1: x1, y1: MT, x2: x1, y2: H - MB, stroke: ev.color, 'stroke-width': '0.7', 'stroke-dasharray': '2,3', opacity: '0.35'}));
-    }
-  });
-  svg.appendChild(evG);
+  // Labels go on top of the lines, outlined in the card colour so a line never runs through them
+  const labels = [];
+  const label = (x, y, text, color, attrs) => labels.push(svgEl('text', {x, y, fill: color, 'font-size': 10, 'font-weight': 600,
+    stroke: 'var(--card)', 'stroke-width': 3, 'stroke-linejoin': 'round', 'paint-order': 'stroke', ...attrs}, text));
 
-  // Threshold lines at HHI = 0.15 (Low→Mod, teal) and 0.25 (Mod→High, terracotta)
-  [{v: 0.15, label: 'Moderate ›0.15', color: '#5BA59A'}, {v: 0.25, label: 'High ›0.25', color: '#C75A35'}].forEach(({v, label, color}) => {
-    if (v <= yMin || v >= yMax) return;
-    const ty = sy(v);
-    svg.appendChild(el(svg, 'line', {x1: ML, y1: ty, x2: W - MR, y2: ty,
-      stroke: color, 'stroke-width': '1', opacity: '0.55'}));
-    const tl = el(svg, 'text', {x: W - MR - 3, y: ty - 3, 'font-size': '8', 'font-weight': '600',
-      'text-anchor': 'end', fill: color, opacity: '0.80'});
-    tl.textContent = label;
-    svg.appendChild(tl);
-  });
-
-  drawAxes(svg, s, e, yMin, yMax, ML, MR, MT, MB, W, H, sx, sy);
-  const yLabelLeft = el(svg, 'text', {'font-size': '9', fill: 'var(--color-text-tertiary)', 'text-anchor': 'middle', transform: 'translate(9,154) rotate(-90)'});
-  yLabelLeft.textContent = 'HHI';
-  svg.appendChild(yLabelLeft);
-
-  // Lines: 12MA = primary (solid, bold); raw = secondary (faint, dashed). Same colour, different weight.
-  const lineColor = 'var(--color-text-info)';
-  if (raw)  svg.appendChild(el(svg, 'path', {d: buildLinePath(raw,  s, e, sx, sy), fill: 'none', stroke: lineColor, 'stroke-width': '1.1', opacity: '0.60', 'stroke-dasharray': '3,3'}));
-  if (ma12) svg.appendChild(el(svg, 'path', {d: buildLinePath(ma12, s, e, sx, sy), fill: 'none', stroke: lineColor, 'stroke-width': '2.4', opacity: '0.95'}));
-
-  // Subtitle
-  const partnerLbl = DATA.partner_names[state.partner];
-  const geoLbl = DATA.geo_names[state.geo];
-  const prodLbl = PRODUCT_LONG_NAMES[state.product] || state.product;
-  document.getElementById('hero-subtitle').textContent = partnerLbl + ' · ' + geoLbl + ' · ' + prodLbl;
-
-  // === Tooltip overlay ===
-  // Group of vertical guide + circles + transparent overlay rect to capture mouse
-  const ttGroup = el(svg, 'g', {});
-  const guide = el(svg, 'line', {x1: 0, y1: MT, x2: 0, y2: H - MB, stroke: 'var(--color-text-tertiary)', 'stroke-width': '1', 'stroke-dasharray': '2,2', opacity: '0'});
-  ttGroup.appendChild(guide);
-  const dotRaw = el(svg, 'circle', {cx: 0, cy: 0, r: '3.5', fill: lineColor, stroke: '#FFFFFF', 'stroke-width': '1.5', opacity: '0'});
-  const dot12 = el(svg, 'circle', {cx: 0, cy: 0, r: '3.5', fill: lineColor, stroke: '#FFFFFF', 'stroke-width': '1.5', opacity: '0'});
-  ttGroup.appendChild(dotRaw); ttGroup.appendChild(dot12);
-  const overlay = el(svg, 'rect', {x: ML, y: MT, width: W - ML - MR, height: H - MT - MB, class: 'hero-overlay'});
-  ttGroup.appendChild(overlay);
-  svg.appendChild(ttGroup);
-
-  const tip = document.getElementById('hero-tooltip');
-  function fmtPct(prev, cur) {
-    if (prev == null || cur == null || prev <= 0) return null;
-    const pts = cur - prev;
-    const pct = (pts / prev) * 100;
-    return {pts: pts, pct: pct};
-  }
-  function fmtYoy(label, prev, cur) {
-    const yoy = fmtPct(prev, cur);
-    if (yoy == null) return label + ': no 12M comparison';
-    const sign = yoy.pts > 0 ? '+' : (yoy.pts < 0 ? '−' : '');
-    const cls = yoy.pts > 0.005 ? 'pos' : (yoy.pts < -0.005 ? 'neg' : 'flat');
-    const pctSign = yoy.pct > 0 ? '+' : (yoy.pct < 0 ? '−' : '');
-    return '<span class="' + cls + '">' + label + ': ' + sign + Math.abs(yoy.pts).toFixed(2) + ' (' + pctSign + Math.abs(yoy.pct).toFixed(1) + '%) YoY</span>';
-  }
-  function hideTip() {
-    tip.style.display = 'none';
-    guide.setAttribute('opacity', '0');
-    dotRaw.setAttribute('opacity', '0');
-    dot12.setAttribute('opacity', '0');
-  }
-  overlay.addEventListener('mouseleave', hideTip);
-  overlay.addEventListener('mousemove', function(evt) {
-    // Map clientX to SVG x, then to month index
-    const pt = svg.createSVGPoint();
-    pt.x = evt.clientX; pt.y = evt.clientY;
-    const ctm = svg.getScreenCTM();
-    if (!ctm) return;
-    const svgPt = pt.matrixTransform(ctm.inverse());
-    const t = (svgPt.x - ML) / (W - ML - MR);
-    if (t < 0 || t > 1) { hideTip(); return; }
-    const miFloat = s + t * dur;
-    const mi = Math.max(s, Math.min(e, Math.round(miFloat)));
-    const vRaw = raw ? valueAt(raw, mi) : null;
-    const v12  = ma12 ? valueAt(ma12, mi) : null;
-    if (vRaw == null && v12 == null) { hideTip(); return; }
-    const vRawPrev = raw && mi >= 12 ? valueAt(raw, mi - 12) : null;
-    const v12Prev  = ma12 && mi >= 12 ? valueAt(ma12, mi - 12) : null;
-    const x = sx(mi);
-    guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.setAttribute('opacity', '0.6');
-    if (vRaw != null) { dotRaw.setAttribute('cx', x); dotRaw.setAttribute('cy', sy(vRaw)); dotRaw.setAttribute('opacity', '0.9'); } else dotRaw.setAttribute('opacity', '0');
-    if (v12  != null) { dot12.setAttribute('cx',  x); dot12.setAttribute('cy',  sy(v12 )); dot12.setAttribute('opacity', '0.9'); } else dot12.setAttribute('opacity', '0');
-    // Build tooltip content
-    const monthLbl = monthYearLabelFull(DATA.dates[mi]);
-    let html = '<div class="ht-month">' + monthLbl + '</div>';
-    if (vRaw != null) html += '<div class="ht-row"><span class="ht-label">Raw HHI</span><span class="ht-val">' + vRaw.toFixed(2) + '</span></div>';
-    if (v12  != null) html += '<div class="ht-row"><span class="ht-label">12-month MA</span><span class="ht-val">' + v12.toFixed(2) + '</span></div>';
-    let yoyLines = [];
-    if (vRaw != null) yoyLines.push(fmtYoy('Raw', vRawPrev, vRaw));
-    if (v12  != null) yoyLines.push(fmtYoy('12MA', v12Prev, v12));
-    if (yoyLines.length) html += '<div class="ht-yoy">' + yoyLines.join('<br>') + '</div>';
-    tip.innerHTML = html;
-    tip.style.display = 'block';
-    // Position tooltip near cursor, clamped to card width
-    const card = svg.closest('.card');
-    const cardBox = card.getBoundingClientRect();
-    const svgBox = svg.getBoundingClientRect();
-    const dotPxX = svgBox.left + (x / W) * svgBox.width;
-    const dotPxY = svgBox.top  + (sy(v12 != null ? v12 : vRaw) / H) * svgBox.height;
-    let leftPx = dotPxX - cardBox.left + 12;
-    let topPx  = dotPxY - cardBox.top - 12;
-    if (leftPx + 200 > cardBox.width) leftPx = dotPxX - cardBox.left - 200;
-    if (topPx < 0) topPx = 8;
-    tip.style.left = leftPx + 'px';
-    tip.style.top  = topPx  + 'px';
-  });
-  renderEventStrip(s, e, sx);
-}
-
-function renderEventStrip(s, e, sx) {
-  const strip = document.getElementById('event-strip');
-  if (!strip) return;
-  strip.innerHTML = '';
-  const W = 700, ML = 42, MR = 14;
-  // Three category rows: commodity=0, macro=1, policy=2
-  const ROW = {shock: 0, agreement: 1, friction: 2};
-  const ROW_Y  = [3, 19, 35];   // top-y of each row in the strip SVG
-  const ROW_H  = 13;             // height of each row
-  const catVisible = {shock: state.showShock, agreement: state.showAgreement, friction: state.showFriction};
-
-  // Row track backgrounds + labels
-  Object.entries(EVENT_CATS).forEach(([cat, meta]) => {
-    if (!catVisible[cat]) return;
-    const ry = ROW_Y[ROW[cat]];
-    strip.appendChild(el(strip, 'rect', {x: ML, y: ry, width: W - ML - MR, height: ROW_H, fill: meta.color, opacity: '0.05', rx: '2'}));
-    const lbl = el(strip, 'text', {x: ML - 3, y: ry + ROW_H - 3, 'font-size': '6.5', 'font-weight': '700', 'text-anchor': 'end', fill: meta.color, opacity: '0.70', 'letter-spacing': '0.04em'});
-    lbl.textContent = meta.label.toUpperCase().slice(0, 5);
-    strip.appendChild(lbl);
-  });
-
-  ECON_EVENTS.forEach(ev => {
-    const catOn = ev.cat === 'shock' ? state.showShock : (ev.cat === 'agreement' ? state.showAgreement : state.showFriction);
-    if (!catOn) return;
-    const miS = Math.max(0, ymToMi(ev.start));
-    const miE = ev.end ? Math.min(DATA.dates.length - 1, ymToMi(ev.end)) : e;
-    if (miS > e || miE < s) return;
-    const x1 = sx(Math.max(s, miS));
-    const x2 = sx(Math.min(e, miE));
-    const rowIdx = ROW[ev.cat];
-    const ry = ROW_Y[rowIdx];
-
-    if (ev.point) {
-      // Milestone: dashed vertical line across all rows + small flag label
-      strip.appendChild(el(strip, 'line', {x1: x1, y1: 2, x2: x1, y2: 48, stroke: ev.color, 'stroke-width': '1.2', 'stroke-dasharray': '2,2', opacity: '0.85', 'pointer-events': 'none'}));
-      const t = el(strip, 'text', {x: x1 + 2, y: ry + ROW_H - 3, 'font-size': '7', 'font-weight': '600', fill: ev.color, opacity: '0.9', 'pointer-events': 'none'});
-      t.textContent = ev.label;
-      strip.appendChild(t);
-    } else {
-      const w = x2 - x1;
-      if (w < 2) return;
-      // Period bar
-      strip.appendChild(el(strip, 'rect', {x: x1, y: ry, width: w, height: ROW_H, fill: ev.color, opacity: '0.22', rx: '2', 'pointer-events': 'none'}));
-      strip.appendChild(el(strip, 'line', {x1: x1, y1: ry, x2: x1, y2: ry + ROW_H, stroke: ev.color, 'stroke-width': '1', opacity: '0.60', 'pointer-events': 'none'}));
-      if (w >= 44) {
-        const t = el(strip, 'text', {x: x1 + w / 2, y: ry + ROW_H - 3, 'font-size': '7.5', 'font-weight': '600', 'text-anchor': 'middle', fill: ev.color, opacity: '0.90', 'pointer-events': 'none'});
-        t.textContent = ev.label;
-        strip.appendChild(t);
-      } else if (w >= 14) {
-        const t = el(strip, 'text', {x: x1 + 2, y: ry + ROW_H - 3, 'font-size': '7', 'font-weight': '600', fill: ev.color, opacity: '0.90', 'pointer-events': 'none'});
-        t.textContent = ev.label.split(/[ -]/)[0]; // first word only when tight
-        strip.appendChild(t);
+  if (state.events) {
+    const g = svgEl('g', {'pointer-events': 'none'});
+    ECON_EVENTS.forEach(ev => {
+      const a = ymToMi(ev.start), color = EVENT_CATS[ev.cat].color;
+      if (a > e || (ev.point && a < s)) return;
+      if (ev.point) {
+        g.appendChild(svgEl('line', {x1: sx(a), y1: y0, x2: sx(a), y2: y1, stroke: color, 'stroke-width': 1.2, 'stroke-dasharray': '4,3', opacity: 0.65}));
+        label(sx(a) + 4, y0 + (ev.labelRow ? 26 : 12), ev.label, color, {'font-weight': 700});
+      } else {
+        const b = ev.end ? Math.min(e, ymToMi(ev.end)) : e;
+        if (b < s) return;
+        g.appendChild(svgEl('rect', {x: sx(Math.max(s, a)), y: y0, width: Math.max(0, sx(b) - sx(Math.max(s, a))), height: y1 - y0, fill: color, opacity: 0.09}));
       }
+    });
+    svg.appendChild(g);
+  }
+
+  // Gridlines and axes
+  const span = yMax - yMin, step = span > 0.5 ? 0.25 : span > 0.2 ? 0.1 : 0.05;
+  for (let t = Math.ceil(yMin / step - 1e-9) * step; t <= yMax + 0.001; t += step) {   // round values only
+    const y = sy(t);
+    svg.appendChild(svgEl('line', {x1: x0, y1: y, x2: x1, y2: y, stroke: 'var(--border)', 'stroke-width': 1}));
+    svg.appendChild(svgEl('text', {x: x0 - 6, y: y + 4, 'font-size': 11, fill: 'var(--text-3)', 'text-anchor': 'end'}, t.toFixed(2)));
+  }
+  const years = [];
+  for (let mi = s; mi <= e; mi++) if (DATA.dates[mi].endsWith('-01')) years.push(mi);
+  const stride = Math.ceil(years.length / Math.max(2, Math.floor((x1 - x0) / 56)));
+  years.forEach((mi, i) => {
+    if (i % stride === 0) svg.appendChild(svgEl('text', {x: sx(mi), y: H - 6, 'font-size': 11, fill: 'var(--text-3)', 'text-anchor': 'middle'}, DATA.dates[mi].slice(0, 4)));
+  });
+
+  if (!isFinite(lo)) {
+    svg.appendChild(svgEl('text', {x: (x0 + x1) / 2, y: (y0 + y1) / 2, 'font-size': 13, fill: 'var(--text-3)', 'text-anchor': 'middle'},
+      'No exports recorded in this period'));
+  }
+
+  // Concentration thresholds, labelled at the left so the latest readings on the right stay clear
+  [[0.15, 'Moderate 0.15', 'var(--band-l)'], [0.25, 'High 0.25', 'var(--band-h)']].forEach(([v, text, color]) => {
+    if (v <= yMin || v >= yMax) return;
+    svg.appendChild(svgEl('line', {x1: x0, y1: sy(v), x2: x1, y2: sy(v), stroke: color, 'stroke-width': 1, opacity: 0.7}));
+    label(x0 + 4, sy(v) - 4, text, color);
+  });
+
+  // Series: monthly (dashed, faint) under the 12-month average, which ends in a dot
+  if (raw) svg.appendChild(svgEl('path', {d: linePath(raw, s, e, sx, sy), fill: 'none', stroke: 'var(--line)', 'stroke-width': 1.1, opacity: 0.6, 'stroke-dasharray': '3,3'}));
+  if (ma) {
+    svg.appendChild(svgEl('path', {d: linePath(ma, s, e, sx, sy), fill: 'none', stroke: 'var(--line)', 'stroke-width': 2.5, 'stroke-linejoin': 'round'}));
+    let last = e;
+    while (last >= s && reading(ma, last) == null) last--;
+    if (last >= s) svg.appendChild(svgEl('circle', {cx: sx(last), cy: sy(reading(ma, last)), r: 4, fill: 'var(--line)'}));
+  }
+  svg.append(...labels);
+
+  // Hover readout elements
+  const guide = svgEl('line', {y1: y0, y2: y1, stroke: 'var(--text-3)', 'stroke-width': 1, 'stroke-dasharray': '2,2', visibility: 'hidden'});
+  const dot = svgEl('circle', {r: 4, fill: 'var(--line)', stroke: 'var(--card)', 'stroke-width': 2, visibility: 'hidden'});
+  svg.append(guide, dot);
+  Object.assign(chart, {W, s, e, x0, x1, sx, sy, ma, raw, guide, dot});
+
+  setText('hero-subtitle', geoName(state.geo) + ' · ' + productName(state.product) + ' · ' + partnerName(state.partner));
+  hideReadout();
+  renderEventStrip();
+}
+
+function showReadout(evt) {
+  const {s, e, x0, x1, sx, sy, ma, raw, guide, dot} = chart;
+  const box = $('hero').getBoundingClientRect();
+  const t = (evt.clientX - box.left - x0) / (x1 - x0);
+  if (t < 0 || t > 1) { hideReadout(); return; }
+  const mi = Math.round(s + t * (e - s));
+  const v12 = reading(ma, mi), vRaw = reading(raw, mi);
+  if (v12 == null && vRaw == null) { hideReadout(); return; }
+  const x = sx(mi), y = sy(v12 != null ? v12 : vRaw);
+  guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.setAttribute('visibility', 'visible');
+  dot.setAttribute('cx', x); dot.setAttribute('cy', y); dot.setAttribute('visibility', 'visible');
+
+  const row = (label, value) => '<div class="ht-row"><span>' + label + '</span><strong>' + value + '</strong></div>';
+  const prev = reading(ma, mi - 12), pct = pctChange(v12, prev);
+  const tip = $('hero-tooltip');
+  tip.innerHTML = '<div class="ht-month">' + monthLabel(DATA.dates[mi]) + '</div>'
+    + (v12 != null ? row('12-month average', v12.toFixed(2)) : '')
+    + (vRaw != null ? row('Monthly', vRaw.toFixed(2)) : '')
+    + (pct != null ? row('Year on year', signed(v12 - prev, 2) + ' (' + signed(pct, 1) + '%)') : '');
+  tip.style.display = 'block';
+
+  // Beside the point, flipped to the left near the right edge, kept inside the card
+  const card = $('trend').getBoundingClientRect();
+  const px = box.left - card.left + x, py = box.top - card.top + y;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = (px + 14 + w > card.width - 8 ? Math.max(8, px - 14 - w) : px + 14) + 'px';
+  tip.style.top = (py - h - 10 < 8 ? py + 14 : py - h - 10) + 'px';
+}
+
+function hideReadout() {
+  $('hero-tooltip').style.display = 'none';
+  if (chart.guide) { chart.guide.setAttribute('visibility', 'hidden'); chart.dot.setAttribute('visibility', 'hidden'); }
+}
+
+function eventRange(ev) {
+  return monthLabel(ev.start, true) + (ev.point ? '' : ' to ' + (ev.end ? monthLabel(ev.end, true) : 'present'));
+}
+
+function showEvent(ev) {
+  const p = $('event-desc'), b = document.createElement('strong');
+  b.textContent = ev.label;
+  b.style.color = EVENT_CATS[ev.cat].color;
+  p.replaceChildren(b, ' (' + eventRange(ev) + '). ' + ev.desc);
+  p.hidden = false;
+}
+
+function renderEventStrip() {
+  const strip = $('event-strip');
+  strip.toggleAttribute('hidden', !state.events);   // SVG elements have no .hidden property
+  document.querySelectorAll('.legend-ev').forEach(n => { n.hidden = !state.events; });
+  if (!state.events) { $('event-desc').hidden = true; return; }
+  const {W, s, e, x0, x1, sx} = chart, ROW_H = 14;
+  const row = {shock: 0, agreement: 1, friction: 2};
+  strip.setAttribute('viewBox', '0 0 ' + W + ' 50');
+  strip.innerHTML = '';
+  Object.keys(EVENT_CATS).forEach(cat => {
+    strip.appendChild(svgEl('rect', {x: x0, y: 2 + row[cat] * 16, width: x1 - x0, height: ROW_H, rx: 2, fill: EVENT_CATS[cat].color, opacity: 0.06}));
+  });
+  ECON_EVENTS.forEach(ev => {
+    const a = ymToMi(ev.start), b = ev.point ? a : (ev.end ? Math.min(e, ymToMi(ev.end)) : e);
+    if (a > e || b < s) return;
+    const color = EVENT_CATS[ev.cat].color, y = 2 + row[ev.cat] * 16;
+    const left = sx(Math.max(s, a)), width = ev.point ? 0 : sx(b) - left;
+    const g = svgEl('g', {class: 'ev', tabindex: 0, role: 'button', 'aria-label': ev.label + ', ' + eventRange(ev)});
+    g.appendChild(svgEl('title', {}, ev.label + ' (' + eventRange(ev) + ')'));
+    if (ev.point) {
+      g.appendChild(svgEl('rect', {class: 'ev-hit', x: left - 5, y: y, width: 10, height: ROW_H, fill: 'transparent'}));
+      g.appendChild(svgEl('line', {x1: left, y1: 0, x2: left, y2: 50, stroke: color, 'stroke-width': 1.2, 'stroke-dasharray': '2,2'}));
+      g.appendChild(svgEl('text', {x: left + 3, y: y + 11, 'font-size': 10, 'font-weight': 600, fill: color}, ev.label));
+    } else {
+      g.appendChild(svgEl('rect', {class: 'ev-bar ev-hit', x: left, y: y, width: Math.max(3, width), height: ROW_H, rx: 2, fill: color, opacity: 0.25}));
+      const fits = ev.label.length * 6 + 8 <= width, first = ev.label.split(/[ \/-]/)[0];
+      const label = fits ? ev.label : first.length * 6 + 6 <= width ? first : '';
+      if (label) g.appendChild(svgEl('text', {x: left + width / 2, y: y + 11, 'font-size': 10, 'font-weight': 600, 'text-anchor': 'middle', fill: color}, label));
     }
+    g.addEventListener('click', () => showEvent(ev));
+    g.addEventListener('keydown', k => { if (k.key === 'Enter' || k.key === ' ') { k.preventDefault(); showEvent(ev); } });
+    strip.appendChild(g);
   });
 }
 
-
-function bandColor(v) {
-  const b = bandFor(v);
-  if (b === 'l') return '#5BA59A';
-  if (b === 'm') return '#E8B470';
-  if (b === 'h') return '#C75A35';
-  return 'var(--color-text-tertiary)';
-}
-
-function rankLabel(v) {
-  // HHI value displayed only — YoY removed for cleaner bars.
-  return v.toFixed(2);
-}
-
-function renderRankings() {
-  // Refresh titles and subtitles (dynamic month-year + partner/product context)
-  const refLm = DATA.latestMi['CA|Total|all'];
-  const monthLbl = (refLm != null) ? monthYearLabelFull(DATA.dates[refLm]) : '—';
-  const partnerLbl = DATA.partner_names[state.partner];
-  const geoLbl = DATA.geo_names[state.geo];
-  const prodLbl = PRODUCT_LONG_NAMES[state.product] || state.product;
-  const tGeo = document.getElementById('rank-geo-title'); if (tGeo) tGeo.textContent = 'Provincial ranking · ' + monthLbl;
-  const sGeo = document.getElementById('rank-geo-sub');   if (sGeo) sGeo.textContent = partnerLbl + ' · ' + prodLbl;
-  const tProd = document.getElementById('rank-prod-title'); if (tProd) tProd.textContent = 'Product ranking · ' + monthLbl;
-  const sProd = document.getElementById('rank-prod-sub');  if (sProd) sProd.textContent = partnerLbl + ' · ' + geoLbl;
-
-  // === Provinces ranked ===
-  const svgGeo = document.getElementById('rank-geo');
-  svgGeo.innerHTML = '';
-  let caVal = null;
-  const dataG = DATA.geos.map(g => {
-    const k = g + '|' + state.product + '|' + state.partner;
-    const lm = DATA.latestMi[k];
-    const ser = (DATA.seriesRaw || {})[k];
-    const v = lm != null ? valueAt(ser, lm) : null;
-    return {name: g, v: v};
-  }).filter(d => d.v != null);
-  const caEntry = dataG.find(d => d.name === 'CA');
-  if (caEntry) caVal = caEntry.v;
-  const provinces = dataG.filter(d => d.name !== 'CA').sort((a,b) => b.v - a.v);
-  const WG = 720, MLG = 60, MRG = 40, rowHG = 18, capH = 22;
-  const totalHG = capH + provinces.length * rowHG + 4;
-  svgGeo.setAttribute('viewBox', '0 0 ' + WG + ' ' + totalHG);
-  const maxVG = Math.max.apply(null, provinces.map(d => d.v).concat([caVal || 0, 0.1]));
-  // CA reference strip
-  if (caVal != null) {
-    const caX = MLG + (caVal / maxVG) * (WG - MLG - MRG);
-    svgGeo.appendChild(el(svgGeo, 'line', {x1: caX, y1: capH, x2: caX, y2: totalHG - 2, stroke: 'var(--color-text-tertiary)', 'stroke-width': '1', 'stroke-dasharray': '3,3'}));
-    svgGeo.appendChild(el(svgGeo, 'text', {x: caX + 4, y: 12, 'font-size': 10, fill: 'var(--color-text-tertiary)', 'font-weight': '600'})).textContent = 'national ' + caVal.toFixed(2);
-  }
-  provinces.forEach((d, i) => {
-    const y = capH + i * rowHG + 2;
-    const tlIsSelected = d.name === state.geo;
-    const tl = el(svgGeo, 'text', {x: MLG - 4, y: y + 11, 'font-size': 10, fill: tlIsSelected ? 'var(--color-text-primary)' : 'var(--color-text-secondary)', 'text-anchor': 'end', 'font-weight': tlIsSelected ? '700' : '400'});
-    tl.textContent = d.name;
-    svgGeo.appendChild(tl);
-    const w = (d.v / maxVG) * (WG - MLG - MRG);
-    const isSelected = d.name === state.geo;
-    const barAttrs = {x: MLG, y: y + 2, width: w, height: rowHG - 6, fill: bandColor(d.v), opacity: 0.92};
-    if (isSelected) { barAttrs.stroke = 'var(--color-text-primary)'; barAttrs['stroke-width'] = '2'; }
-    svgGeo.appendChild(el(svgGeo, 'rect', barAttrs));
-    const tv = el(svgGeo, 'text', {x: MLG + w + 6, y: y + 11, 'font-size': 10, fill: 'var(--color-text-primary)', 'font-weight': '500'});
-    tv.textContent = rankLabel(d.v);
-    svgGeo.appendChild(tv);
+// ── Comparison table: products or provinces, sortable ──────────
+const YTD = (function () {
+  const ref = DATA.dates[REF_MI], y = +ref.slice(0, 4), m = +ref.slice(5);
+  const cur = [], prev = [];
+  DATA.dates.forEach((d, mi) => {
+    if (+d.slice(5) > m) return;
+    if (+d.slice(0, 4) === y) cur.push(mi); else if (+d.slice(0, 4) === y - 1) prev.push(mi);
   });
+  const range = yr => (m === 1 ? '' : 'Jan–') + MONTHS[m - 1].slice(0, 3) + ' ' + yr;
+  return {cur, prev, range: range(y), prevRange: range(y - 1)};
+})();
 
-  // === Products ranked ===
-  const svgP = document.getElementById('rank-prod');
-  svgP.innerHTML = '';
-  const dataP = DATA.products.map(p => {
-    const k = state.geo + '|' + p + '|' + state.partner;
-    const lm = DATA.latestMi[k];
-    const ser = (DATA.seriesRaw || {})[k];
-    const v = lm != null ? valueAt(ser, lm) : null;
-    return {name: p, v: v};
-  }).filter(d => d.v != null && d.name !== 'Special').sort((a,b) => b.v - a.v);
-  const WP = 720, MLP = 60, MRP = 40, rowHP = 18;
-  const totalHP = dataP.length * rowHP + 4;
-  svgP.setAttribute('viewBox', '0 0 ' + WP + ' ' + totalHP);
-  const maxVP = Math.max.apply(null, dataP.map(d => d.v).concat([0.1]));
-  dataP.forEach((d, i) => {
-    const y = i * rowHP + 2;
-    const isSpecial = d.name === 'Special';
-    const op = isSpecial ? 0.45 : 0.92;
-    const labelStyle = isSpecial ? 'font-style: italic;' : '';
-    const tl = el(svgP, 'text', {x: MLP - 4, y: y + 10, 'font-size': 10, fill: isSpecial ? 'var(--color-text-tertiary)' : 'var(--color-text-secondary)', 'text-anchor': 'end', style: labelStyle});
-    tl.textContent = d.name + (isSpecial ? ' †' : '');
-    svgP.appendChild(tl);
-    const w = (d.v / maxVP) * (WP - MLP - MRP);
-    svgP.appendChild(el(svgP, 'rect', {x: MLP, y: y + 2, width: w, height: rowHP - 5, fill: bandColor(d.v), opacity: op}));
-    const tv = el(svgP, 'text', {x: MLP + w + 6, y: y + 10, 'font-size': 10, fill: isSpecial ? 'var(--color-text-tertiary)' : 'var(--color-text-primary)', 'font-weight': isSpecial ? '400' : '500'});
-    tv.textContent = rankLabel(d.v);
-    svgP.appendChild(tv);
-  });
-  // Special-bucket footnote
-  const noteY = dataP.length * rowHP + 14;
-  if (dataP.some(d => d.name === 'Special')) {
-    const fn = el(svgP, 'text', {x: 0, y: noteY, 'font-size': 8, fill: 'var(--color-text-tertiary)', 'font-style': 'italic'});
-    fn.textContent = '† Special is the NAPCS residual bucket — concentration changes here are usually economically meaningless.';
-    svgP.appendChild(fn);
-    svgP.setAttribute('viewBox', '0 0 ' + WP + ' ' + (noteY + 6));
-  }
+function ytdAvg(ser, mis) {
+  let sum = 0, n = 0;
+  mis.forEach(mi => { const v = valueAt(ser, mi); if (v != null) { sum += v; n++; } });
+  return sum ? sum / n : null;
 }
 
-function renderTable() {
-  const t = document.getElementById('drill');
-  if (!t) return;
-  t.innerHTML = '';
+function rowFor(val, name, g, p) {
+  const ma = getSeries(g, p, state.partner), raw = getSeriesRaw(g, p, state.partner);
+  const v = reading(ma, REF_MI), ytd = raw && ytdAvg(raw, YTD.cur);
+  return {val, name, ma: v, yoy: pctChange(v, reading(ma, REF_MI - 12)),
+          ytd: ytd, ytdChg: pctChange(ytd, raw && ytdAvg(raw, YTD.prev))};
+}
 
-  // ── YTD window ──────────────────────────────────────────────────
-  const refLm = DATA.latestMi['CA|Total|all'];
-  if (refLm == null) return;
-  const refDate = DATA.dates[refLm];
-  const curYear = parseInt(refDate.slice(0, 4));
-  const curMon  = parseInt(refDate.slice(5, 7)); // 1-12
-  const prevYear = curYear - 1;
-  const endMonName  = MONTH_NAMES[curMon - 1];
-  const ytdRange  = (curMon === 1) ? endMonName + ' ' + curYear  : 'Jan–' + endMonName + ' ' + curYear;
-  const prevRange = (curMon === 1) ? endMonName + ' ' + prevYear : 'Jan–' + endMonName + ' ' + prevYear;
+const CMP_COLS = [
+  {key: 'name'},
+  {key: 'ma',     label: 'HHI, 12-month average', sub: () => refMonth(0, true)},
+  {key: 'yoy',    label: 'Change',       sub: () => 'from ' + refMonth(12, true)},
+  {key: 'ytd',    label: 'Year to date', sub: () => YTD.range},
+  {key: 'ytdChg', label: 'Change',       sub: () => 'from ' + YTD.prevRange},
+];
 
-  // Pre-build month-index arrays for current YTD and prior-year YTD
-  const ytdMis = [], prevMis = [];
-  for (let mi = 0; mi < DATA.dates.length; mi++) {
-    const d = DATA.dates[mi];
-    if (!d) continue;
-    const y = parseInt(d.slice(0, 4));
-    const m = parseInt(d.slice(5, 7));
-    if      (y === curYear  && m <= curMon) ytdMis.push(mi);
-    else if (y === prevYear && m <= curMon) prevMis.push(mi);
-  }
+function pctCell(v) {
+  return '<td class="r num ' + changeClass(v) + '">' + (v == null ? '—' : signed(v, 1) + '%') + '</td>';
+}
 
-  function ytdAvg(ser, mis) {
-    if (!ser) return null;
-    let sum = 0, cnt = 0;
-    mis.forEach(mi => { const v = valueAt(ser, mi); if (v != null) { sum += v; cnt++; } });
-    return cnt > 0 ? sum / cnt : null;
-  }
+function rowHtml(r, selected) {
+  const hhi = r.ma == null ? '—'
+    : '<span class="hhi-cell"><span class="bar-track" aria-hidden="true"><span class="bar-fill" style="width:' + (r.ma * 100).toFixed(1)
+      + '%;background:' + BAND_COLORS[bandFor(r.ma)] + '"></span></span>' + r.ma.toFixed(2)
+      + '<span class="sr-only"> (' + levelName(r.ma) + ')</span></span>';
+  return '<tr data-val="' + r.val + '"' + (selected ? ' class="is-selected"' : '') + '>'
+    + '<td><button type="button" class="row-btn"' + (selected ? ' aria-current="true"' : '') + '>' + r.name + '</button></td>'
+    + '<td class="r num">' + hhi + '</td>'
+    + pctCell(r.yoy)
+    + '<td class="r num">' + (r.ytd == null ? '—' : r.ytd.toFixed(2)) + '</td>'
+    + pctCell(r.ytdChg)
+    + '</tr>';
+}
 
-  // ── Title / subtitle ────────────────────────────────────────────
-  const titleEl = document.getElementById('drill-title');
-  if (titleEl) titleEl.textContent = 'Concentration by product group · year-to-date (' + ytdRange + ')';
-  const subEl = document.getElementById('drill-sub');
-  const partnerLbl = DATA.partner_names[state.partner];
-  const geoLbl = DATA.geo_names[state.geo] || 'Canada';
-  if (subEl) subEl.textContent = partnerLbl + ' · ' + geoLbl + ' · ' + ytdRange + ' vs ' + prevRange;
+function renderCompare(focusKey) {
+  const byProduct = state.by === 'product';
+  const ref = byProduct ? rowFor('Total', productName('Total'), state.geo, 'Total')
+                        : rowFor('CA', 'Canada', 'CA', state.product);
+  const rows = byProduct
+    ? DATA.products.filter(p => p !== 'Total' && p !== 'Special').map(p => rowFor(p, productName(p), state.geo, p))
+    : DATA.geos.filter(g => g !== 'CA').map(g => rowFor(g, geoName(g), g, state.product));
+  setText('cmp-title', byProduct ? 'Product categories, ' + geoName(state.geo) : 'Provinces, ' + productName(state.product).toLowerCase());
+  setText('cmp-sub', partnerName(state.partner) + '. Select a row to show it above.');
 
-  // ── Header ───────────────────────────────────────────────────────
-  const thead = document.createElement('thead');
-  const trH = document.createElement('tr');
-  trH.innerHTML =
-    '<th>Product</th>' +
-    '<th class="r">YTD avg HHI<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">' + ytdRange + '</span></th>' +
-    '<th class="r">YTD % change<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">vs ' + prevRange + '</span></th>' +
-    '<th>Concentration</th>';
-  thead.appendChild(trH);
-  t.appendChild(thead);
+  const k = state.sortKey, dir = state.sortDir;
+  rows.sort((a, b) => k === 'name' ? dir * a.name.localeCompare(b.name)
+    : a[k] == null ? (b[k] == null ? 0 : 1) : b[k] == null ? -1 : dir * (a[k] - b[k]));   // missing values last
 
-  // ── Rows ─────────────────────────────────────────────────────────
-  const tbody = document.createElement('tbody');
-  DATA.products.forEach(p => {
-    if (p === 'Special') return;
-    const key = state.geo + '|' + p + '|' + state.partner;
-    const sRaw = (DATA.seriesRaw || {})[key];
-    if (!sRaw) return;
+  const head = CMP_COLS.map(c => {
+    const sort = c.key === k ? ' aria-sort="' + (dir < 0 ? 'descending' : 'ascending') + '"' : '';
+    const label = c.label || (byProduct ? 'Product category' : 'Province');
+    return '<th scope="col"' + (c.sub ? ' class="r"' : '') + sort + '><button type="button" data-key="' + c.key + '">'
+      + '<span class="th-label">' + label + '</span>' + (c.sub ? '<span class="th-sub">' + c.sub() + '</span>' : '') + '</button></th>';
+  }).join('');
+  const selected = byProduct ? state.product : state.geo;
+  const t = $('cmp');
+  t.innerHTML = '<thead><tr>' + head + '</tr></thead>'
+    + '<tbody class="ref">' + rowHtml(ref, ref.val === selected) + '</tbody>'
+    + '<tbody>' + rows.map(r => rowHtml(r, r.val === selected)).join('') + '</tbody>';
+  if (focusKey) t.querySelector('th button[data-key="' + focusKey + '"]').focus();
+}
 
-    const cur  = ytdAvg(sRaw, ytdMis);
-    const prev = ytdAvg(sRaw, prevMis);
-    if (cur == null) return;
-    // HHI = 0 means no recorded exports for this combination — flag as N/A
-    if (cur === 0) {
-      const prodLabel0 = PRODUCT_LONG_NAMES[p] || p;
-      const tr0 = document.createElement('tr');
-      tr0.style.opacity = '0.55';
-      tr0.innerHTML =
-        '<td>' + prodLabel0 + '</td>' +
-        '<td class="r" style="color:var(--color-text-tertiary)">—</td>' +
-        '<td class="r" style="color:var(--color-text-tertiary)">—</td>' +
-        '<td><span style="color:var(--color-text-tertiary);font-size:12px;">No export data</span></td>';
-      tbody.appendChild(tr0);
+function initCompare() {
+  const t = $('cmp');
+  t.addEventListener('click', e => {
+    const sortBtn = e.target.closest('th button');
+    if (sortBtn) {
+      const key = sortBtn.dataset.key;
+      state.sortDir = state.sortKey === key ? -state.sortDir : key === 'name' ? 1 : -1;
+      state.sortKey = key;
+      renderCompare(key);
       return;
     }
-
-    const pct   = (prev != null && prev > 0) ? ((cur - prev) / prev) * 100 : null;
-
-    function fmtPct(v) {
-      if (v == null) return '<span style="color:var(--color-text-tertiary)">—</span>';
-      const sign = v > 0 ? '+' : (v < 0 ? '−' : '');
-      const style = v > 0.5 ? 'color:var(--color-text-danger);font-weight:600'
-                  : v < -0.5 ? 'color:var(--color-text-success);font-weight:600'
-                  : 'color:var(--color-text-secondary)';
-      return '<span style="' + style + '">' + sign + Math.abs(v).toFixed(1) + '%</span>';
+    const tr = e.target.closest('tbody tr');
+    if (!tr) return;
+    const val = tr.dataset.val;
+    if (state.by === 'product') { state.product = val; $('f-product').value = val; }
+    else { state.geo = val; $('f-geo').value = val; }
+    renderAll();
+    t.querySelector('tr[data-val="' + CSS.escape(val) + '"] .row-btn').focus({preventScroll: true});
+    // After a click, bring the updated summary into view if it has scrolled away.
+    if (e.detail > 0 && $('stats').getBoundingClientRect().top < 0) {
+      $('stats').scrollIntoView({behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'start'});
     }
-
-    let trendHtml;
-    if (pct == null) {
-      trendHtml = '<span style="color:var(--color-text-tertiary)">—</span>';
-    } else if (pct > 0.5) {
-      trendHtml = '<span class="pill pill-h">▲ More concentrated</span>';
-    } else if (pct < -0.5) {
-      trendHtml = '<span class="pill pill-l">▼ Less concentrated</span>';
-    } else {
-      trendHtml = '<span style="color:var(--color-text-secondary);font-size:12px;">— Unchanged</span>';
-    }
-
-    const prodLabel = PRODUCT_LONG_NAMES[p] || p;
-    const tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td>' + prodLabel + '</td>' +
-      '<td class="r" style="font-variant-numeric:tabular-nums;">' + cur.toFixed(2) + '</td>' +
-      '<td class="r">' + fmtPct(pct) + '</td>' +
-      '<td>' + trendHtml + '</td>';
-    tbody.appendChild(tr);
   });
-  t.appendChild(tbody);
+  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+    state.by = b.dataset.by;
+    document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    renderCompare();
+  }));
 }
 
-function renderEventDescriptions() {
-  const panel = document.getElementById('event-desc-panel');
-  if (!panel) return;
-  const catOn = {shock: state.showShock, agreement: state.showAgreement, friction: state.showFriction};
-  if (!Object.values(catOn).some(Boolean)) { panel.innerHTML = ''; panel.style.display = 'none'; return; }
-  panel.style.display = 'block';
-  let out = '';
-  Object.entries(EVENT_CATS).forEach(([cat, meta]) => {
-    if (!catOn[cat]) return;
-    const evs = ECON_EVENTS.filter(ev => ev.cat === cat);
-    out += '<div style="margin-bottom:10px;">';
-    out += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:' + meta.color + ';margin-bottom:5px;">' + meta.label + '</div>';
-    out += '<ul style="margin:0;padding-left:16px;list-style:disc;">';
-    evs.forEach(ev => {
-      const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const fmtD = d => MN[parseInt(d.slice(5,7))-1] + ' ' + d.slice(0,4);
-      const range = ev.point ? fmtD(ev.start) : (ev.end ? fmtD(ev.start) + ' – ' + fmtD(ev.end) : fmtD(ev.start) + ' – present');
-      out += '<li style="margin-bottom:4px;">';
-      out += '<span style="font-weight:600;color:' + meta.color + ';">' + ev.label + '</span> ';
-      out += '<span style="color:var(--color-text-tertiary);font-size:10px;">(' + range + ')</span>';
-      if (ev.desc) out += ' — ' + ev.desc;
-      out += '</li>';
-    });
-    out += '</ul></div>';
-  });
-  panel.innerHTML = out;
-}
-
-
-function renderAll() {
-  renderLede();
-  renderMovers();
-  renderHero();
-  renderRankings();
-  renderTable();
-  renderEventDescriptions();
-  syncUrl();
-}
-
-// The current view lives in the URL (?geo=ON&product=Energy&partner=exus&window=0)
-// so analysis notes and shared links can open a specific view.
-const URL_DEFAULTS = { geo: 'CA', product: 'Total', partner: 'all', window: 120 };
+// ── View in the URL (?geo=ON&product=Energy&partner=exus&window=0) ──
+const URL_DEFAULTS = {geo: 'CA', product: 'Total', partner: 'all', window: 120};
 
 function readUrlState() {
   const p = new URLSearchParams(location.search);
@@ -1589,135 +814,128 @@ function readUrlState() {
   if ([0, 60, 120, 240].includes(w)) state.window = w;
 }
 
+function shareUrl() { return 'https://tleconomicintel.com/hhi/' + location.search; }
+
 function syncUrl() {
   const p = new URLSearchParams();
   Object.keys(URL_DEFAULTS).forEach(k => { if (state[k] !== URL_DEFAULTS[k]) p.set(k, state[k]); });
   const qs = p.toString();
-  history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+  history.replaceState(null, '', location.pathname + (qs ? '?' + qs : ''));
+  $('share-li').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareUrl());
 }
 
-function copyShareLink(btn) {
-  var url = 'https://tleconomicintel.com/hhi/' + location.search;
-  var orig = btn.innerHTML;
-  function showCopied() {
-    btn.textContent = '✓ Copied!';
+function copyShareLink() {
+  const url = shareUrl(), btn = $('share-copy');
+  const done = () => {
+    setText('copy-txt', 'Link copied');
     btn.classList.add('copied');
-    setTimeout(function() { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2200);
-  }
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(showCopied).catch(function() {
-      try { var t = document.createElement('textarea'); t.value = url; t.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); } catch(e) {}
-      showCopied();
-    });
-  } else {
-    try { var t = document.createElement('textarea'); t.value = url; t.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); } catch(e) {}
-    showCopied();
-  }
+    setTimeout(() => { setText('copy-txt', 'Copy link'); btn.classList.remove('copied'); }, 2000);
+  };
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => window.prompt('Copy this link:', url));
+  else window.prompt('Copy this link:', url);
 }
 
-function init() {
-  // Restore dismissed state for HHI explainer
-  try { if (localStorage.getItem('hhi-explainer-dismissed') === '1') { const ex = document.getElementById('hhi-explainer'); if (ex) ex.style.display = 'none'; } } catch(e) {}
-
-  setFreshnessLabel();
-  readUrlState();
-  document.getElementById('f-partner').value = state.partner;
-  document.getElementById('f-window').value = String(state.window);
-  const fGeo = document.getElementById('f-geo');
-  DATA.geos.forEach(g => { const o = document.createElement('option'); o.value = g; o.textContent = (g === 'CA' ? 'Canada (national)' : g + ' · ' + DATA.geo_names[g]); if (g === state.geo) o.selected = true; fGeo.appendChild(o); });
-  fGeo.addEventListener('change', e => { state.geo = e.target.value; renderAll(); });
-  const fProduct = document.getElementById('f-product');
-  DATA.products.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = PRODUCT_LONG_NAMES[p] || p; if (p === state.product) o.selected = true; fProduct.appendChild(o); });
-  fProduct.addEventListener('change', e => { state.product = e.target.value; renderAll(); });
-  document.getElementById('f-partner').addEventListener('change', e => { state.partner = e.target.value; renderAll(); });
-  document.getElementById('f-window').addEventListener('change', e => { state.window = parseInt(e.target.value); renderAll(); });
-  document.getElementById('f-ev-shock').addEventListener('change', e => { state.showShock = e.target.checked; renderHero(); renderEventDescriptions(); });
-  document.getElementById('f-ev-agreement').addEventListener('change', e => { state.showAgreement = e.target.checked; renderHero(); renderEventDescriptions(); });
-  document.getElementById('f-ev-friction').addEventListener('change', e => { state.showFriction = e.target.checked; renderHero(); renderEventDescriptions(); });
-  renderAll();
-  renderLatestAnalysis();
-}
-
-// Shows the newest published note from /analysis/latest.json; stays hidden if there is none.
+// Newest published analysis for this product; the card stays hidden if there is none.
 function renderLatestAnalysis() {
   fetch('/analysis/hhi/latest.json')
     .then(r => (r.ok ? r.json() : null))
     .then(n => {
       if (!n) return;
-      document.getElementById('analysis-eyebrow').textContent = 'Latest analysis · ' + n.label;
-      const t = document.getElementById('analysis-title');
-      t.textContent = n.title + (n.external ? ' ↗' : '');
-      t.href = n.url;
-      if (n.external) t.rel = 'noopener';
-      document.getElementById('analysis-card').hidden = false;
+      const card = $('analysis-card');
+      setText('analysis-eyebrow', 'Latest analysis · ' + n.label);
+      setText('analysis-title', n.title + (n.external ? ' ↗' : ' →'));
+      card.href = n.url;
+      if (n.external) card.rel = 'noopener';
+      card.hidden = false;
     })
     .catch(() => {});
 }
 
-init();
-
-/* ── Download + share utilities ─────────────────────────── */
-
-// Resolves var(--name) tokens against the document root's computed styles
-function _resolveCssVars(el, cache) {
-  if (!el || el.nodeType !== 1) return;
-  const rv = v => !v ? v : v.replace(/var\((--[\w-]+)\)/g, (_, name) => {
-    if (!cache[name]) cache[name] = getComputedStyle(document.documentElement).getPropertyValue(name).trim() || 'transparent';
-    return cache[name];
+// Saves the trend chart card as a 2x PNG (html2canvas loads on first use).
+function downloadChartPng() {
+  const card = $('trend'), toolbar = card.querySelector('.chart-toolbar');
+  const root = getComputedStyle(document.documentElement);
+  const resolve = v => v.replace(/var\((--[\w-]+)\)/g, (_, n) => root.getPropertyValue(n).trim());
+  const capture = () => html2canvas(card, {
+    scale: 2, logging: false, backgroundColor: getComputedStyle(card).backgroundColor,
+    ignoreElements: n => n === toolbar,
+    // html2canvas cannot read CSS variables inside SVG attributes
+    onclone: (_doc, clone) => clone.querySelectorAll('svg *').forEach(n => ['fill', 'stroke'].forEach(a => {
+      const v = n.getAttribute(a);
+      if (v && v.startsWith('var(')) n.setAttribute(a, resolve(v));
+    })),
+  }).then(canvas => {
+    const a = document.createElement('a');
+    a.download = ['canada-hhi', state.geo, state.product, state.partner].join('-').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
   });
-  ['fill','stroke','stop-color','color'].forEach(a => { const v = el.getAttribute(a); if (v) el.setAttribute(a, rv(v)); });
-  ['fill','stroke','color','background-color'].forEach(p => { const v = el.style.getPropertyValue(p); if (v) el.style.setProperty(p, rv(v)); });
+  if (window.html2canvas) { capture(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  s.onload = capture;
+  document.head.appendChild(s);
 }
 
-// Capture the entire card containing `btn` and download as a 2× PNG
-function downloadCardAsPng(btn, filename) {
-  const card = btn.closest('.card');
-  if (!card) return;
-  const toolbar = card.querySelector('.chart-toolbar');
-  if (toolbar) toolbar.style.visibility = 'hidden';
-
-  function capture() {
-    const cache = {};
-    html2canvas(card, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      backgroundColor: getComputedStyle(card).backgroundColor || '#ffffff',
-      onclone: (_doc, clonedCard) => {
-        clonedCard.querySelectorAll('*').forEach(node => _resolveCssVars(node, cache));
-      }
-    }).then(canvas => {
-      if (toolbar) toolbar.style.visibility = '';
-      const a = document.createElement('a');
-      a.download = filename + '.png';
-      a.href = canvas.toDataURL('image/png');
-      a.click();
-    }).catch(err => {
-      if (toolbar) toolbar.style.visibility = '';
-      console.error('Card capture failed:', err);
-    });
-  }
-
-  // html2canvas loads via defer — guard against it not being ready yet
-  if (typeof html2canvas === 'function') {
-    capture();
-  } else {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = capture;
-    s.onerror = () => { if (toolbar) toolbar.style.visibility = ''; };
-    document.head.appendChild(s);
-  }
+function renderAll() {
+  renderStats();
+  renderHero();
+  renderCompare();
+  syncUrl();
 }
 
+function init() {
+  const d = DATA.updated.split('-').map(Number);
+  setText('latest-data', 'Data to ' + monthLabel(DATA.dates[DATA.dates.length - 1]));
+  setText('pub-date', 'Updated ' + MONTHS[d[1] - 1] + ' ' + d[2] + ', ' + d[0]);
 
-/* ── HHI explainer dismiss ──────────────────────────────── */
-function dismissHhiExplainer() {
-  const el = document.getElementById('hhi-explainer');
-  if (el) { el.style.opacity = '0'; el.style.transition = 'opacity 0.2s'; setTimeout(() => el.style.display = 'none', 200); }
-  try { localStorage.setItem('hhi-explainer-dismissed', '1'); } catch(e) {}
+  readUrlState();
+  DATA.geos.forEach(g => $('f-geo').add(new Option(geoName(g), g, false, g === state.geo)));
+  DATA.products.forEach(p => $('f-product').add(new Option(productName(p), p, false, p === state.product)));
+  $('f-partner').value = state.partner;
+  $('f-window').value = String(state.window);
+  $('f-geo').addEventListener('change', e => { state.geo = e.target.value; renderAll(); });
+  $('f-product').addEventListener('change', e => { state.product = e.target.value; renderAll(); });
+  $('f-partner').addEventListener('change', e => { state.partner = e.target.value; renderAll(); });
+  $('f-window').addEventListener('change', e => { state.window = +e.target.value; renderHero(); syncUrl(); });
+  $('f-events').addEventListener('change', e => { state.events = e.target.checked; renderHero(); });
+  $('share-copy').addEventListener('click', copyShareLink);
+  $('chart-png').addEventListener('click', downloadChartPng);
+
+  // Event categories join the chart legend while events are shown
+  Object.values(EVENT_CATS).forEach(c => {
+    const item = document.createElement('span');
+    item.className = 'legend-ev';
+    item.hidden = true;
+    item.innerHTML = '<span class="swatch swatch-ev" style="background:' + c.color + '"></span>' + c.label;
+    $('legend').appendChild(item);
+  });
+  const hint = document.createElement('span');
+  hint.className = 'legend-ev legend-hint';
+  hint.hidden = true;
+  hint.textContent = 'Select an event for details';
+  $('legend').appendChild(hint);
+
+  // The font is set on the SVGs themselves so it survives the PNG download
+  const font = getComputedStyle(document.body).fontFamily;
+  ['hero', 'event-strip'].forEach(id => $(id).setAttribute('font-family', font));
+
+  // Hover (mouse) or tap and drag (touch) reads off values
+  const hero = $('hero');
+  hero.addEventListener('pointermove', showReadout);
+  hero.addEventListener('pointerdown', showReadout);
+  hero.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') hideReadout(); });
+  document.addEventListener('pointerdown', e => { if (!hero.contains(e.target)) hideReadout(); });
+  new ResizeObserver(() => {
+    if (Math.round(hero.getBoundingClientRect().width) !== chart.W) renderHero();
+  }).observe(hero);
+
+  initCompare();
+  renderAll();
+  renderLatestAnalysis();
 }
+
+init();
 </script>
 </body>
 </html>
