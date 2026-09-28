@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canadian Export Concentration: data | TL Economic Intelligence</title>
+<meta name="description" content="Download the Canadian Export Concentration dataset. One row per month, geography, product category and partner view: Canada and the ten provinces, 13 NAPCS product categories, and all trading partners or all partners except the United States, from January 1997 to the latest month.">
+<meta name="author" content="TL Economic Intelligence">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Canadian Export Concentration: data">
+<meta property="og:description" content="Download the Canadian Export Concentration dataset. One row per month, geography, product category and partner view: Canada and the ten provinces, 13 NAPCS product categories, and all trading partners or all partners except the United States, from January 1997 to the latest month.">
+<meta property="og:url" content="https://tleconomicintel.com/hhi/data/">
+
+<meta property="og:site_name" content="TL Economic Intelligence">
+<link rel="canonical" href="https://tleconomicintel.com/hhi/data/">
+<link rel="stylesheet" href="/assets/chrome.css">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="icon" type="image/png" href="/assets/logo.png">
+</head>
+<body>
+<a class="tl-skip" href="#content">Skip to content</a>
+<header class="tl-header">
+  <div class="tl-header-inner">
+    <a class="tl-brand" href="/">
+      <img class="tl-logo" src="/assets/logo.png" alt="" width="44" height="44">
+      <span>
+        <span class="tl-brand-name">TL Economic Intelligence</span>
+        <span class="tl-brand-tagline">Wherever the evidence leads.</span>
+      </span>
+    </a>
+    <nav class="tl-nav" aria-label="Site">
+      <a class="tl-tab" href="/products/" aria-current="true">Products</a>
+      <a class="tl-tab" href="/analysis/">Analysis</a>
+      <a class="tl-subscribe" href="https://tleconomicintel.substack.com/subscribe">Subscribe</a>
+    </nav>
+  </div>
+</header>
+
+<nav class="tl-product-bar" aria-label="Canadian Export Concentration">
+  <div class="tl-product-bar-inner">
+    <a class="tl-product-name" href="/hhi/">Canadian Export Concentration</a>
+    <div class="tl-product-tabs">
+      <a href="/hhi/">Dashboard</a>
+      <a href="/analysis/hhi/">Analysis</a>
+      <a href="/hhi/data/" aria-current="page">Data</a>
+    </div>
+  </div>
+</nav>
+
+
+<main class="wrap" id="content">
+
+  <p class="eyebrow">Canadian Export Concentration</p>
+  <h1>Data</h1>
+  <p class="standfirst">The full monthly dataset behind the dashboard, free to reuse under CC BY 4.0.</p>
+
+  <div class="download-card">
+    <a class="btn" href="/hhi/data/hhi_monthly.csv" download>Download hhi_monthly.csv</a>
+    <span class="dl-meta">Data to July 2026 · updated September 22, 2026 · 101,530 rows · 10.4 MB CSV</span>
+  </div>
+
+  <div class="page-body">
+    <h2>What's in the file</h2>
+    <p>One row per month, geography, product category and partner view: Canada and the ten provinces, 13 NAPCS product categories, and all trading partners or all partners except the United States, from January 1997 to the latest month.</p>
+
+    <h2>Columns</h2>
+    <dl class="columns">
+    
+      <dt>date</dt><dd>Reference month (YYYY-MM).</dd>
+    
+      <dt>geo_code</dt><dd>CA for Canada or the two-letter province code.</dd>
+    
+      <dt>geography</dt><dd>Full name of Canada or the province.</dd>
+    
+      <dt>product_code</dt><dd>NAPCS section code (C11 to C23), or TOTAL for all merchandise.</dd>
+    
+      <dt>product</dt><dd>Product category name.</dd>
+    
+      <dt>partner</dt><dd>All countries, or Excluding US (HHI recomputed after dropping the United States).</dd>
+    
+      <dt>hhi</dt><dd>Raw monthly HHI, from 0 to 1. Blank when no exports were recorded that month; the dashboard plots these months as 0.</dd>
+    
+      <dt>hhi_12m_avg</dt><dd>Average of the latest 12 monthly HHI values. Blank for the first 11 months of the series and whenever a month in the window is blank.</dd>
+    
+      <dt>equivalent_partners</dt><dd>1 / hhi: the number of equal-sized partners that would give the same concentration.</dd>
+    
+      <dt>concentration_level</dt><dd>Low (below 0.15), Moderate (0.15 to 0.25) or High (above 0.25), based on hhi.</dd>
+    
+    </dl>
+
+    <h2>Updates and revisions</h2>
+    <p>Refreshed with each monthly Statistics Canada release. Each refresh replaces the file, including any revisions Statistics Canada makes to earlier months. Values are given to four decimal places; the dashboard&#39;s charts and tables round to two.</p>
+
+    <h2>Licence and citation</h2>
+    <p>The file is licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>: you may reuse and adapt it with credit to TL Economic Intelligence. The source data are from <a href="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1210017501">Statistics Canada Table 12-10-0175-01</a>, used under the <a href="https://www.statcan.gc.ca/en/terms-conditions/open-licence">Statistics Canada Open Licence</a>.</p>
+    <p class="cite-label">Suggested citation</p>
+    <p class="cite">TL Economic Intelligence (2026). Canadian Export Concentration dataset (hhi_monthly.csv), data to July 2026. https://tleconomicintel.com/hhi/data/. CC BY 4.0.</p>
+
+    <h2>Method</h2>
+    <p>How the index is calculated, what the thresholds mean and the limits of the measure are set out in the <a href="/hhi/#methodology">methodology</a>.</p>
+  </div>
+
+
+  
+  <aside class="cta">
+    <div class="cta-text">
+      <p class="cta-title">Get our analysis by email</p>
+      <p class="cta-sub">New research and monthly data notes from TL Economic Intelligence. Free, via Substack.</p>
+    </div>
+    <a class="btn" href="https://tleconomicintel.substack.com/subscribe">Subscribe</a>
+  </aside>
+  
+</main>
+
+<footer class="tl-footer">
+  <div class="tl-footer-inner">
+    <div class="tl-footer-top">
+      <img class="tl-footer-logo" src="/assets/logo.png" alt="" width="36" height="36">
+      <span class="tl-footer-name">TL Economic Intelligence</span>
+      <span class="tl-footer-pillars">Rigorous &middot; Disruptive &middot; Sovereign</span>
+    </div>
+    <div class="tl-footer-grid">
+      <div>
+        <p class="tl-footer-h">About</p>
+        <p>An independent research and advisory firm producing rigorous, point-of-view-driven economic research.</p>
+      </div>
+      <div>
+        <p class="tl-footer-h">Explore</p>
+        <a href="/products/">Products</a>
+        <a href="/analysis/">Analysis</a>
+        <a href="https://tleconomicintel.substack.com/subscribe">Subscribe</a>
+      </div>
+      <div>
+        <p class="tl-footer-h">Contact</p>
+        <a href="mailto:info@tleconomicintel.com">info@tleconomicintel.com</a>
+        <a href="https://www.linkedin.com/company/tl-economic-intelligence/">LinkedIn</a>
+      </div>
+    </div>
+    <div class="tl-footer-bottom">
+      <span>&copy; 2026 TL Economic Intelligence</span>
+      <span>Data products are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a></span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
