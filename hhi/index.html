@@ -24,7 +24,7 @@ else if (location.hash === '#data-download') location.replace('/hhi/data/');
 </script>
 
 <!-- tl-chrome:head -->
-<link rel="stylesheet" href="/assets/chrome.css?v=e3d0f04f">
+<link rel="stylesheet" href="/assets/chrome.css?v=2e0816f7">
 <link rel="icon" type="image/png" href="/assets/logo.png">
 <!-- /tl-chrome:head -->
 
@@ -120,6 +120,7 @@ p { text-wrap: pretty; }
 select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(--border-2); border-radius: 8px; background: var(--card); color: var(--text-1); cursor: pointer; }
 
 /* The four figures that answer the page's question */
+#stats { scroll-margin-top: 96px; }   /* clears the sticky header when a table row brings it into view */
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 /* Each tile spans three rows of the shared grid, so labels, figures and notes line up across a row */
 .stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 2px; align-content: start; min-width: 0; padding: 16px 18px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
@@ -239,7 +240,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
     <nav class="tl-nav" aria-label="Site">
       <a class="tl-tab" href="/products/" aria-current="true">Products</a>
       <a class="tl-tab" href="/analysis/">Analysis</a>
-      <a class="tl-subscribe" href="https://tleconomicintel.substack.com/subscribe">Subscribe</a>
+      <a class="tl-subscribe" href="https://tleconomicintel.substack.com/subscribe">Subscribe<span class="tl-ext" aria-hidden="true">&#8599;</span><span class="tl-sr"> (on Substack)</span></a>
     </nav>
   </div>
 </header>
@@ -349,7 +350,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
     <div class="tl-footer-top">
       <img class="tl-footer-logo" src="/assets/logo.png" alt="" width="36" height="36">
       <span class="tl-footer-name">TL Economic Intelligence</span>
-      <span class="tl-footer-pillars">Rigorous &middot; Disruptive &middot; Sovereign</span>
+      <span class="tl-footer-tagline">Wherever the evidence leads.</span>
     </div>
     <div class="tl-footer-grid">
       <div>
@@ -360,7 +361,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
         <p class="tl-footer-h">Explore</p>
         <a href="/products/">Products</a>
         <a href="/analysis/">Analysis</a>
-        <a href="https://tleconomicintel.substack.com/subscribe">Subscribe</a>
+        <a href="https://tleconomicintel.substack.com/subscribe">Subscribe<span class="tl-ext" aria-hidden="true">&#8599;</span><span class="tl-sr"> (on Substack)</span></a>
       </div>
       <div>
         <p class="tl-footer-h">Contact</p>
@@ -370,7 +371,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
     </div>
     <div class="tl-footer-bottom">
       <span>&copy; 2026 TL Economic Intelligence</span>
-      <span>Data products are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a></span>
+      <span>Data products are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license"><span class="tl-nowrap">CC BY 4.0</span></a></span>
     </div>
   </div>
 </footer>

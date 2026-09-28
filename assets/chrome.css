@@ -43,9 +43,17 @@
 .tl-nav { display: flex; align-items: center; gap: 22px; margin-left: auto; }
 .tl-tab { color: var(--tl-silver); text-decoration: none; font-size: 15px; font-weight: 600; line-height: 1.4; padding: 8px 0 6px; border-bottom: 2px solid transparent; }
 .tl-tab:hover { color: #FFFFFF; text-decoration: none; }
-.tl-tab[aria-current] { color: #FFFFFF; border-bottom-color: #FFFFFF; }
+.tl-tab[aria-current] { color: #FFFFFF; border-bottom: 3px solid #FFFFFF; padding-bottom: 5px; }   /* you are here */
 .tl-subscribe { color: #FFFFFF; text-decoration: none; font-size: 13px; font-weight: 600; line-height: 1.4; border: 1px solid rgba(255,255,255,0.55); border-radius: 999px; padding: 6px 14px; white-space: nowrap; }
 .tl-subscribe:hover { background: rgba(255,255,255,0.12); text-decoration: none; }
+/* Shared helpers: a phrase that must not wrap, text for screen readers only, the mark on links that leave the site */
+.tl-nowrap { white-space: nowrap; }
+.tl-sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.tl-ext { margin-left: 0.25em; font-size: 0.9em; }
+/* On larger screens the header stays in reach while reading; phones keep the full screen height */
+@media (min-width: 721px) {
+  .tl-header { position: sticky; top: 0; z-index: 30; box-shadow: 0 2px 12px rgba(10,23,41,0.18); }
+}
 .tl-header a:focus-visible, .tl-footer a:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
 
 .tl-product-bar { background: var(--tl-bar-bg); border-bottom: 1px solid var(--tl-bar-border); font-family: var(--tl-font-sans); }
@@ -63,7 +71,7 @@
 .tl-footer-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .tl-footer-logo { width: 36px; height: 36px; object-fit: contain; }
 .tl-footer-name { color: #FFFFFF; font-weight: 600; font-size: 16px; }
-.tl-footer-pillars { margin-left: auto; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; }
+.tl-footer-tagline { margin-left: auto; font-size: 14px; font-style: italic; }
 .tl-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 24px 32px; padding-top: 18px; }
 .tl-footer-h { font-size: 14px; color: #FFFFFF; font-weight: 600; margin: 0 0 6px; }
 .tl-footer p { margin: 0; }
@@ -80,5 +88,5 @@
   .tl-product-name { padding-bottom: 0; }
   .tl-product-tabs { margin-left: 0; flex-basis: 100%; }
   .tl-footer-grid { grid-template-columns: 1fr; }
-  .tl-footer-pillars { margin-left: 0; flex-basis: 100%; }
+  .tl-footer-tagline { margin-left: 0; flex-basis: 100%; }
 }
