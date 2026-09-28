@@ -32,7 +32,7 @@ else if (location.hash === '#data-download') location.replace('/hhi/data/');
 :root {
   --navy: #1B3A6B;
   --page: #F4F2EC;
-  --card: #FFFFFF;
+  --card: #FFFDF9;
   --card-soft: #F7F6F0;
   --text-1: #14181F;
   --text-2: #4C5562;
@@ -43,8 +43,9 @@ else if (location.hash === '#data-download') location.replace('/hhi/data/');
   --neg: #0F6E56;          /* less concentrated */
   --line: #2D5293;
   --track: #ECE9E1;
-  --border: rgba(20,24,31,0.13);
-  --border-2: rgba(20,24,31,0.26);
+  --border: rgba(60,45,20,0.12);
+  --border-2: rgba(60,45,20,0.26);
+  --shadow: 0 1px 2px rgba(60,45,20,0.04), 0 6px 20px -10px rgba(60,45,20,0.12);
   --band-l: #5BA59A;
   --band-m: #E8B470;
   --band-h: #C75A35;
@@ -67,6 +68,7 @@ else if (location.hash === '#data-download') location.replace('/hhi/data/');
     --track: #252C38;
     --border: rgba(255,255,255,0.12);
     --border-2: rgba(255,255,255,0.24);
+    --shadow: none;
   }
 }
 
@@ -79,11 +81,12 @@ button, select { font: inherit; }
 [hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-.wrap { max-width: 1040px; margin: 0 auto; padding: 28px 24px 8px; }
+.wrap { max-width: var(--tl-page-max); margin: 0 auto; padding: 36px var(--tl-gutter) 8px; }
 
 /* Heading */
 .page-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px 24px; margin-bottom: 18px; }
-.page-title { font-family: var(--font-serif); font-size: 30px; line-height: 1.2; margin: 0 0 6px; text-wrap: balance; }
+.page-title { font-family: var(--font-serif); font-size: 34px; line-height: 1.2; margin: 0 0 8px; text-wrap: balance; }
+.page-lede { max-width: 780px; margin: 0 0 8px; font-size: 18px; line-height: 1.5; color: var(--text-2); text-wrap: pretty; }
 .page-meta { margin: 0; font-size: 13px; color: var(--text-3); }
 .share { display: flex; align-items: center; gap: 8px; }
 .share-btn, .copy-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; border: 1px solid var(--border); background: var(--card); color: var(--text-2); cursor: pointer; transition: color 0.15s, border-color 0.15s; }
@@ -94,8 +97,8 @@ button, select { font: inherit; }
 .copy-btn.copied { color: var(--neg); border-color: var(--neg); }
 
 /* Latest analysis: one link */
-.analysis-card { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; padding: 12px 16px; margin: 0 0 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--info-bg); color: var(--text-1); text-decoration: none; }
-.analysis-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--link); white-space: nowrap; }
+.analysis-card { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; padding: 14px 18px; margin: 0 0 22px; border: 1px solid var(--border); border-radius: 14px; background: var(--info-bg); color: var(--text-1); text-decoration: none; }
+.analysis-eyebrow { font-size: 13px; font-weight: 600; color: var(--link); white-space: nowrap; }
 .analysis-title { flex: 1 1 320px; font-family: var(--font-serif); font-size: 16px; font-weight: 600; line-height: 1.4; }
 .analysis-card:hover .analysis-title { color: var(--link); text-decoration: underline; }
 
@@ -107,7 +110,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 /* The four figures that answer the page's question */
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 /* Each tile spans three rows of the shared grid, so labels, figures and notes line up across a row */
-.stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 2px; align-content: start; min-width: 0; padding: 14px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+.stat { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 2px; align-content: start; min-width: 0; padding: 16px 18px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
 .stat:first-child { border-top: 3px solid var(--navy); }
 .stat-label { font-size: 12.5px; font-weight: 600; color: var(--text-2); }
 .stat-value { font-size: 30px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
@@ -118,7 +121,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 .flat { color: var(--text-3); }
 
 /* Cards */
-.card { position: relative; margin-bottom: 16px; padding: 18px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+.card { position: relative; margin-bottom: 18px; padding: 22px 24px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
 .card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 10px 20px; margin-bottom: 10px; }
 .card-title { font-family: var(--font-serif); font-size: 20px; line-height: 1.3; margin: 0; }
 .card-sub { margin: 2px 0 0; font-size: 13px; color: var(--text-2); }
@@ -133,7 +136,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 .swatch-dash { border-top: 1.5px dashed var(--line); }
 .swatch-ev { width: 10px; height: 10px; border: 0; border-radius: 2px; }
 .legend-hint { color: var(--text-3); }
-#hero { display: block; width: 100%; height: clamp(240px, 36vw, 420px); touch-action: pan-y; }
+#hero { display: block; width: 100%; height: clamp(240px, 32vw, 460px); touch-action: pan-y; }
 #event-strip { display: block; width: 100%; height: 50px; margin-top: 4px; }
 #event-strip .ev { cursor: pointer; outline: none; }
 #event-strip .ev:hover rect.ev-bar, #event-strip .ev:focus-visible rect.ev-bar { opacity: 0.4; }
@@ -143,7 +146,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 .hero-tooltip .ht-month { font-weight: 700; margin-bottom: 2px; }
 .hero-tooltip .ht-row { display: flex; justify-content: space-between; gap: 16px; }
 .hero-tooltip .ht-row span { opacity: 0.8; }
-.chart-toolbar { position: absolute; top: 18px; right: 20px; opacity: 0; transition: opacity 0.15s; }
+.chart-toolbar { position: absolute; top: 22px; right: 24px; opacity: 0; transition: opacity 0.15s; }
 .card:hover .chart-toolbar, .chart-toolbar:focus-within { opacity: 1; }
 .tb-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-2); border-radius: 6px; background: var(--card); color: var(--text-2); cursor: pointer; }
 .tb-btn:hover { color: var(--text-1); }
@@ -178,11 +181,12 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 .bar-fill { display: block; height: 100%; border-radius: 4px; }
 
 @media (max-width: 760px) {
-  .wrap { padding: 20px 16px 8px; }
-  .page-title { font-size: 25px; }
+  .wrap { padding-top: 22px; }
+  .page-title { font-size: 26px; }
+  .page-lede { font-size: 16px; }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stat-value { font-size: 26px; }
-  .card { padding: 16px; }
+  .card { padding: 18px 16px; }
   .chart-toolbar { display: none; }
 }
 @media (max-width: 560px) {
@@ -239,6 +243,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
   <div class="page-head">
     <div>
       <h1 class="page-title" id="page-title">How concentrated are Canada's exports?</h1>
+      <p class="page-lede" id="page-lede"></p>
       <p class="page-meta"><span id="latest-data">Data to &mdash;</span> &middot; <span id="pub-date">Updated &mdash;</span></p>
     </div>
     <div class="share" role="group" aria-label="Share this view">
@@ -478,12 +483,25 @@ function levelNote(ser, v) {
   return levelName(v) + ' concentration' + (status ? ', ' + status : '');
 }
 
+// The heading asks the question for the current view; the sentence under it answers in plain words.
+function renderHeading(ma, v, prev) {
+  const phrase = PRODUCT_PHRASES[state.product];
+  const subject = geoName(state.geo) + "'s " + (phrase ? phrase + ' ' : '') + 'exports'
+    + (state.partner === 'exus' ? ' outside the US' : '');
+  setText('page-title', 'How concentrated are ' + subject + '?');
+  if (v == null) { setText('page-lede', 'There is not enough export data to measure concentration for this view.'); return; }
+  const status = recordStatus(ma, REF_MI), pct = pctChange(v, prev), eq = 1 / v;
+  setText('page-lede', 'Over the 12 months to ' + refMonth() + ', ' + subject
+    + (eq < 1.15 ? ' went almost entirely to one partner' : ' behaved as though they went to about ' + eq.toFixed(1) + ' equal-sized partners')
+    + (status ? ', the ' + status.replace(' on record', ' concentration on record')
+      : pct == null ? '' : pct < -0.5 ? ', less concentrated than a year earlier'
+      : pct > 0.5 ? ', more concentrated than a year earlier' : ', about as concentrated as a year earlier') + '.');
+}
+
 function renderStats() {
   const ma = getSeries(state.geo, state.product, state.partner);
   const v = reading(ma, REF_MI), prev = reading(ma, REF_MI - 12);
-  const phrase = PRODUCT_PHRASES[state.product];
-  setText('page-title', 'How concentrated are ' + geoName(state.geo) + "'s " + (phrase ? phrase + ' ' : '')
-    + 'exports' + (state.partner === 'exus' ? ' outside the US' : '') + '?');
+  renderHeading(ma, v, prev);
 
   setText('s1-label', '12-month average HHI, ' + refMonth());
   setText('s1-value', v == null ? '—' : v.toFixed(2));

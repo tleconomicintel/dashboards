@@ -14,6 +14,11 @@
   --tl-accent: #2D5293;
   --tl-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --tl-font-serif: Georgia, "Times New Roman", serif;
+  --tl-page-max: 1280px;   /* one frame width for the chrome and every page */
+  --tl-gutter: 32px;
+}
+@media (max-width: 720px) {
+  :root { --tl-gutter: 16px; }
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -29,7 +34,7 @@
 .tl-skip:focus { left: 16px; }
 
 .tl-header { background: linear-gradient(135deg, var(--tl-navy-deep) 0%, var(--tl-navy) 60%, #234876 100%); color: #FFFFFF; font-family: var(--tl-font-sans); }
-.tl-header-inner { max-width: 1040px; margin: 0 auto; padding: 16px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
+.tl-header-inner { max-width: var(--tl-page-max); margin: 0 auto; padding: 16px var(--tl-gutter); display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
 .tl-brand { display: flex; align-items: center; gap: 12px; color: #FFFFFF; text-decoration: none; min-width: 0; }
 .tl-brand:hover { text-decoration: none; }
 .tl-logo { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
@@ -44,7 +49,7 @@
 .tl-header a:focus-visible, .tl-footer a:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
 
 .tl-product-bar { background: var(--tl-bar-bg); border-bottom: 1px solid var(--tl-bar-border); font-family: var(--tl-font-sans); }
-.tl-product-bar-inner { max-width: 1040px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; }
+.tl-product-bar-inner { max-width: var(--tl-page-max); margin: 0 auto; padding: 0 var(--tl-gutter); display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; }
 .tl-product-name { font-family: var(--tl-font-serif); font-size: 17px; font-weight: 700; line-height: 1.3; color: var(--tl-bar-text); text-decoration: none; padding: 12px 0; }
 .tl-product-name:hover { text-decoration: none; color: var(--tl-accent); }
 .tl-product-tabs { display: flex; gap: 20px; margin-left: auto; }
@@ -54,13 +59,13 @@
 .tl-product-bar a:focus-visible { outline: 2px solid var(--tl-accent); outline-offset: 2px; }
 
 .tl-footer { background: linear-gradient(135deg, var(--tl-navy-darker) 0%, var(--tl-navy-deep) 100%); color: var(--tl-silver); padding: 32px 0 28px; margin-top: 48px; font: 13px/1.7 var(--tl-font-sans); }
-.tl-footer-inner { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+.tl-footer-inner { max-width: var(--tl-page-max); margin: 0 auto; padding: 0 var(--tl-gutter); }
 .tl-footer-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .tl-footer-logo { width: 36px; height: 36px; object-fit: contain; }
 .tl-footer-name { color: #FFFFFF; font-weight: 600; font-size: 16px; }
 .tl-footer-pillars { margin-left: auto; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; }
 .tl-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 24px 32px; padding-top: 18px; }
-.tl-footer-h { font-size: 11px; color: var(--tl-platinum); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin: 0 0 6px; }
+.tl-footer-h { font-size: 14px; color: #FFFFFF; font-weight: 600; margin: 0 0 6px; }
 .tl-footer p { margin: 0; }
 .tl-footer a { color: var(--tl-silver); display: block; text-decoration: none; }
 .tl-footer a:hover { color: #FFFFFF; text-decoration: underline; }
@@ -68,14 +73,12 @@
 .tl-footer-bottom a { display: inline; }
 
 @media (max-width: 720px) {
-  .tl-header-inner { padding: 14px 16px 0; }
+  .tl-header-inner { padding-top: 14px; padding-bottom: 0; }
   .tl-nav { flex-basis: 100%; margin-left: 0; gap: 20px; border-top: 1px solid rgba(255,255,255,0.12); padding: 4px 0 2px; }
   .tl-subscribe { margin-left: auto; }
   .tl-brand-tagline { display: none; }
-  .tl-product-bar-inner { padding: 0 16px; }
   .tl-product-name { padding-bottom: 0; }
   .tl-product-tabs { margin-left: 0; flex-basis: 100%; }
-  .tl-footer-inner { padding: 0 16px; }
   .tl-footer-grid { grid-template-columns: 1fr; }
   .tl-footer-pillars { margin-left: 0; flex-basis: 100%; }
 }
