@@ -196,10 +196,6 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
 .key-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .pos-bg { background: var(--pos); }
 .neg-bg { background: var(--neg); }
-/* End-of-page "what's next": a quiet line, not a banner */
-.next-update { display: flex; align-items: flex-start; gap: 10px; margin: 6px 4px 0; font-size: 14px; line-height: 1.55; color: var(--text-2); }
-.next-update svg { flex-shrink: 0; margin-top: 2px; color: var(--link); }
-kbd { display: inline-block; padding: 0 5px; border: 1px solid var(--border-2); border-bottom-width: 2px; border-radius: 5px; background: var(--card); font: 600 12px/1.5 var(--font-sans); color: var(--text-1); }
 .hhi-cell { display: inline-flex; align-items: center; gap: 10px; }
 .bar-track { width: 96px; height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
 .bar-fill { display: block; height: 100%; border-radius: 4px; }
@@ -268,7 +264,7 @@ kbd { display: inline-block; padding: 0 5px; border: 1px solid var(--border-2); 
     <div>
       <h1 class="page-title" id="page-title">How concentrated are Canada's exports?</h1>
       <p class="page-lede" id="page-lede"></p>
-      <p class="page-meta"><span id="latest-data">Data to &mdash;</span> &middot; <span id="pub-date">Updated &mdash;</span> &middot; <span id="next-meta">Next update &mdash;</span></p>
+      <p class="page-meta"><span id="latest-data">Data to &mdash;</span> &middot; <span id="pub-date">Updated &mdash;</span></p>
     </div>
     <div class="share" role="group" aria-label="Share this view">
       <a class="share-btn" id="share-li" href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Ftleconomicintel.com%2Fhhi%2F" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn" aria-label="Share on LinkedIn">
@@ -345,11 +341,6 @@ kbd { display: inline-block; padding: 0 5px; border: 1px solid var(--border-2); 
     <div class="table-wrap"><table class="cmp" id="cmp"></table></div>
     <p class="cmp-key"><span><span class="key-dot pos-bg"></span>Red: more concentrated than a year earlier</span><span><span class="key-dot neg-bg"></span>Green: less concentrated</span></p>
   </section>
-
-  <p class="next-update">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    <span><span id="next-line"></span> <span id="next-cta">Get the HHI Monitor</span> <a href="https://tleconomicintel.substack.com/subscribe">by email<span class="tl-ext" aria-hidden="true">&#8599;</span><span class="tl-sr"> (on Substack)</span></a>.</span>
-  </p>
 
 </main>
 
@@ -948,24 +939,6 @@ function copyShareLink() {
   else fallback();
 }
 
-// When the next data should arrive: the month after the latest data, expected the month after the
-// last update. Once that month has passed without an update it says "soon", so it never goes stale.
-function renderNextUpdate() {
-  const [ly, lm] = DATA.dates[DATA.dates.length - 1].split('-').map(Number);
-  const nextData = MONTHS[lm % 12] + ' ' + (lm === 12 ? ly + 1 : ly);
-  const [uy, um] = DATA.updated.split('-').map(Number);
-  const ey = um === 12 ? uy + 1 : uy, em = um % 12 + 1;
-  const now = new Date(), overdue = now.getFullYear() * 12 + now.getMonth() + 1 > ey * 12 + em;
-  const when = overdue ? 'soon' : MONTHS[em - 1] + (ey !== now.getFullYear() ? ' ' + ey : '');
-  setText('next-meta', 'Next update: ' + when);
-  setText('next-line', 'Next update: ' + nextData + ' data, expected ' + (overdue ? 'soon' : 'in ' + when) + '.');
-  // A keyboard shortcut only helps where there is a keyboard; phones get the email option alone
-  if (!window.matchMedia('(pointer: coarse)').matches) {
-    const key = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘D' : 'Ctrl+D';
-    $('next-cta').innerHTML = 'Bookmark this page (<kbd>' + key + '</kbd>) to check back, or get the HHI Monitor';
-  }
-}
-
 // Newest published analysis for this product; the card stays hidden if there is none.
 function renderLatestAnalysis() {
   fetch('/analysis/hhi/latest.json')
@@ -1069,7 +1042,6 @@ function init() {
 
   initCompare();
   renderAll();
-  renderNextUpdate();
   renderLatestAnalysis();
 }
 
