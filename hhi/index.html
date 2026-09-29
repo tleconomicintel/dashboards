@@ -300,7 +300,7 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
   <section class="card" id="trend" aria-labelledby="trend-title">
     <div class="card-head">
       <div>
-        <h2 class="card-title" id="trend-title">HHI over time</h2>
+        <h2 class="card-title" id="trend-title">How export concentration has changed over the past 10 years</h2>
         <p class="card-sub" id="hero-subtitle">&mdash;</p>
       </div>
       <div class="controls">
@@ -658,7 +658,11 @@ function renderHero() {
   svg.append(guide, dot);
   Object.assign(chart, {W, s, e, x0, x1, sx, sy, ma, raw, guide, dot});
 
-  setText('hero-subtitle', geoName(state.geo) + ' · ' + productName(state.product) + ' · ' + partnerName(state.partner));
+  // A plain-language title that follows the time window, and which way is worse
+  setText('trend-title', 'How export concentration has changed '
+    + ({60: 'over the past 5 years', 120: 'over the past 10 years', 240: 'over the past 20 years'}[state.window] || 'since 1997'));
+  setText('hero-subtitle', geoName(state.geo) + ' · ' + productName(state.product) + ' · ' + partnerName(state.partner)
+    + '. A higher line means exports depend on fewer partners.');
   hideReadout();
   renderEventStrip();
 }
