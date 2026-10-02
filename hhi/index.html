@@ -329,9 +329,15 @@ select { width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid var(
         <h2 class="card-title" id="cmp-title">Compare</h2>
         <p class="card-sub" id="cmp-sub">&mdash;</p>
       </div>
-      <div class="seg" role="group" aria-label="Compare by">
-        <button type="button" data-by="product" aria-pressed="true">Products</button>
-        <button type="button" data-by="geo" aria-pressed="false">Provinces</button>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Compare by">
+          <button type="button" data-by="product" aria-pressed="true">Products</button>
+          <button type="button" data-by="geo" aria-pressed="false">Provinces</button>
+        </div>
+        <button class="tb-btn" type="button" id="table-csv" title="Download this table as a CSV file">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>CSV</span>
+        </button>
       </div>
     </div>
     <div class="seg seg-period" role="group" aria-label="Columns shown">
@@ -822,6 +828,8 @@ function rowHtml(r, selected) {
     + '</tr>';
 }
 
+let compareRows = [];
+
 function renderCompare(focusKey) {
   const byProduct = state.by === 'product';
   const ref = byProduct ? rowFor('Total', productName('Total'), state.geo, 'Total')
@@ -842,6 +850,7 @@ function renderCompare(focusKey) {
     return '<th scope="col"' + (c.group ? ' class="r ' + c.group + '"' : '') + sort + '><button type="button" data-key="' + c.key + '">'
       + '<span class="th-label">' + label + '</span>' + (c.sub ? '<span class="th-sub">' + c.sub() + '</span>' : '') + '</button></th>';
   }).join('');
+  compareRows = [ref].concat(rows);   // for the CSV download
   const selected = byProduct ? state.product : state.geo;
   const t = $('cmp');
   t.className = 'cmp show-' + state.period;
@@ -896,28 +905,33 @@ function readUrlState() {
   if ([0, 60, 120, 240].includes(w)) state.window = w;
 }
 
-function shareUrl() { return 'https://tleconomicintel.com/hhi/' + location.search; }
+const SITE = 'https://tleconomicintel.com/hhi/';
 
-function syncUrl() {
+function viewQuery() {   // the current view, minus defaults: "?geo=ON&partner=exus" or ""
   const p = new URLSearchParams();
   Object.keys(URL_DEFAULTS).forEach(k => { if (state[k] !== URL_DEFAULTS[k]) p.set(k, state[k]); });
   const qs = p.toString();
-  history.replaceState(null, '', location.pathname + (qs ? '?' + qs : ''));
+  return qs ? '?' + qs : '';
+}
+function shareUrl() { return SITE + viewQuery(); }
+
+function syncUrl() {
+  history.replaceState(null, '', location.pathname + viewQuery());
   $('share-li').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareUrl());
 }
 
-// Copies the link to this view. Tries the Clipboard API, then the older copy command, and always says
-// what happened, on the button and to screen readers. The address bar holds the same link if both fail.
+// Copies the link to this view: the Clipboard API, then the older copy command. Always says what
+// happened, on the button and to screen readers; the address bar holds the same link if both fail.
 function copyShareLink() {
   const url = shareUrl(), btn = $('share-copy');
-  const feedback = (label, status, ok) => {
+  const say = (label, status, ok) => {
     setText('copy-txt', label);
     setText('copy-status', status);
     btn.classList.toggle('copied', ok);
-    clearTimeout(copyShareLink.timer);
-    copyShareLink.timer = setTimeout(() => { setText('copy-txt', 'Copy link'); setText('copy-status', ''); btn.classList.remove('copied'); }, ok ? 2500 : 5000);
+    clearTimeout(btn.copyTimer);
+    btn.copyTimer = setTimeout(() => { setText('copy-txt', 'Copy link'); setText('copy-status', ''); btn.classList.remove('copied'); }, ok ? 2500 : 5000);
   };
-  const legacyCopy = () => {
+  const legacy = () => {
     const t = document.createElement('textarea');
     t.value = url;
     t.setAttribute('readonly', '');
@@ -930,13 +944,30 @@ function copyShareLink() {
     btn.focus();
     return ok;
   };
-  const copied = () => feedback('Copied ✓', 'Link copied to the clipboard', true);
-  const fallback = () => {
-    if (legacyCopy()) copied();
-    else feedback('Copy the address bar', 'Could not copy automatically. The link to this view is in the address bar.', false);
-  };
-  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(copied, fallback);
-  else fallback();
+  const done = ok => say(ok ? 'Copied \u2713' : 'Copy the address bar',
+    ok ? 'Link copied to the clipboard' : 'Could not copy automatically. The link to this view is in the address bar.', ok);
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(() => done(true), () => done(legacy()));
+  else done(legacy());
+}
+
+// The comparison table exactly as shown (view, sort and every column), as a CSV file.
+function downloadTableCsv() {
+  const byProduct = state.by === 'product';
+  const text = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const num = (v, dp) => (v == null ? '' : v.toFixed(dp));   // HHI to 4 decimals (as in the dataset), % changes to 2
+  const header = [byProduct ? 'Product category' : 'Province',
+    'HHI, 12-month average (' + refMonth(0, true) + ')', 'Change in HHI from ' + refMonth(12, true) + ' (%)',
+    'Year-to-date HHI (' + YTD.range + ')', 'Change in HHI from ' + YTD.prevRange + ' (%)'];
+  const lines = [header.map(text).join(',')].concat(compareRows.map(r =>
+    [text(r.name), num(r.ma, 4), num(r.yoy, 2), num(r.ytd, 4), num(r.ytdChg, 2)].join(',')));
+  const scope = byProduct ? state.geo : state.product;
+  const name = ['canada-hhi', byProduct ? 'products' : 'provinces', scope, state.partner, DATA.dates[REF_MI]].join('-')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.csv';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\r\n') + '\r\n'], {type: 'text/csv;charset=utf-8'}));
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 // Newest published analysis for this product; the card stays hidden if there is none.
@@ -1011,6 +1042,7 @@ function init() {
     renderAll();
   });
   $('chart-png').addEventListener('click', downloadChartPng);
+  $('table-csv').addEventListener('click', downloadTableCsv);
 
   // Event categories join the chart legend while events are shown
   Object.values(EVENT_CATS).forEach(c => {
