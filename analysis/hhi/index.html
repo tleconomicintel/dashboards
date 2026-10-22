@@ -60,8 +60,25 @@
   </header>
 
   
+  <div class="filters" role="group" aria-label="Show">
+    
+    <button class="filter" type="button" data-filter="all" aria-pressed="true">All</button>
+    
+    <button class="filter" type="button" data-filter="type:monitor" aria-pressed="false">HHI Monitor</button>
+    
+    <button class="filter" type="button" data-filter="type:longform" aria-pressed="false">Long-form</button>
+    
+  </div>
+  
 
   <ol class="hub-list" id="hub-list">
+  
+    <li class="hub-item" data-type="longform" data-product="hhi">
+      <p class="hub-type">Long-form</p>
+      <h2><a class="card-link" href="https://tleconomicintel.substack.com/p/do-trade-deals-diversify" rel="noopener">Do trade deals diversify? &#8599;</a></h2>
+      <p class="hub-summary">Canada and the European Union (EU) meet in Montreal next week, October 29-30, 2026. The two sides are expected to announce a new framework for cooperation on trade and defence (The Globe and Mail). So this is a good time to ask a simple question. Do trade deals help Canada sell more to the countries it signs them with?</p>
+      <p class="hub-foot">October 22, 2026 &middot; on Substack</p>
+    </li>
   
     <li class="hub-item" data-type="longform" data-product="hhi">
       <p class="hub-type">Long-form</p>
@@ -136,6 +153,18 @@
   </div>
 </footer>
 
+
+<script>
+document.querySelectorAll('.filter').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var parts = btn.dataset.filter.split(':');
+    document.querySelectorAll('.filter').forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+    document.querySelectorAll('#hub-list .hub-item[data-type]').forEach(function (li) {
+      li.hidden = parts[0] !== 'all' && li.dataset[parts[0]] !== parts[1];
+    });
+  });
+});
+</script>
 
 
 </body>
